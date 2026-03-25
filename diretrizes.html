@@ -6,44 +6,41 @@
     <title>DNA da Equipe - Hub do Treinador</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Ajustes de refinamento com a Nova Paleta */
-        .timeline { display: flex; justify-content: space-between; position: relative; padding-top: 20px; margin: 20px 0; }
-        .timeline::before { content: ''; position: absolute; top: 27px; left: 0; right: 0; height: 3px; background: var(--border); z-index: 1; }
-        .timeline-point { position: relative; z-index: 2; text-align: center; width: 22%; }
-        .point-dot { width: 14px; height: 14px; background: var(--bg-surface); border: 3px solid var(--border); border-radius: 50%; margin: 0 auto 10px auto; transition: 0.3s; }
-        .timeline-point.active .point-dot { border-color: var(--primary); background: var(--primary); transform: scale(1.2); }
-        .timeline-year { font-family: 'Kanit'; font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
-        .timeline-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; line-height: 1.4; padding: 0 5px; }
+        /* Estilos específicos para o DNA da Equipe */
+        .playbook-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
         
-        /* Box do Novo Orçamento Inteligente */
-        .budget-master { background: var(--bg-app); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; text-align: center; }
-        .budget-master input { font-size: 1.5rem; font-weight: 700; color: var(--success); text-align: center; width: 150px; background: var(--bg-surface); margin-top: 5px; font-family: 'Kanit'; }
-        
-        .budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .budget-item { background: var(--bg-app); padding: 10px; border-radius: 6px; border: 1px solid var(--border); text-align: center; }
-        .budget-item label { font-size: 0.7rem; margin-bottom: 5px; }
-        .budget-item input { text-align: center; font-weight: 600; font-size: 1rem; padding: 6px; margin-bottom: 5px; }
-        .budget-val { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
-        .perc-warning { color: var(--danger); font-size: 0.75rem; font-weight: 600; text-align: center; display: none; margin-bottom: 10px; }
+        /* Listas Editáveis (Filosofias) */
+        .dynamic-list { list-style: none; padding: 0; margin-top: 15px; }
+        .dynamic-list li { background: var(--bg-app); border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
+        .dynamic-list li .btn-del { color: var(--danger); background: none; border: none; cursor: pointer; transition: 0.2s; padding: 2px; }
+        .dynamic-list li .btn-del:hover { transform: scale(1.1); }
 
-        .tactics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .tactic-box { background: var(--bg-app); border: 1px solid var(--border); padding: 12px; border-radius: 8px; }
-        .hl-tag { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
-        .hl-atk { background: #dcfce7; color: #166534; }
-        .hl-def { background: #fee2e2; color: #991b1b; }
-        .hl-trans { background: #e0e7ff; color: #3730a3; }
+        .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .input-row input { flex: 1; margin: 0; padding: 10px; font-size: 0.85rem; }
+        .btn-add-mini { background: var(--primary); color: #fff; border: none; border-radius: 6px; padding: 0 15px; cursor: pointer; transition: 0.2s; font-weight: 600; }
+        .btn-add-mini:hover { background: var(--primary-hover); }
+
+        /* Tabela de Metas Departamentais */
+        .table-metas { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .table-metas th { text-align: left; padding: 12px 10px; border-bottom: 2px solid var(--border); color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+        .table-metas td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .table-metas textarea { width: 100%; border: 1px solid transparent; background: transparent; padding: 8px; color: var(--text-main); transition: 0.2s; border-radius: 6px; font-weight: 500; resize: vertical; min-height: 40px; }
+        .table-metas textarea:focus { background: var(--bg-app); border-color: var(--primary); outline: none; }
         
-        .check-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--bg-app); border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.85rem; transition: 0.2s; border: 1px solid transparent; font-weight: 500; }
-        .check-item:hover { border-color: var(--border); background: var(--bg-surface); }
-        .check-item input { accent-color: var(--primary); width: 16px; height: 16px; }
+        .dept-badge { font-weight: 700; color: var(--text-main); background: var(--bg-app); padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; display: inline-block; border: 1px solid var(--border); text-transform: uppercase; }
+
+        /* Checklist Customizado */
+        .chk-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--bg-app); border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; transition: 0.2s; border: 1px solid transparent; font-weight: 500; }
+        .chk-item:hover { border-color: var(--border); background: var(--bg-surface); }
+        .chk-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+        .chk-item.done span { text-decoration: line-through; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="brand"><i class="fas fa-terminal" style="color: var(--primary);"></i> <span>Hub do Treinador</span></div>
+        <div class="brand"><i class="fas fa-terminal" style="color: var(--primary);"></i> <span>Treinador</span></div>
         <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
         <a href="diretrizes.html" class="nav-link active"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
         <a href="elenco.html" class="nav-link"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
@@ -52,188 +49,212 @@
 
     <main class="main-content">
         <header class="page-header">
-            <h1 class="page-title">DNA da Equipe</h1>
-            <p class="page-subtitle">Planejamento financeiro inteligente, metas SMART e filosofia de jogo.</p>
+            <h1 class="page-title">DNA da Equipe e Estatuto</h1>
+            <p class="page-subtitle">A constituição do seu clube: filosofias imutáveis, metas SMART por departamento e processos.</p>
         </header>
+
+        <div class="playbook-grid">
+            
+            <div class="card" style="border-top: 4px solid var(--warning);">
+                <div class="card-header"><i class="fas fa-handshake" style="color: var(--warning);"></i><h3>Filosofia de Contratações</h3></div>
+                <div class="input-row">
+                    <input type="text" id="in_filo_cont" placeholder="Ex: Não contratar acima de 30 anos...">
+                    <button class="btn-add-mini" onclick="addRegra('cont')"><i class="fas fa-plus"></i></button>
+                </div>
+                <ul class="dynamic-list" id="lista_cont"></ul>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--blue);">
+                <div class="card-header"><i class="fas fa-seedling" style="color: var(--blue);"></i><h3>Filosofia de Base</h3></div>
+                <div class="input-row">
+                    <input type="text" id="in_filo_base" placeholder="Ex: Subir 2 juniores por época...">
+                    <button class="btn-add-mini" onclick="addRegra('base')"><i class="fas fa-plus"></i></button>
+                </div>
+                <ul class="dynamic-list" id="lista_base"></ul>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--text-main);">
+                <div class="card-header"><i class="fas fa-users" style="color: var(--text-main);"></i><h3>Filosofia de Elenco</h3></div>
+                <div class="input-row">
+                    <input type="text" id="in_filo_elenco" placeholder="Ex: Manter elenco em 25 jogadores...">
+                    <button class="btn-add-mini" onclick="addRegra('elenco')"><i class="fas fa-plus"></i></button>
+                </div>
+                <ul class="dynamic-list" id="lista_elenco"></ul>
+            </div>
+
+        </div>
 
         <div class="dashboard-grid">
             
             <div class="card" style="grid-column: span 3; border-top: 4px solid var(--primary);">
-                <div class="card-header"><i class="fas fa-map-signs" style="color: var(--primary);"></i><h3>Projeto de Longo Prazo (5 Temporadas)</h3></div>
-                <div class="timeline">
-                    <div class="timeline-point active">
-                        <div class="point-dot"></div><div class="timeline-year">T1</div>
-                        <div class="timeline-desc"><strong>Sustentabilidade:</strong> Estabilizar finanças e G4. <input type="text" id="m_ano1" placeholder="..." style="margin-top:5px; padding:5px; font-size:0.75rem;"></div>
-                    </div>
-                    <div class="timeline-point">
-                        <div class="point-dot"></div><div class="timeline-year">T2</div>
-                        <div class="timeline-desc"><strong>Estrutura:</strong> Expansão de Estádio e Base. <input type="text" id="m_ano2" placeholder="..." style="margin-top:5px; padding:5px; font-size:0.75rem;"></div>
-                    </div>
-                    <div class="timeline-point">
-                        <div class="point-dot"></div><div class="timeline-year">T3</div>
-                        <div class="timeline-desc"><strong>Glória:</strong> Título Nacional e Continental. <input type="text" id="m_ano3" placeholder="..." style="margin-top:5px; padding:5px; font-size:0.75rem;"></div>
-                    </div>
-                    <div class="timeline-point">
-                        <div class="point-dot"></div><div class="timeline-year">T5</div>
-                        <div class="timeline-desc"><strong>Hegemonia:</strong> Referência mundial em gestão. <input type="text" id="m_ano5" placeholder="..." style="margin-top:5px; padding:5px; font-size:0.75rem;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--success);">
-                <div class="card-header"><i class="fas fa-chart-pie" style="color: var(--success);"></i><h3>Gestão Financeira (%)</h3></div>
+                <div class="card-header"><i class="fas fa-bullseye" style="color: var(--primary);"></i><h3>Matriz de Objetivos (Longo Prazo vs. Temporada)</h3></div>
                 
-                <div class="budget-master">
-                    <label>Orçamento Total Disponível (Milhões)</label>
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                        <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-muted);">R$</span>
-                        <input type="number" id="orc_total" value="100" oninput="calcularOrcamento()">
-                        <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-muted);">M</span>
-                    </div>
-                </div>
-
-                <div id="perc_aviso" class="perc-warning">A soma das porcentagens ultrapassa 100%!</div>
-
-                <div class="budget-grid">
-                    <div class="budget-item" style="border-left: 3px solid #10b981;">
-                        <label>Plantel Profissional (%)</label>
-                        <input type="number" id="perc_prof" value="50" oninput="calcularOrcamento()">
-                        <div id="val_prof" class="budget-val">R$ 50.0M</div>
-                    </div>
-                    <div class="budget-item" style="border-left: 3px solid #3b82f6;">
-                        <label>Obras / Estádio (%)</label>
-                        <input type="number" id="perc_est" value="30" oninput="calcularOrcamento()">
-                        <div id="val_est" class="budget-val">R$ 30.0M</div>
-                    </div>
-                    <div class="budget-item" style="border-left: 3px solid #8b5cf6;">
-                        <label>Categorias de Base (%)</label>
-                        <input type="number" id="perc_base" value="10" oninput="calcularOrcamento()">
-                        <div id="val_base" class="budget-val">R$ 10.0M</div>
-                    </div>
-                    <div class="budget-item" style="border-left: 3px solid var(--text-muted);">
-                        <label>Fundo de Reserva (%)</label>
-                        <input type="number" id="perc_res" value="10" oninput="calcularOrcamento()">
-                        <div id="val_res" class="budget-val">R$ 10.0M</div>
-                    </div>
-                </div>
-
-                <div style="height: 180px; width: 100%; position: relative;"><canvas id="budgetChart"></canvas></div>
-            </div>
-
-            <div class="card" style="border-top: 4px solid var(--text-main);">
-                <div class="card-header"><i class="fas fa-bullseye" style="color: var(--text-main);"></i><h3>Foco da Época</h3></div>
-                <div class="input-group"><label>Específico (O quê?)</label><input type="text" id="sm_s" placeholder="Ex: G4 no Brasileiro"></div>
-                <div class="input-group"><label>Mensurável (Métrica)</label><input type="text" id="sm_m" placeholder="Ex: 70 Pontos"></div>
-                <div class="input-group"><label>Atingível (Como?)</label><input type="text" id="sm_a" placeholder="Ex: Vencer todos em casa"></div>
-                <div class="input-group"><label>Relevante (Por quê?)</label><input type="text" id="sm_r" placeholder="Ex: Vaga na Liberta"></div>
-                <div class="input-group"><label>Temporal (Prazo)</label><input type="text" id="sm_t" placeholder="Ex: Rodada 38"></div>
-            </div>
-
-            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--text-muted);">
-                <div class="card-header"><i class="fas fa-chalkboard-user"></i><h3>Filosofia de Jogo</h3></div>
-                <div class="tactics-grid">
-                    <div class="tactic-box"><span class="hl-tag hl-atk">Fase Ofensiva</span><p style="font-size: 0.8rem; margin-top:5px; color: var(--text-muted);">Saída curta apoiada, construção vertical buscando infiltrar entre linhas.</p></div>
-                    <div class="tactic-box"><span class="hl-tag hl-def">Fase Defensiva</span><p style="font-size: 0.8rem; margin-top:5px; color: var(--text-muted);">Bloco alto para abafar o adversário. Marcação forte no portador da bola.</p></div>
-                    <div class="tactic-box" style="grid-column: span 2;"><span class="hl-tag hl-trans">Transições</span><p style="font-size: 0.8rem; margin-top:5px; color: var(--text-muted);"><strong>Pós-Perda:</strong> Regra dos 5 segundos (Pressão imediata). <strong>Pós-Recuperação:</strong> Acelerar pelas pontas no contra-ataque.</p></div>
+                <div style="overflow-x: auto;">
+                    <table class="table-metas">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Departamento</th>
+                                <th style="width: 30%;">Objetivo de Longo Prazo (Visão)</th>
+                                <th style="width: 30%;">Meta da Temporada Atual (SMART)</th>
+                                <th style="width: 25%;">Métrica de Acompanhamento (KPI)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body_metas">
+                            </tbody>
+                    </table>
                 </div>
             </div>
 
-            <div class="card" style="border-top: 4px solid var(--primary);">
-                <div class="card-header"><i class="fas fa-list-check" style="color: var(--primary);"></i><h3>Checklist</h3></div>
-                <label class="check-item"><input type="checkbox" id="ck_1"> Orçamento Validado</label>
-                <label class="check-item"><input type="checkbox" id="ck_2"> Teto Salarial Definido</label>
-                <label class="check-item"><input type="checkbox" id="ck_3"> Limpeza do Grupo C (Vendas)</label>
-                <label class="check-item"><input type="checkbox" id="ck_4"> Promoções da Base</label>
+            <div class="card" style="grid-column: span 1; border-top: 4px solid var(--success);">
+                <div class="card-header"><i class="fas fa-list-check" style="color: var(--success);"></i><h3>Checklist de Pré-Temporada</h3></div>
+                
+                <div class="input-row">
+                    <input type="text" id="in_chk" placeholder="Novo item no checklist...">
+                    <button class="btn-add-mini" onclick="addCheck()"><i class="fas fa-plus"></i></button>
+                </div>
+                
+                <div id="lista_checklist" style="margin-top: 15px;">
+                    </div>
+            </div>
+
+            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--border);">
+                <div class="card-header"><i class="fas fa-pen-nib"></i><h3>Caderno de Anotações Livres</h3></div>
+                <textarea id="anotacoes_livres" placeholder="Espaço para rascunhos, observações da temporada, táticas a testar ou análises de desempenho geral do clube..." style="height: 250px; font-size: 0.9rem; line-height: 1.5; resize: none;"></textarea>
             </div>
 
         </div>
     </main>
 
     <script>
-        const inputs = ['m_ano1', 'm_ano2', 'm_ano3', 'm_ano5', 'sm_s', 'sm_m', 'sm_a', 'sm_r', 'sm_t', 'orc_total', 'perc_prof', 'perc_est', 'perc_base', 'perc_res'];
-        const checks = ['ck_1', 'ck_2', 'ck_3', 'ck_4'];
-        let myChart;
+        // ==========================================
+        // DADOS E ESTRUTURAS
+        // ==========================================
+        const departamentos = [
+            { id: 'cont', nome: 'Continental', cor: 'var(--blue)' },
+            { id: 'nac', nome: 'Nacional', cor: 'var(--primary)' },
+            { id: 'est', nome: 'Estadual', cor: 'var(--warning)' },
+            { id: 'bas', nome: 'Cat. Base', cor: 'var(--success)' },
+            { id: 'fin', nome: 'Financeiro', cor: 'var(--danger)' },
+            { id: 'obr', nome: 'Estádio', cor: 'var(--text-muted)' }
+        ];
 
+        let playBookData = JSON.parse(localStorage.getItem('hub_Playbook') || '{"cont":[], "base":[], "elenco":[], "checklist":[]}');
+        let metasData = JSON.parse(localStorage.getItem('hub_Metas') || '{}');
+
+        // Inicialização
         window.onload = function() {
-            let data = JSON.parse(localStorage.getItem('hub_DNA') || '{}');
-            inputs.forEach(id => { 
-                let el = document.getElementById(id);
-                if(data[id] !== undefined) el.value = data[id];
-                el.addEventListener('input', saveData);
-            });
-            checks.forEach(id => { 
-                let el = document.getElementById(id);
-                if(data[id] !== undefined) el.checked = data[id];
-                el.addEventListener('change', saveData);
-            });
+            renderListas();
+            renderMetas();
+            renderChecklist();
             
-            initChart();
-            calcularOrcamento(); // Roda o cálculo no início
+            // Auto-save das anotações
+            const notas = document.getElementById('anotacoes_livres');
+            notas.value = localStorage.getItem('hub_Anotacoes') || '';
+            notas.addEventListener('input', () => localStorage.setItem('hub_Anotacoes', notas.value));
         };
 
-        // 🧠 MOTOR FINANCEIRO (Cálculo de Porcentagens)
-        function calcularOrcamento() {
-            let total = parseFloat(document.getElementById('orc_total').value) || 0;
-            let pProf = parseFloat(document.getElementById('perc_prof').value) || 0;
-            let pEst = parseFloat(document.getElementById('perc_est').value) || 0;
-            let pBase = parseFloat(document.getElementById('perc_base').value) || 0;
-            let pRes = parseFloat(document.getElementById('perc_res').value) || 0;
-
-            let somaPerc = pProf + pEst + pBase + pRes;
-
-            // Alerta visual se passar de 100%
-            const aviso = document.getElementById('perc_aviso');
-            if(somaPerc > 100) {
-                aviso.style.display = 'block';
-            } else {
-                aviso.style.display = 'none';
-            }
-
-            // Cálculo dos Valores em Reais
-            let vProf = (total * pProf) / 100;
-            let vEst = (total * pEst) / 100;
-            let vBase = (total * pBase) / 100;
-            let vRes = (total * pRes) / 100;
-
-            // Mostra na tela
-            document.getElementById('val_prof').innerText = `R$ ${vProf.toFixed(1)}M`;
-            document.getElementById('val_est').innerText = `R$ ${vEst.toFixed(1)}M`;
-            document.getElementById('val_base').innerText = `R$ ${vBase.toFixed(1)}M`;
-            document.getElementById('val_res').innerText = `R$ ${vRes.toFixed(1)}M`;
-
-            // Atualiza o Gráfico
-            if(myChart) {
-                myChart.data.datasets[0].data = [vProf, vEst, vBase, vRes];
-                myChart.update();
-            }
-
-            // SALVAMENTO ESPECIAL: Guardamos o valor Calculado do Plantel para o Dashboard ler!
-            let data = JSON.parse(localStorage.getItem('hub_DNA') || '{}');
-            data['orc_prof'] = vProf; // O Index.html lê esta variável
+        // ==========================================
+        // FILOSOFIAS (CRUD de Listas)
+        // ==========================================
+        function addRegra(tipo) {
+            const input = document.getElementById(`in_filo_${tipo}`);
+            if(!input.value.trim()) return;
             
-            inputs.forEach(id => data[id] = document.getElementById(id).value);
-            checks.forEach(id => data[id] = document.getElementById(id).checked);
-            localStorage.setItem('hub_DNA', JSON.stringify(data));
+            playBookData[tipo].push({ id: Date.now(), texto: input.value });
+            salvarPlaybook();
+            input.value = '';
+            renderListas();
         }
 
-        function saveData() {
-            // Apenas repassa para o calculador, que já salva tudo
-            calcularOrcamento();
+        function delRegra(tipo, id) {
+            playBookData[tipo] = playBookData[tipo].filter(item => item.id !== id);
+            salvarPlaybook();
+            renderListas();
         }
 
-        function initChart() {
-            const ctx = document.getElementById('budgetChart').getContext('2d');
-            myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Plantel', 'Obras', 'Base', 'Fundo'],
-                    datasets: [{
-                        data: [50, 30, 10, 10], // Valores temporários, o calcularOrcamento atualiza
-                        backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#9BA8AB'],
-                        borderWidth: 0
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 11, family: 'Inter' }, color: '#4A5C6A' } } }, cutout: '75%' }
+        function renderListas() {
+            ['cont', 'base', 'elenco'].forEach(tipo => {
+                const ul = document.getElementById(`lista_${tipo}`);
+                ul.innerHTML = playBookData[tipo].map(item => `
+                    <li>
+                        <span>${item.texto}</span>
+                        <button class="btn-del" onclick="delRegra('${tipo}', ${item.id})"><i class="fas fa-times"></i></button>
+                    </li>
+                `).join('');
+            });
+        }
+
+        // ==========================================
+        // CHECKLIST DE TEMPORADA
+        // ==========================================
+        function addCheck() {
+            const input = document.getElementById('in_chk');
+            if(!input.value.trim()) return;
+            
+            playBookData.checklist.push({ id: Date.now(), texto: input.value, concluido: false });
+            salvarPlaybook();
+            input.value = '';
+            renderChecklist();
+        }
+
+        function toggleCheck(id) {
+            let item = playBookData.checklist.find(i => i.id === id);
+            if(item) item.concluido = !item.concluido;
+            salvarPlaybook();
+            renderChecklist();
+        }
+
+        function delCheck(id) {
+            playBookData.checklist = playBookData.checklist.filter(item => item.id !== id);
+            salvarPlaybook();
+            renderChecklist();
+        }
+
+        function renderChecklist() {
+            const div = document.getElementById('lista_checklist');
+            div.innerHTML = playBookData.checklist.map(item => `
+                <div class="chk-item ${item.concluido ? 'done' : ''}">
+                    <input type="checkbox" ${item.concluido ? 'checked' : ''} onchange="toggleCheck(${item.id})">
+                    <span style="flex: 1;">${item.texto}</span>
+                    <button class="btn-del" style="background:none; border:none; color:var(--danger); cursor:pointer;" onclick="delCheck(${item.id})"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `).join('');
+            
+            if(playBookData.checklist.length === 0) {
+                div.innerHTML = '<p style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">Nenhum item no checklist.</p>';
+            }
+        }
+
+        function salvarPlaybook() {
+            localStorage.setItem('hub_Playbook', JSON.stringify(playBookData));
+        }
+
+        // ==========================================
+        // MATRIZ DE OBJETIVOS (Tabela com Auto-Save)
+        // ==========================================
+        function renderMetas() {
+            const tbody = document.getElementById('body_metas');
+            let html = '';
+
+            departamentos.forEach(dept => {
+                html += `
+                    <tr>
+                        <td><span class="dept-badge" style="border-left: 3px solid ${dept.cor};">${dept.nome}</span></td>
+                        <td><textarea id="meta_lp_${dept.id}" placeholder="Onde queremos chegar?">${metasData[`meta_lp_${dept.id}`] || ''}</textarea></td>
+                        <td><textarea id="meta_tp_${dept.id}" placeholder="O que faremos nesta temporada?">${metasData[`meta_tp_${dept.id}`] || ''}</textarea></td>
+                        <td><textarea id="meta_kpi_${dept.id}" placeholder="Ex: Atingir Quartas de Finais">${metasData[`meta_kpi_${dept.id}`] || ''}</textarea></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+
+            // Adicionar evento de Auto-save para todos os textareas gerados
+            tbody.querySelectorAll('textarea').forEach(txt => {
+                txt.addEventListener('input', () => {
+                    metasData[txt.id] = txt.value;
+                    localStorage.setItem('hub_Metas', JSON.stringify(metasData));
+                });
             });
         }
     </script>
