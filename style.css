@@ -1,99 +1,92 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kanit:wght@400;500;600&display=swap');
 
 :root {
-    --bg-app: #CCD0CF;        
-    --bg-surface: #ffffff;    
-    --border: #9BA8AB;        
-    --text-muted: #4A5C6A;    
-    --primary: #11212D;       
-    --text-main: #06141B;     
-    --success: #10b981;       
-    --warning: #f59e0b;       
-    --danger: #ef4444;        
+    /* --- A SUA NOVA PALETA PREMIUM --- */
+    --bg-app: #CCD0CF;        /* A cor mais clara - Fundo principal */
+    --bg-surface: #ffffff;    /* Fundo dos cards para dar contraste limpo */
+    --border: #9BA8AB;        /* Cinza intermediário para bordas elegantes */
+    --text-muted: #4A5C6A;    /* Texto de apoio (Aço/Azul) */
+    --primary-hover: #253745; /* Interações de botões */
+    --primary: #11212D;       /* Cor principal (Menu e Botões) */
+    --text-main: #06141B;     /* Azul/Preto mais escuro para títulos fortes */
+
+    /* Cores de Alerta (Mantidas para usabilidade no jogo) */
+    --success: #10b981;       /* Verde (Vitória/Caixa positivo) */
+    --warning: #f59e0b;       /* Laranja (Empate/Atenção) */
+    --danger: #ef4444;        /* Vermelho (Derrota/Dívida) */
 }
 
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
 
-html, body { 
-    max-width: 100%;
-    overflow-x: hidden;
-    background-color: var(--bg-app);
-    color: var(--text-muted);
-    min-height: 100vh;
-}
+body { background-color: var(--bg-app); color: var(--text-muted); min-height: 100vh; overflow-x: hidden; font-size: 14px; }
 
-/* --- SIDEBAR (MENU LATERAL) --- */
+h1, h2, h3, h4 { font-family: 'Kanit', sans-serif; color: var(--text-main); }
+
+/* --- SIDEBAR PREMIUM --- */
 .sidebar {
-    width: 260px; 
-    background-color: var(--bg-surface); 
-    border-right: 1px solid var(--border);
-    padding: 24px 16px; 
-    display: flex; 
-    flex-direction: column; 
-    position: fixed; 
-    height: 100vh; 
-    z-index: 9999;
-    transition: transform 0.3s ease-in-out;
+    width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border);
+    padding: 24px 16px; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;
+    transition: transform 0.3s ease; box-shadow: 2px 0 15px rgba(6, 20, 27, 0.05);
 }
 
 .brand { 
     font-size: 1.25rem; font-family: 'Kanit'; font-weight: 600; color: var(--text-main); 
     padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px;
-    display: flex; align-items: center; gap: 10px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.5px;
 }
 
 .nav-link { 
     display: flex; align-items: center; gap: 12px; padding: 12px 14px; 
     color: var(--text-muted); text-decoration: none; border-radius: 8px; 
-    font-weight: 500; transition: 0.2s; margin-bottom: 5px; 
+    font-weight: 500; font-size: 0.9rem; transition: 0.2s; margin-bottom: 5px; 
 }
 .nav-link:hover { background-color: var(--bg-app); color: var(--text-main); }
-.nav-link.active { background-color: var(--primary); color: #ffffff; }
+.nav-link.active { background-color: var(--primary); color: #ffffff; box-shadow: 0 4px 10px rgba(17, 33, 45, 0.2); }
 
-/* --- CONTEÚDO PRINCIPAL --- */
+/* --- CONTEÚDO E GRID --- */
 .main-content { 
-    flex: 1; padding: 35px; margin-left: 260px;
+    flex: 1; padding: 35px; margin-left: 260px; max-width: 1400px; 
     transition: margin-left 0.3s ease;
 }
+.page-header { margin-bottom: 30px; }
+.page-title { font-size: 2rem; color: var(--text-main); margin-bottom: 5px; }
+.page-subtitle { color: var(--text-muted); font-size: 0.95rem; }
 
-/* --- BOTÃO MENU MOBILE --- */
-.menu-toggle {
-    display: none; 
-    position: fixed; 
-    top: 15px; 
-    right: 15px; 
-    z-index: 10000;
-    background: var(--primary); 
-    color: white; 
-    border: none; 
-    width: 50px; 
-    height: 50px;
-    border-radius: 8px; 
-    font-size: 1.5rem; 
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-}
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
 
-/* --- CARDS --- */
+/* --- CARDS MODERNOS --- */
 .card { 
-    background: var(--bg-surface); 
-    border: 1px solid var(--border); 
-    border-radius: 12px; 
-    padding: 20px; 
-    margin-bottom: 20px;
+    background: var(--bg-surface); border: 1px solid var(--border); 
+    border-radius: 12px; padding: 22px; box-shadow: 0 4px 6px rgba(6, 20, 27, 0.03); 
+    display: flex; flex-direction: column;
+}
+.card-header { 
+    display: flex; align-items: center; gap: 10px; margin-bottom: 15px; 
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.card-header h3 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
+.card-header i { font-size: 1.2rem; color: var(--primary); }
+
+/* --- INPUTS E FORMULÁRIOS --- */
+.input-group { margin-bottom: 12px; width: 100%; }
+label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+input, select, textarea { 
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; 
+    background-color: var(--bg-surface); color: var(--text-main); font-size: 0.9rem; transition: 0.2s; 
+}
+input:focus, select:focus, textarea:focus { 
+    outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(17, 33, 45, 0.1); 
 }
 
-/* --- RESPONSIVIDADE CELULAR --- */
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 1024px) {
+    .sidebar { width: 80px; padding: 20px 10px; }
+    .brand span, .nav-link span { display: none; }
+    .nav-link { justify-content: center; padding: 12px 0; }
+    .nav-link i { font-size: 1.2rem; }
+    .main-content { margin-left: 80px; padding: 25px; }
+}
 @media (max-width: 768px) {
-    .menu-toggle { display: flex; }
-    .sidebar { transform: translateX(-100%); width: 260px; }
-    .sidebar.open { transform: translateX(0); }
-    .main-content { margin-left: 0; padding: 80px 15px 20px 15px; }
-    
-    /* Força as colunas a ficarem uma embaixo da outra */
-    .dashboard-grid, .grid-4-cols, .elenco-grid {
-        display: flex !important;
-        flex-direction: column !important;
-    }
+    .sidebar { transform: translateX(-100%); }
+    .main-content { margin-left: 0; padding: 15px; }
 }
