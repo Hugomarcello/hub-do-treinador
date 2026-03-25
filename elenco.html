@@ -39,6 +39,10 @@
         .btn-del { color: var(--danger); background: transparent; border: none; cursor: pointer; font-size: 1rem; transition: 0.2s; }
         .btn-del:hover { opacity: 0.7; transform: scale(1.1); }
 
+        /* Estilo da TextArea de Observações */
+        .obs-textarea { width: 100%; min-height: 80px; padding: 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-app); color: var(--text-main); font-family: 'Inter', sans-serif; resize: vertical; outline: none; transition: 0.2s; font-size: 0.9rem; line-height: 1.5; }
+        .obs-textarea:focus { border-color: var(--primary); background: var(--bg-surface); }
+
         /* Responsividade para Ecrãs Menores */
         @media (max-width: 1024px) {
             .elenco-grid { grid-template-columns: 1fr; }
@@ -97,6 +101,11 @@
                 </div>
             </div>
 
+            <div class="card full-width" style="border-top: 4px solid var(--primary);">
+                <div class="card-header"><i class="fas fa-clipboard-list" style="color: var(--primary);"></i><h3 style="margin: 0;">Foco de Mercado (Carências e Orientações)</h3></div>
+                <textarea id="orientacoes_mercado" class="obs-textarea" placeholder="Ex: Precisamos urgentemente de um Zagueiro rápido (Força > 45) e um Lateral Esquerdo para rotação. Prioridade para vendas no Grupo C antes de comprar..."></textarea>
+            </div>
+
             <div class="card full-width" style="border-top: 4px solid var(--text-main);">
                 <div class="card-header"><i class="fas fa-globe"></i><h3 style="margin: 0;">Mapa de Força Global (Referência Média)</h3></div>
                 <div id="container_forca" class="table-container"></div>
@@ -137,6 +146,13 @@
             gerarTabelaElenco('container_base');
             carregarDados();
             renderMercado();
+
+            // Auto-save do bloco de Orientações de Mercado
+            const orientacoes = document.getElementById('orientacoes_mercado');
+            orientacoes.value = localStorage.getItem('hub_orientacoes_mercado') || '';
+            orientacoes.addEventListener('input', () => {
+                localStorage.setItem('hub_orientacoes_mercado', orientacoes.value);
+            });
         };
 
         // Gerador específico para a tabela de Força
@@ -185,10 +201,13 @@
 
         function carregarDados() {
             let dados = JSON.parse(localStorage.getItem('hub_elenco_data') || '{}');
-            document.querySelectorAll('input').forEach(input => {
-                if(dados[input.id]) input.value = dados[input.id];
+            document.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
+                // Preenche o valor se existir (ignorando os inputs da barra de adicionar mercado)
+                if(dados[input.id] && input.id !== 'm_nome' && input.id !== 'm_forca' && input.id !== 'm_valor') {
+                    input.value = dados[input.id];
+                }
                 
-                // Evita salvar os inputs de "Adicionar Alvo" no auto-save geral
+                // Evita salvar os inputs de "Adicionar Alvo" no auto-save geral do elenco
                 if(input.id !== 'm_nome' && input.id !== 'm_forca' && input.id !== 'm_valor') {
                     input.addEventListener('input', () => {
                         dados[input.id] = input.value;
