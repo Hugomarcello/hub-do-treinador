@@ -2,18 +2,18 @@
 
 :root {
     /* --- A SUA NOVA PALETA PREMIUM --- */
-    --bg-app: #CCD0CF;        /* A cor mais clara - Fundo principal */
-    --bg-surface: #ffffff;    /* Fundo dos cards para dar contraste limpo */
-    --border: #9BA8AB;        /* Cinza intermediário para bordas elegantes */
-    --text-muted: #4A5C6A;    /* Texto de apoio (Aço/Azul) */
-    --primary-hover: #253745; /* Interações de botões */
-    --primary: #11212D;       /* Cor principal (Menu e Botões) */
-    --text-main: #06141B;     /* Azul/Preto mais escuro para títulos fortes */
+    --bg-app: #CCD0CF;        
+    --bg-surface: #ffffff;    
+    --border: #9BA8AB;        
+    --text-muted: #4A5C6A;    
+    --primary-hover: #253745; 
+    --primary: #11212D;       
+    --text-main: #06141B;     
 
-    /* Cores de Alerta (Mantidas para usabilidade no jogo) */
-    --success: #10b981;       /* Verde (Vitória/Caixa positivo) */
-    --warning: #f59e0b;       /* Laranja (Empate/Atenção) */
-    --danger: #ef4444;        /* Vermelho (Derrota/Dívida) */
+    /* Cores de Alerta */
+    --success: #10b981;       
+    --warning: #f59e0b;       
+    --danger: #ef4444;        
 }
 
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
@@ -25,7 +25,7 @@ h1, h2, h3, h4 { font-family: 'Kanit', sans-serif; color: var(--text-main); }
 /* --- SIDEBAR PREMIUM --- */
 .sidebar {
     width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border);
-    padding: 24px 16px; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;
+    padding: 24px 16px; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 1000;
     transition: transform 0.3s ease; box-shadow: 2px 0 15px rgba(6, 20, 27, 0.05);
 }
 
@@ -78,7 +78,15 @@ input:focus, select:focus, textarea:focus {
     outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(17, 33, 45, 0.1); 
 }
 
-/* --- RESPONSIVIDADE --- */
+/* --- BOTÃO FLUTUANTE DO MENU MOBILE --- */
+.menu-toggle {
+    display: none; position: fixed; bottom: 25px; right: 25px; z-index: 9999;
+    background: var(--primary); color: white; border: none; width: 60px; height: 60px;
+    border-radius: 50%; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    align-items: center; justify-content: center;
+}
+
+/* --- RESPONSIVIDADE (TABLET E CELULAR) --- */
 @media (max-width: 1024px) {
     .sidebar { width: 80px; padding: 20px 10px; }
     .brand span, .nav-link span { display: none; }
@@ -86,7 +94,21 @@ input:focus, select:focus, textarea:focus {
     .nav-link i { font-size: 1.2rem; }
     .main-content { margin-left: 80px; padding: 25px; }
 }
+
 @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); }
+    /* Mostra o botão flutuante */
+    .menu-toggle { display: flex; }
+    
+    /* Esconde a barra lateral puxando para a esquerda */
+    .sidebar { transform: translateX(-100%); width: 260px; padding: 24px 16px; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+    
+    /* Classe que o botão ativa para mostrar a barra */
+    .sidebar.open { transform: translateX(0); }
+    
+    /* Devolve o texto aos ícones no celular */
+    .brand span, .nav-link span { display: inline-block; }
+    .nav-link { justify-content: flex-start; padding: 12px 14px; }
+    
+    /* Remove a margem esquerda para o conteúdo ocupar a tela toda */
     .main-content { margin-left: 0; padding: 15px; }
 }
