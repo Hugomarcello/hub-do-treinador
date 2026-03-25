@@ -23,6 +23,7 @@
 
         /* Estilos do Motor Financeiro */
         .budget-master { background: var(--bg-app); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; display: flex; gap: 15px; }
+        .budget-master .input-box { flex: 1; }
         .budget-master input { font-size: 1.2rem; font-weight: 700; color: var(--text-main); background: var(--bg-surface); font-family: 'Kanit'; border: 1px solid var(--border); border-radius: 6px; padding: 8px; width: 100%; }
         
         .budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
@@ -32,17 +33,44 @@
         .budget-val { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
         .perc-warning { color: var(--danger); font-size: 0.75rem; font-weight: 600; text-align: center; display: none; margin-bottom: 10px; }
         
-        /* Grid Personalizado para o Dashboard */
-        .grid-4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
-        
         /* Botões de Ação Global */
         .btn-reset { background: var(--danger); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s; font-family: 'Inter'; font-size: 0.85rem; }
         .btn-reset:hover { background: #b91c1c; }
         .btn-save { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-save:hover { background: var(--primary-hover); }
 
-        @media (max-width: 1024px) { .grid-4-cols { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 640px) { .grid-4-cols { grid-template-columns: 1fr; } }
+        /* --- SISTEMA DE GRELHA RESPONSIVA --- */
+        .grid-4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
+        .col-span-1 { grid-column: span 1; }
+        .col-span-2 { grid-column: span 2; }
+        .col-span-4 { grid-column: span 4; }
+        
+        .flex-responsive { display: flex; gap: 20px; align-items: center; }
+        .grid-2-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-container { height: 160px; width: 150px; position: relative; flex-shrink: 0; }
+
+        /* Tablet */
+        @media (max-width: 1024px) { 
+            .grid-4-cols { grid-template-columns: repeat(2, 1fr); } 
+            .col-span-4 { grid-column: span 2; }
+        }
+        
+        /* Mobile (Celular) */
+        @media (max-width: 768px) {
+            .grid-4-cols { grid-template-columns: 1fr; }
+            .col-span-1, .col-span-2, .col-span-4 { grid-column: span 1; }
+            
+            .welcome-panel { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .welcome-panel > div { text-align: left !important; }
+            
+            .budget-master { flex-direction: column; gap: 10px; }
+            .flex-responsive { flex-direction: column; align-items: stretch; }
+            .chart-container { margin: 0 auto; margin-bottom: 15px; }
+            
+            .grid-2-cols { grid-template-columns: 1fr; }
+            .action-group-save { flex-direction: column; }
+            .action-group-save button { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -71,19 +99,19 @@
         </div>
 
         <div class="grid-4-cols">
-            <div class="card" style="border-top: 4px solid var(--success); padding: 15px;">
+            <div class="card col-span-1" style="border-top: 4px solid var(--success); padding: 15px;">
                 <span class="kpi-label">Caixa (Plantel)</span>
                 <div class="kpi-value" id="hub_orcamento">R$ 0.0 M</div>
             </div>
-            <div class="card" style="border-top: 4px solid var(--warning); padding: 15px;">
+            <div class="card col-span-1" style="border-top: 4px solid var(--warning); padding: 15px;">
                 <span class="kpi-label">Custo Alvos (1.5x)</span>
                 <div class="kpi-value" id="hub_custo_lista">R$ 0.0 M</div>
             </div>
-            <div class="card" style="border-top: 4px solid var(--text-muted); padding: 15px;">
+            <div class="card col-span-1" style="border-top: 4px solid var(--text-muted); padding: 15px;">
                 <span class="kpi-label">Teto Salarial Máx.</span>
                 <div class="kpi-value" id="hub_teto">--</div>
             </div>
-            <div class="card" style="border-top: 4px solid var(--primary); padding: 15px;">
+            <div class="card col-span-1" style="border-top: 4px solid var(--primary); padding: 15px;">
                 <span class="kpi-label">Atletas no Radar</span>
                 <div class="kpi-value" id="hub_qtd_alvos">0</div>
             </div>
@@ -91,15 +119,15 @@
 
         <div class="grid-4-cols">
             
-            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--success);">
+            <div class="card col-span-2" style="border-top: 4px solid var(--success);">
                 <div class="card-header"><i class="fas fa-chart-pie" style="color: var(--success);"></i><h3 style="margin:0;">Gestão Financeira & Divisão de Receitas</h3></div>
                 
                 <div class="budget-master">
-                    <div style="flex: 1;">
+                    <div class="input-box">
                         <span class="kpi-label">Orçamento Total (M)</span>
                         <input type="number" id="orc_total" value="100" oninput="calcularOrcamento()">
                     </div>
-                    <div style="flex: 1;">
+                    <div class="input-box">
                         <span class="kpi-label">Teto Salarial (R$)</span>
                         <input type="number" id="pb_teto" placeholder="Ex: 500000" oninput="calcularOrcamento()">
                     </div>
@@ -107,7 +135,7 @@
 
                 <div id="perc_aviso" class="perc-warning">Atenção: A soma das porcentagens ultrapassa 100%!</div>
 
-                <div style="display: flex; gap: 20px; align-items: center;">
+                <div class="flex-responsive">
                     <div class="budget-grid" style="flex: 1; margin: 0;">
                         <div class="budget-item" style="border-left: 3px solid #10b981;">
                             <label>Plantel Profissional (%)</label>
@@ -130,40 +158,42 @@
                             <div id="val_res" class="budget-val">R$ 10.0M</div>
                         </div>
                     </div>
-                    <div style="height: 160px; width: 150px; position: relative;">
+                    <div class="chart-container">
                         <canvas id="budgetChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="card" style="grid-column: span 1; text-align: center; border-top: 4px solid var(--primary);">
+            <div class="card col-span-1" style="text-align: center; border-top: 4px solid var(--primary); display: flex; flex-direction: column;">
                 <div class="card-header" style="justify-content: center;"><i class="fas fa-chalkboard"></i><h3 style="margin:0;">Tática Ativa</h3></div>
                 <div class="tat-display" id="hub_tatica">4-4-2</div>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">A equipe treinou nesta formação base para a próxima partida.</p>
                 <a href="taticas.html" class="link-action" style="justify-content: center;">Ir para Prancheta <i class="fas fa-arrow-right"></i></a>
             </div>
 
-            <div class="card" style="grid-column: span 1; border-top: 4px solid var(--danger);">
+            <div class="card col-span-1" style="border-top: 4px solid var(--danger); display: flex; flex-direction: column;">
                 <div class="card-header"><i class="fas fa-envelope-open-text" style="color: var(--danger);"></i><h3 style="margin:0;">Alertas do Clube</h3></div>
                 <div id="alertas_container" style="flex: 1; display: flex; flex-direction: column; justify-content: center;"></div>
             </div>
             
-            <div class="card" style="grid-column: span 4; border-top: 4px solid var(--text-muted); background-color: var(--bg-surface);">
+            <div class="card col-span-4" style="border-top: 4px solid var(--text-muted); background-color: var(--bg-surface);">
                 <div class="card-header"><i class="fas fa-save" style="color: var(--text-muted);"></i><h3 style="margin:0;">Administração de Saves</h3></div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="grid-2-cols">
                     <div style="background: var(--bg-app); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
                         <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--text-main);"><i class="fas fa-box-archive"></i> Arquivar Save Atual</h4>
                         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Empacote todo o progresso do clube (Finanças, Elenco, DNA, Táticas e Histórico de Temporadas) para não o perder caso queira começar um novo desafio.</p>
-                        <div style="display: flex; gap: 10px;">
+                        <div class="action-group-save" style="display: flex; gap: 10px;">
                             <input type="text" id="nome_save" placeholder="Nome do Save (Ex: Galo Vingador 2026)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid var(--border);">
                             <button class="btn-save" onclick="arquivarSaveMaster()"><i class="fas fa-download"></i> Empacotar</button>
                         </div>
                     </div>
 
-                    <div style="background: #fef2f2; padding: 15px; border-radius: 8px; border: 1px solid #fca5a5;">
-                        <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Zona de Perigo (Começar do Zero)</h4>
-                        <p style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 15px;">Limpa o quadro e apaga <strong>TODOS OS DADOS ATUAIS</strong> do sistema. (Lembre-se de arquivar o seu save atual na caixa ao lado antes de fazer isto!).</p>
+                    <div style="background: #fef2f2; padding: 15px; border-radius: 8px; border: 1px solid #fca5a5; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Zona de Perigo (Começar do Zero)</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 15px;">Limpa o quadro e apaga <strong>TODOS OS DADOS ATUAIS</strong> do sistema. (Lembre-se de arquivar o seu save atual na caixa ao lado antes de fazer isto!).</p>
+                        </div>
                         <button class="btn-reset" onclick="resetarSistema()"><i class="fas fa-trash-alt"></i> Limpar a Mesa e Criar Novo Jogo</button>
                     </div>
                 </div>
@@ -302,10 +332,10 @@
             let html = '';
             masterSaves.forEach(s => {
                 html += `
-                <div style="background: var(--bg-surface); border: 1px solid var(--border); padding: 12px 18px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="background: var(--bg-surface); border: 1px solid var(--border); padding: 12px 18px; border-radius: 8px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
                     <div>
                         <strong style="color: var(--primary); font-size: 1rem; font-family: 'Kanit';">${s.nome}</strong>
-                        <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 10px;"><i class="fas fa-clock"></i> Salvo em: ${s.dataStr}</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 10px; display: inline-block;"><i class="fas fa-clock"></i> Salvo em: ${s.dataStr}</span>
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <button onclick="carregarSaveMaster(${s.id})" style="background: var(--text-main); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.2s;"><i class="fas fa-upload"></i> Carregar Slot</button>
@@ -328,7 +358,7 @@
                     if(save.dados[chave]) {
                         localStorage.setItem(chave, save.dados[chave]);
                     } else {
-                        localStorage.removeItem(chave); // Garante que não mistura saves velhos com novos
+                        localStorage.removeItem(chave);
                     }
                 });
                 alert(`Sucesso! Bem-vindo de volta ao save: "${save.nome}".`);
@@ -349,13 +379,8 @@
             const mensagem = "ALERTA MÁXIMO:\n\nIsto vai apagar o jogo atual por completo (Finanças, Elenco, Táticas, DNA da Equipe e Histórico de Temporadas).\n\nSe ainda não guardou este save no painel 'Arquivar Save Atual', perderá estes dados para sempre.\n\nTem a certeza que quer limpar a mesa e começar do zero?";
             
             if(confirm(mensagem)) {
-                // Preservar os Saves Mestres para não apagarmos os backups do usuário!
                 let savesGuardados = localStorage.getItem('hub_MasterSaves');
-                
-                // Limpar toda a memória
                 localStorage.clear();
-                
-                // Devolver os Saves Mestres à memória
                 if(savesGuardados) localStorage.setItem('hub_MasterSaves', savesGuardados);
                 
                 alert("Mesa limpa! Pode começar o seu novo desafio.");
