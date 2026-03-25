@@ -75,10 +75,6 @@
 </head>
 <body>
 
-    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
-        <i class="fas fa-bars"></i>
-    </button>
-
     <aside class="sidebar">
         <div class="brand"><i class="fas fa-terminal" style="color: var(--text-main);"></i> <span>Treinador</span></div>
         <a href="index.html" class="nav-link active"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
@@ -220,7 +216,7 @@
         // Todas as chaves que formam o "Save" do usuário
         const chavesDoSistema = [
             'hub_DNA', 'hub_mercado', 'galo_tat_ativa', 'hub_elenco_data', 
-            'galo_Jogos', 'hub_Arquivos', 'hub_Playbook', 'hub_Metas', 'hub_Anotacoes', 'hub_orientacoes_mercado'
+            'galo_Jogos', 'hub_Arquivos', 'hub_Playbook', 'hub_Metas', 'hub_Anotacoes'
         ];
 
         window.onload = function() {
