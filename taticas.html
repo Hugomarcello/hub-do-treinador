@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Táticas e Jogos - Hub do Treinador</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- ESTILOS DO CAMPO TÁTICO --- */
+        .pitch { 
+            position: relative; width: 100%; height: 260px; background: #15803d; 
+            border: 2px solid #fff; border-radius: 8px; overflow: hidden; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2); margin-top: 15px;
+        }
+        .pitch::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.4); }
+        .pitch-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; }
+        .pitch-area-top { position: absolute; top: 0; left: 25%; width: 50%; height: 15%; border: 2px solid rgba(255,255,255,0.4); border-top: none; }
+        .pitch-area-bottom { position: absolute; bottom: 0; left: 25%; width: 50%; height: 15%; border: 2px solid rgba(255,255,255,0.4); border-bottom: none; }
+        
+        /* Peças (Jogadores) */
+        .player-dot { 
+            position: absolute; width: 18px; height: 18px; border-radius: 50%; 
+            transform: translate(-50%, -50%); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4); font-size: 0;
+        }
+        .dot-nosso { background: #ffffff; border: 3px solid var(--text-main); }
+        .dot-nosso.gk { background: var(--warning); }
+        .dot-rival { background: var(--danger); border: 2px solid #7f1d1d; }
+        .dot-rival.gk { background: #000; }
+
+        /* Botões de Tática (Base) */
+        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px; }
+        .btn-tat { padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-app); cursor: pointer; transition: 0.2s; font-weight: 600; color: var(--text-muted); }
+        
+        /* Botões Nossos (Verde) */
+        .btn-tat-nosso:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-tat-nosso.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* Botões Adversário (Vermelho) */
+        .btn-tat-adv:hover { border-color: var(--danger); color: var(--danger); }
+        .btn-tat-adv.active { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+        /* Scouter Grid (Filtros do Rival) */
+        .scout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 5px; }
+        .scout-grid select { padding: 8px; font-size: 0.8rem; margin-bottom: 0; border-radius: 6px; border: 1px solid var(--border); color: var(--text-main); background: var(--bg-surface); }
+
+        /* Info Tags */
+        .info-tag { font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+        .info-val { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+
+        /* Calendário */
+        .cal-section { margin-bottom: 20px; }
+        .cal-header { background: var(--bg-app); border: 1px solid var(--border); padding: 8px; text-align: center; font-weight: 600; font-size: 0.85rem; border-radius: 6px 6px 0 0; color: var(--text-main); text-transform: uppercase; }
+        .cal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; overflow: hidden; }
+        .cal-box { background: var(--bg-surface); padding: 10px 5px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); cursor: pointer; user-select: none; transition: 0.2s; }
+        .cal-box:hover { filter: brightness(0.95); }
+        .state-v { background: var(--primary) !important; color: #fff !important; }
+        .state-e { background: var(--warning) !important; color: #fff !important; }
+        .state-d { background: var(--danger) !important; color: #fff !important; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand"><i class="fas fa-terminal" style="color: var(--primary);"></i> <span>Hub do Treinador</span></div>
+        <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
+        <a href="elenco.html" class="nav-link"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
+        <a href="taticas.html" class="nav-link active"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Relatório de Olheiro & Prancheta</h1>
+            <p class="page-subtitle" style="color: var(--text-muted);">Defina as características do adversário para receber a estratégia perfeita para o jogo.</p>
+        </div>
+
+        <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 25px;">
+            
+            <div class="card" style="border-top: 4px solid var(--danger);">
+                <div class="card-header"><i class="fas fa-search" style="color: var(--danger);"></i><h3>Relatório do Adversário</h3></div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="info-tag" style="text-align: center;">Formação Base</span>
+                    <div class="btn-group" id="btn_adv_taticas">
+                        <button class="btn-tat btn-tat-adv active" onclick="setAdvTatica('442', this)">4-4-2</button>
+                        <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('433', this)">4-3-3</button>
+                        <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('352', this)">3-5-2</button>
+                        <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('451', this)">4-5-1</button>
+                        <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('343', this)">3-4-3</button>
+                        <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('532', this)">5-3-2</button>
+                        <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('541', this)">5-4-1</button>
+                    </div>
+                </div>
+
+                <div class="scout-grid">
+                    <div>
+                        <span class="info-tag">Força Relativa</span>
+                        <select id="adv_forca" onchange="analisarAdversario()">
+                            <option value="igual">Força Igual/Equilibrado</option>
+                            <option value="forte">Mais Forte que nós</option>
+                            <option value="fraco">Mais Fraco que nós</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="info-tag">Foco do Ataque</span>
+                        <select id="adv_foco" onchange="analisarAdversario()">
+                            <option value="misto">Misto (Lados e Meio)</option>
+                            <option value="meio">Pelo Meio</option>
+                            <option value="laterais">Pelas Laterais</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="info-tag">Mentalidade</span>
+                        <select id="adv_ment" onchange="analisarAdversario()">
+                            <option value="equilibrado">Equilibrado / Normal</option>
+                            <option value="ataque">Ataque Total</option>
+                            <option value="retranca">Retranca / Contra-ataque</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="info-tag">Marcação deles</span>
+                        <select id="adv_marc" onchange="analisarAdversario()">
+                            <option value="pesada">Pesada / Normal</option>
+                            <option value="leve">Leve (Cercam espaço)</option>
+                            <option value="muitopesada">Agressiva (Forte)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pitch">
+                    <div class="pitch-circle"></div><div class="pitch-area-top"></div><div class="pitch-area-bottom"></div>
+                    <div id="layer_rival"></div> 
+                </div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--primary);">
+                <div class="card-header"><i class="fas fa-clipboard-check" style="color: var(--primary);"></i><h3>Plano de Jogo Recomendado</h3></div>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: var(--bg-app); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                    <div><span class="info-tag">Nossa Formação</span><span id="nossa_form" class="info-val" style="color: var(--primary); font-size: 1.2rem;">4-4-2</span></div>
+                    <div><span class="info-tag">Nossa Mentalidade</span><span id="nossa_ment" class="info-val">Equilibrado</span></div>
+                    <div><span class="info-tag">Nossa Marcação</span><span id="nossa_marc" class="info-val">Pesada</span></div>
+                    <div style="grid-column: span 3; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 5px;">
+                        <span class="info-tag">Instrução de Vestiário (Tática)</span>
+                        <span id="nossa_instrucao" class="info-val" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Jogue o básico.</span>
+                    </div>
+                </div>
+
+                <div class="btn-group" id="btn_nossas_taticas" style="margin-bottom: 10px;">
+                    <button class="btn-tat btn-tat-nosso active" onclick="setNossaTatica('442', this)">4-4-2</button>
+                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('433', this)">4-3-3</button>
+                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('352', this)">3-5-2</button>
+                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('451', this)">4-5-1</button>
+                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('343', this)">3-4-3</button>
+                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('532', this)">5-3-2</button>
+                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('541', this)">5-4-1</button>
+                </div>
+
+                <div class="pitch">
+                    <div class="pitch-circle"></div><div class="pitch-area-top"></div><div class="pitch-area-bottom"></div>
+                    <div id="layer_nosso"></div>
+                </div>
+
+            </div>
+
+            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--text-main);">
+                <div class="card-header" style="justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-calendar-check"></i><h3>Acompanhamento de Temporada</h3></div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 10px;">
+                        <span><i class="fas fa-square" style="color: var(--primary);"></i> V</span>
+                        <span><i class="fas fa-square" style="color: var(--warning);"></i> E</span>
+                        <span><i class="fas fa-square" style="color: var(--danger);"></i> D</span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    <div class="cal-section"><div class="cal-header">Estadual</div><div class="cal-grid" id="grid_estadual"></div></div>
+                    <div class="cal-section"><div class="cal-header">Brasileirão (1º T)</div><div class="cal-grid" id="grid_br1"></div></div>
+                    <div class="cal-section"><div class="cal-header">Brasileirão (2º T)</div><div class="cal-grid" id="grid_br2"></div></div>
+                    <div class="cal-section">
+                        <div class="cal-header">Copa do Brasil</div><div class="cal-grid" id="grid_copa" style="margin-bottom: 10px;"></div>
+                        <div class="cal-header">Libertadores</div><div class="cal-grid" id="grid_cont"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Coordenadas das Formações
+        const coords = {
+            "442": [[50,92], [15,75], [38,75], [62,75], [85,75], [15,45], [38,45], [62,45], [85,45], [35,18], [65,18]],
+            "433": [[50,92], [15,75], [38,75], [62,75], [85,75], [25,48], [50,48], [75,48], [20,18], [50,18], [80,18]],
+            "352": [[50,92], [25,75], [50,75], [75,75], [15,45], [33,45], [50,45], [67,45], [85,45], [35,18], [65,18]],
+            "451": [[50,92], [15,75], [38,75], [62,75], [85,75], [15,45], [33,45], [50,45], [67,45], [85,45], [50,15]],
+            "343": [[50,92], [25,75], [50,75], [75,75], [20,48], [40,48], [60,48], [80,48], [20,18], [50,18], [80,18]],
+            "532": [[50,92], [10,75], [30,75], [50,75], [70,75], [90,75], [25,48], [50,48], [75,48], [35,18], [65,18]],
+            "541": [[50,92], [10,75], [30,75], [50,75], [70,75], [90,75], [20,45], [40,45], [60,45], [80,45], [50,15]]
+        };
+
+        function desenharCampo(formacao, layerId, isRival) {
+            const layer = document.getElementById(layerId);
+            const pos = coords[formacao] || coords["442"];
+            let html = '';
+            pos.forEach((p, index) => {
+                let isGk = index === 0 ? 'gk' : '';
+                let dotClass = isRival ? 'dot-rival' : 'dot-nosso';
+                html += `<div class="player-dot ${dotClass} ${isGk}" style="left: ${p[0]}%; top: ${p[1]}%;"></div>`;
+            });
+            layer.innerHTML = html;
+        }
+
+        let advFormacaoAtual = "442"; 
+
+        function setAdvTatica(formacao, btn) {
+            document.querySelectorAll('#btn_adv_taticas .btn-tat').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            advFormacaoAtual = formacao;
+            analisarAdversario(); 
+        }
+
+        // ==========================================
+        // 🧠 INTELIGÊNCIA ARTIFICIAL (ALGORITMO BRASFOOT PRO)
+        // ==========================================
+        function analisarAdversario() {
+            // Inputs do Usuário
+            const forca = document.getElementById('adv_forca').value;
+            const form = advFormacaoAtual; 
+            const ment = document.getElementById('adv_ment').value;
+            const foco = document.getElementById('adv_foco').value;
+            const marc = document.getElementById('adv_marc').value;
+
+            let nossaForm = "442";
+            let nossaMent = "Equilibrado";
+            let nossaMarc = "Pesada";
+            let instrucao = "";
+
+            // 1. ESCOLHA DE FORMAÇÃO (Anti-Tática Pura)
+            if (form === "343") {
+                // Eles usam 3 zagueiros e atacam nas alas.
+                nossaForm = (forca === "forte") ? "451" : "442";
+                instrucao += "O 3-4-3 deixa muitos espaços nas costas dos alas. ";
+            } else if (form === "352") {
+                // Meio-campo super povoado (5 jogadores).
+                nossaForm = (forca === "forte") ? "451" : "433";
+                instrucao += "Não tente disputar o meio contra 5 homens num 4-4-2. Jogue pelas laterais (4-3-3) ou espelhe o meio (4-5-1). ";
+            } else if (form === "433") {
+                // Muita força de ataque nas pontas.
+                nossaForm = (forca === "fraco") ? "343" : "442";
+                instrucao += "Atenção aos pontas adversários. Use o 4-4-2 para garantir laterais duplas na defesa. ";
+            } else if (form === "442") {
+                // Padrão. Ganha quem tem mais força no meio.
+                nossaForm = (forca === "fraco") ? "433" : "352";
+                instrucao += "Contra o 4-4-2 clássico, garanta superioridade no meio com o 3-5-2 ou ataque com 3 homens se formos superiores. ";
+            } else if (form === "451") {
+                // Retranca. Vão tentar empatar ou ganhar por 1x0.
+                nossaForm = (forca === "forte") ? "442" : "433";
+                instrucao += "Eles vão estacionar o autocarro e jogar por uma bola. Paciência na criação. ";
+            } else if (form === "532" || form === "541") {
+                // Super Retranca.
+                nossaForm = (forca === "forte") ? "451" : "343";
+                instrucao += "Adversário abdicou de atacar. Suba as linhas e sufoque no campo deles para abrir a lata. ";
+            }
+
+            // 2. MENTALIDADE E MARCAÇÃO (Ajuste Crítico de Força)
+            if (forca === "forte") {
+                if (ment === "ataque") {
+                    nossaMent = "Contra-Ataque";
+                    nossaMarc = "Muito Pesada";
+                    instrucao += "Rival muito forte vindo para cima! Tranque a defesa e explore a velocidade no contra-ataque. ";
+                } else {
+                    nossaMent = "Defensivo";
+                    nossaMarc = "Pesada";
+                    instrucao += "Rival forte, mas cauteloso. Não se exponha à toa, jogue no erro deles. ";
+                }
+            } else if (forca === "fraco") {
+                nossaMent = "Ataque Total";
+                nossaMarc = (marc === "muitopesada") ? "Normal" : "Pesada";
+                instrucao += "Somos superiores. Imponha o ritmo de jogo desde o apito inicial. ";
+                if(marc === "muitopesada") instrucao += "Toque a bola rápido para evitar lesões causadas pela agressividade deles. ";
+            } else { // Força Igual
+                if (ment === "retranca") {
+                    nossaMent = "Ataque Total";
+                    nossaMarc = "Pesada";
+                } else if (ment === "ataque") {
+                    nossaMent = "Contra-Ataque";
+                    nossaMarc = "Muito Pesada";
+                    instrucao += "Equilíbrio de forças. Eles vão expor-se, castigue-os no contra-ataque. ";
+                } else {
+                    nossaMent = "Equilibrado";
+                    nossaMarc = "Pesada";
+                }
+            }
+
+            // 3. REFINAMENTO: FOCO DO ATAQUE DELES
+            if (foco === "laterais" && nossaForm !== "442" && nossaForm !== "451") {
+                instrucao += "Eles forçam nas laterais, nossos laterais não devem subir muito. ";
+            } else if (foco === "meio" && (nossaForm === "442" || nossaForm === "433")) {
+                instrucao += "Eles forçam pelo centro. Volantes precisam de marcação forte. ";
+            }
+
+            // 4. ATUALIZAR A INTERFACE
+            document.getElementById('nossa_form').innerText = nossaForm;
+            document.getElementById('nossa_ment').innerText = nossaMent;
+            document.getElementById('nossa_marc').innerText = nossaMarc;
+            document.getElementById('nossa_instrucao').innerText = instrucao;
+
+            // Desenhar no campo
+            desenharCampo(form, 'layer_rival', true);
+            let btnAlvo = Array.from(document.querySelectorAll('#btn_nossas_taticas .btn-tat')).find(b => b.innerText.replace(/-/g, '') === nossaForm);
+            if(btnAlvo) setNossaTatica(nossaForm, btnAlvo);
+        }
+
+        // Troca tática manual
+        function setNossaTatica(formacao, btn) {
+            document.querySelectorAll('#btn_nossas_taticas .btn-tat').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            desenharCampo(formacao, 'layer_nosso', false);
+            localStorage.setItem('galo_tat_ativa', formacao);
+        }
+
+        // ==========================================
+        // CALENDÁRIO
+        // ==========================================
+        const grids = {
+            'grid_estadual': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', 'SF1', 'SF2', 'F1', 'F2'],
+            'grid_br1': Array.from({length: 19}, (_, i) => `${i + 1}`).concat(['']),
+            'grid_br2': Array.from({length: 19}, (_, i) => `${i + 20}`).concat(['']),
+            'grid_copa': ['1F', '2F', '3F1', '3F2', 'O1', 'O2', 'Q1', 'Q2', 'S1', 'S2', 'F1', 'F2'],
+            'grid_cont': ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'O1', 'O2', 'Q1', 'Q2', 'S1', 'S2', 'F', '', '']
+        };
+        const states = ['', 'state-v', 'state-e', 'state-d'];
+
+        function renderCalendario() {
+            let data = JSON.parse(localStorage.getItem('galo_Jogos') || '{}');
+            for (let gridId in grids) {
+                let container = document.getElementById(gridId);
+                let html = '';
+                grids[gridId].forEach((jogo, index) => {
+                    if (jogo === '') { html += `<div style="background: var(--bg-app);"></div>`; return; }
+                    let idUnico = `${gridId}_${index}`;
+                    let estado = data[idUnico] || 0;
+                    html += `<div class="cal-box ${states[estado]}" id="${idUnico}" onclick="mudarEstado('${idUnico}')">${jogo}</div>`;
+                });
+                container.innerHTML = html;
+            }
+        }
+
+        function mudarEstado(idUnico) {
+            let data = JSON.parse(localStorage.getItem('galo_Jogos') || '{}');
+            let novo = ((data[idUnico] || 0) + 1) % 4;
+            data[idUnico] = novo;
+            localStorage.setItem('galo_Jogos', JSON.stringify(data));
+            document.getElementById(idUnico).className = `cal-box ${states[novo]}`;
+        }
+
+        window.onload = function() {
+            document.getElementById('adv_forca').value = "igual";
+            document.getElementById('adv_ment').value = "equilibrado";
+            document.getElementById('adv_foco').value = "misto";
+            document.getElementById('adv_marc').value = "pesada";
+            
+            analisarAdversario();
+            renderCalendario();
+        };
+    </script>
+</body>
+</html>

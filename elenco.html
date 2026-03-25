@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão do Elenco - Hub do Treinador</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos Elegantes para as Tabelas no novo padrão */
+        .table-container { overflow-x: auto; margin-top: 15px; }
+        .table-elenco { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .table-elenco th { text-align: left; padding: 12px 10px; border-bottom: 2px solid var(--border); color: var(--text-main); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+        .table-elenco td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        
+        .pos-badge { font-weight: 700; color: var(--bg-surface); background: var(--text-muted); padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; display: inline-block; min-width: 38px; text-align: center; }
+        
+        .table-elenco input { width: 100%; border: 1px solid transparent; background: transparent; padding: 8px; color: var(--text-main); transition: 0.2s; border-radius: 6px; font-weight: 500; }
+        .table-elenco input:focus { background: var(--bg-app); border-color: var(--primary); outline: none; }
+        
+        .market-total { background: var(--bg-surface); padding: 15px 20px; border-radius: 10px; border: 1px solid var(--border); text-align: right; box-shadow: 0 4px 6px rgba(6, 20, 27, 0.03); display: inline-flex; flex-direction: column; align-items: flex-end; }
+        .btn-add { background: var(--primary); color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Inter'; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
+        .btn-add:hover { background: var(--primary-hover); }
+        .btn-del { color: var(--danger); background: transparent; border: none; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .btn-del:hover { opacity: 0.7; transform: scale(1.1); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand"><i class="fas fa-terminal" style="color: var(--primary);"></i> <span>Hub do Treinador</span></div>
+        <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
+        <a href="elenco.html" class="nav-link active"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
+        <a href="taticas.html" class="nav-link"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
+    </aside>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">Gestão do Elenco</h1>
+            <p class="page-subtitle">Inteligência de mercado, grupos de trabalho e desenvolvimento da base.</p>
+        </header>
+
+        <div class="dashboard-grid">
+            
+            <div class="card" style="grid-column: span 3; border-top: 4px solid var(--warning);">
+                <div class="card-header"><i class="fas fa-magnifying-glass-dollar" style="color: var(--warning);"></i><h3>Inteligência de Mercado (Regra 1.5x)</h3></div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; margin-bottom: 20px; align-items: flex-end;">
+                    <div class="input-group" style="margin:0;"><label>Jogador Alvo</label><input type="text" id="m_nome" placeholder="Nome do atleta"></div>
+                    <div class="input-group" style="margin:0;"><label>Força</label><input type="number" id="m_forca" placeholder="F"></div>
+                    <div class="input-group" style="margin:0;"><label>Valor Pedido (M)</label><input type="number" id="m_valor" placeholder="R$ M"></div>
+                    <button class="btn-add" onclick="addAlvo()"><i class="fas fa-plus"></i> Adicionar</button>
+                </div>
+
+                <div class="table-container">
+                    <table class="table-elenco">
+                        <thead>
+                            <tr>
+                                <th>Nome do Jogador</th>
+                                <th style="text-align:center;">Força</th>
+                                <th style="text-align:right;">Pedido (Brasfoot)</th>
+                                <th style="text-align:right; color: var(--text-main);">Custo Real (1.5x)</th>
+                                <th style="text-align:center;">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista_mercado"></tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                    <div class="market-total">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 5px;">Investimento Estimado</span>
+                        <div style="font-size: 1.6rem; font-weight: 600; color: var(--text-main); font-family: 'Kanit';" id="total_mercado">R$ 0.0 M</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="grid-column: span 3; border-top: 4px solid var(--text-main);">
+                <div class="card-header"><i class="fas fa-globe"></i><h3>Mapa de Força Global (P | M | G)</h3></div>
+                <div id="container_forca" class="table-container"></div>
+            </div>
+
+            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--primary);">
+                <div class="card-header"><i class="fas fa-star" style="color: var(--primary);"></i><h3>Grupo A (Titulares)</h3></div>
+                <div id="container_grupoA" class="table-container"></div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--text-muted);">
+                <div class="card-header"><i class="fas fa-rotate"></i><h3>Grupo B (Reserva)</h3></div>
+                <div id="container_grupoB" class="table-container"></div>
+            </div>
+
+            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--danger);">
+                <div class="card-header"><i class="fas fa-hand-holding-usd" style="color: var(--danger);"></i><h3>Grupo C (Negociáveis)</h3></div>
+                <div id="container_grupoC" class="table-container"></div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--blue);">
+                <div class="card-header"><i class="fas fa-seedling" style="color: var(--blue);"></i><h3>Promessas (Base 5 Estrelas)</h3></div>
+                <div id="container_base" class="table-container"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const posicoes = ["GL", "LD", "ZD", "ZE", "LE", "VD", "VE", "MD", "ME", "AD", "AE"];
+        let alvos = JSON.parse(localStorage.getItem('hub_mercado') || '[]');
+
+        window.onload = function() {
+            gerarTabela('container_forca', true);
+            gerarTabela('container_grupoA', false);
+            gerarTabela('container_grupoB', false);
+            gerarTabela('container_grupoC', false);
+            gerarTabela('container_base', false);
+            carregarDados();
+            renderMercado();
+        };
+
+        function gerarTabela(id, isForca) {
+            let html = `<table class="table-elenco"><thead><tr><th style="width: 50px;">POS</th>`;
+            html += isForca ? `<th style="text-align:center;">Mundo</th><th style="text-align:center;">Brasil</th><th style="text-align:center;">Nosso</th>` : `<th>Jogador</th><th style="width: 60px;">F</th><th>Status</th>`;
+            html += `</tr></thead><tbody>`;
+
+            posicoes.forEach(pos => {
+                let prefix = `${id}_${pos}`;
+                html += `<tr><td><span class="pos-badge">${pos}</span></td>`;
+                if(isForca) {
+                    html += `<td><input type="number" id="${prefix}_P" style="text-align:center;"></td>
+                             <td><input type="number" id="${prefix}_M" style="text-align:center;"></td>
+                             <td><input type="number" id="${prefix}_G" style="text-align:center;"></td>`;
+                } else {
+                    html += `<td><input type="text" id="${prefix}_N" placeholder="Nome"></td>
+                             <td><input type="number" id="${prefix}_F" placeholder="F"></td>
+                             <td><input type="text" id="${prefix}_S" placeholder="..."></td>`;
+                }
+                html += `</tr>`;
+            });
+            html += `</tbody></table>`;
+            document.getElementById(id).innerHTML = html;
+        }
+
+        function carregarDados() {
+            let dados = JSON.parse(localStorage.getItem('hub_elenco_data') || '{}');
+            document.querySelectorAll('input').forEach(input => {
+                if(dados[input.id]) input.value = dados[input.id];
+                if(input.id !== 'm_nome' && input.id !== 'm_forca' && input.id !== 'm_valor') {
+                    input.addEventListener('input', () => {
+                        dados[input.id] = input.value;
+                        localStorage.setItem('hub_elenco_data', JSON.stringify(dados));
+                    });
+                }
+            });
+        }
+
+        function addAlvo() {
+            const n = document.getElementById('m_nome').value;
+            const f = document.getElementById('m_forca').value;
+            const v = parseFloat(document.getElementById('m_valor').value);
+            if(!n || isNaN(v)) return;
+            alvos.push({id: Date.now(), n, f, v, vr: v * 1.5});
+            localStorage.setItem('hub_mercado', JSON.stringify(alvos));
+            renderMercado();
+            document.getElementById('m_nome').value = ''; 
+            document.getElementById('m_forca').value = ''; 
+            document.getElementById('m_valor').value = '';
+            document.getElementById('m_nome').focus();
+        }
+
+        function renderMercado() {
+            let html = ''; let total = 0;
+            alvos.forEach(a => {
+                total += a.vr;
+                html += `<tr>
+                            <td style="font-weight: 500;">${a.n}</td>
+                            <td style="text-align:center">${a.f || '--'}</td>
+                            <td style="text-align:right; color: var(--text-muted);">R$ ${a.v.toFixed(1)}M</td>
+                            <td style="text-align:right; font-weight:600;">R$ ${a.vr.toFixed(2)}M</td>
+                            <td style="text-align:center"><button class="btn-del" onclick="remAlvo(${a.id})"><i class="fas fa-times"></i></button></td>
+                         </tr>`;
+            });
+            if(alvos.length === 0) {
+                html = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum alvo adicionado no radar.</td></tr>`;
+            }
+            document.getElementById('lista_mercado').innerHTML = html;
+            document.getElementById('total_mercado').innerText = `R$ ${total.toFixed(2)} M`;
+        }
+
+        function remAlvo(id) {
+            alvos = alvos.filter(a => a.id !== id);
+            localStorage.setItem('hub_mercado', JSON.stringify(alvos));
+            renderMercado();
+        }
+    </script>
+</body>
+</html>

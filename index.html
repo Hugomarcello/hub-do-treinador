@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hub do Treinador</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Ajustes Elegantes para o HUB */
+        .welcome-panel {
+            background: var(--bg-surface); border: 1px solid var(--border); padding: 25px 30px; 
+            border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 6px rgba(6, 20, 27, 0.03);
+        }
+        
+        /* KPIs refinados com a nova paleta */
+        .kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; display: block; margin-bottom: 5px; }
+        .kpi-value { font-size: 1.6rem; font-weight: 600; color: var(--text-main); font-family: 'Kanit'; }
+        
+        .alert-box { border-radius: 8px; padding: 15px; margin-bottom: 12px; font-size: 0.85rem; border: 1px solid var(--border); border-left: 4px solid var(--danger); background: var(--bg-app); color: var(--text-main); }
+        .alert-box h5 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main); text-transform: uppercase; }
+        .alert-box.good { border-left-color: var(--success); }
+        
+        .tat-display { font-size: 2.8rem; font-weight: 600; color: var(--primary); font-family: 'Kanit'; margin: 10px 0; letter-spacing: 2px; }
+        
+        .link-action { display: inline-flex; align-items: center; gap: 5px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; margin-top: auto; padding-top: 15px; transition: 0.2s; }
+        .link-action:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand"><i class="fas fa-terminal" style="color: var(--text-main);"></i> <span>Treinador</span></div>
+        <a href="index.html" class="nav-link active"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
+        <a href="elenco.html" class="nav-link"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
+        <a href="taticas.html" class="nav-link"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
+    </aside>
+
+    <main class="main-content">
+        
+        <div class="welcome-panel">
+            <div>
+                <h1 class="page-title" style="margin-bottom: 0;">Visão Executiva</h1>
+                <p class="page-subtitle">Acompanhamento de orçamento, mercado e postura tática.</p>
+            </div>
+            <div style="text-align: right;">
+                <span class="kpi-label">Status do Save</span>
+                <div style="color: var(--success); font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i> TEMPORADA ATIVA
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="card" style="border-top: 4px solid var(--success);">
+                <span class="kpi-label">Caixa (Plantel)</span>
+                <div class="kpi-value" id="hub_orcamento">R$ 0.0 M</div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--warning);">
+                <span class="kpi-label">Custo Alvos (1.5x)</span>
+                <div class="kpi-value" id="hub_custo_lista">R$ 0.0 M</div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--text-muted);">
+                <span class="kpi-label">Teto Salarial Máx.</span>
+                <div class="kpi-value" id="hub_teto">--</div>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--primary);">
+                <span class="kpi-label">Atletas no Radar</span>
+                <div class="kpi-value" id="hub_qtd_alvos">0</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
+            
+            <div class="card">
+                <div class="card-header"><i class="fas fa-envelope-open-text" style="color: var(--text-main);"></i><h3>Relatórios da Direção</h3></div>
+                <div id="alertas_container" style="flex: 1;"></div>
+            </div>
+
+            <div class="card" style="text-align: center; align-items: center;">
+                <div class="card-header" style="width: 100%; justify-content: center;"><i class="fas fa-chalkboard"></i><h3 style="margin:0;">Formação Pronta</h3></div>
+                <div class="tat-display" id="hub_tatica">4-4-2</div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">A equipe treinou nesta formação base para a próxima partida.</p>
+                <a href="taticas.html" class="link-action">Ajustar Táticas <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><i class="fas fa-crosshairs"></i><h3>Foco SMART</h3></div>
+                <div style="margin-bottom: 15px;">
+                    <span class="kpi-label">Objetivo Principal</span>
+                    <p id="hub_meta_s" style="font-size: 0.95rem; font-weight: 500; color: var(--text-main);">Não definido.</p>
+                </div>
+                <div>
+                    <span class="kpi-label">Prazo Final</span>
+                    <p id="hub_meta_t" style="font-size: 0.95rem; font-weight: 500; color: var(--text-main);">--</p>
+                </div>
+                <a href="diretrizes.html" class="link-action">Rever Planejamento <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        window.onload = function() {
+            const dna = JSON.parse(localStorage.getItem('hub_DNA') || '{}');
+            const mercado = JSON.parse(localStorage.getItem('hub_mercado') || '[]');
+            const taticaAtiva = localStorage.getItem('galo_tat_ativa') || '442';
+
+            let orcamentoBase = parseFloat(dna.orc_prof) || 0;
+            let custoMercado = mercado.reduce((acc, curr) => acc + curr.vr, 0);
+
+            document.getElementById('hub_orcamento').innerText = `R$ ${orcamentoBase.toFixed(1)} M`;
+            document.getElementById('hub_custo_lista').innerText = `R$ ${custoMercado.toFixed(1)} M`;
+            document.getElementById('hub_qtd_alvos').innerText = mercado.length;
+            document.getElementById('hub_tatica').innerText = taticaAtiva.split('').join('-');
+            
+            if(dna.pb_teto) document.getElementById('hub_teto').innerText = `R$ ${(dna.pb_teto/1000).toFixed(0)}k`;
+            if(dna.sm_s) document.getElementById('hub_meta_s').innerText = dna.sm_s;
+            if(dna.sm_t) document.getElementById('hub_meta_t').innerText = dna.sm_t;
+
+            let alertasHTML = '';
+            if (custoMercado > orcamentoBase && orcamentoBase > 0) {
+                alertasHTML = `<div class="alert-box"><h5>Alerta Financeiro</h5><p>A sua lista de alvos ultrapassa o orçamento do plantel em <strong>R$ ${(custoMercado - orcamentoBase).toFixed(1)}M</strong>.</p></div>`;
+            } else if (custoMercado > 0) {
+                alertasHTML = `<div class="alert-box good"><h5>Controle de Caixa</h5><p>Os investimentos de mercado estão dentro do teto estipulado.</p></div>`;
+            } else {
+                alertasHTML = `<p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-top: 20px;">Nenhum alerta pendente no momento.</p>`;
+            }
+            document.getElementById('alertas_container').innerHTML = alertasHTML;
+        };
+    </script>
+</body>
+</html>
