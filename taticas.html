@@ -7,73 +7,86 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- CORES E VARIÁVEIS --- */
+        /* --- CORES MINIMALISTAS (NEUTRAS E ELEGANTES) --- */
         :root {
-            --pitch-grass: #2d8a39;   
-            --pitch-lines: rgba(255, 255, 255, 0.6);
-            --dark-panel: #1e293b;    
-            --btn-bg: #f8fafc;
-            --btn-active: #2563eb;    
-            --neon-rival: #ccff00;    
+            --bg-body: #f4f4f5;       /* Cinza muito claro */
+            --dark-panel: #27272a;    /* Grafite escuro */
+            --text-main: #3f3f46;     /* Cinza médio/escuro */
+            --btn-bg: #ffffff;
+            --btn-active: #3f3f46;    /* Grafite ativo (sem azul) */
+            --border-light: #e4e4e7;
+            
+            --pitch-grass: #4b5e4a;   /* Verde musgo neutro/sofisticado */
+            --pitch-lines: rgba(255, 255, 255, 0.5);
+            --dot-rival: #ef4444;     /* Vermelho fosco (contraste elegante) */
         }
 
-        /* --- BOTÕES OTIMIZADOS PARA CELULAR --- */
+        body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Inter', sans-serif; }
+
+        /* --- BOTÕES TOUCH MINIMALISTAS --- */
         .touch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; margin-bottom: 15px; }
+        .touch-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .touch-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        
         .btn-touch { 
-            background: var(--btn-bg); border: 2px solid #cbd5e1; border-radius: 10px; 
-            padding: 12px 4px; font-size: 0.75rem; font-weight: 800; color: #475569; 
+            background: var(--btn-bg); border: 1px solid var(--border-light); border-radius: 8px; 
+            padding: 10px 4px; font-size: 0.7rem; font-weight: 700; color: var(--text-main); 
             text-align: center; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 4px 0 #cbd5e1; transition: all 0.1s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;
         }
-        .btn-touch:active { transform: translateY(4px); box-shadow: none; }
         .btn-touch.active { 
-            background: var(--btn-active); color: #fff; 
-            border-color: #1e3a8a; box-shadow: 0 4px 0 #1e3a8a; 
+            background: var(--btn-active); color: #fff; border-color: var(--btn-active); 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); 
         }
 
-        /* --- MINICAMPOS DE FUTEBOL --- */
-        .tactical-board { background: var(--dark-panel); padding: 15px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
+        /* --- CARDS E PAINÉIS --- */
+        .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-light); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .card-header h3 { font-size: 1.1rem; color: var(--dark-panel); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+        .tactical-board { background: var(--dark-panel); padding: 20px; border-radius: 12px; margin-bottom: 15px; }
         .pitch-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         
+        /* --- CAMPOS DE FUTEBOL --- */
         .pitch {
             position: relative; width: 100%; aspect-ratio: 2 / 3; 
-            background: var(--pitch-grass); border: 2px solid #fff; border-radius: 4px;
-            overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+            background: var(--pitch-grass); border: 1px solid #fff; border-radius: 4px;
+            overflow: hidden; 
         }
-
-        /* Linhas do Campo */
-        .p-line { position: absolute; border: 1.5px solid var(--pitch-lines); }
+        .p-line { position: absolute; border: 1px solid var(--pitch-lines); }
         .p-center { top: 50%; left: 0; right: 0; }
         .p-circle { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; border-radius: 50%; }
         .p-area-top { top: 0; left: 20%; right: 20%; height: 18%; border-top: none; }
         .p-area-bot { bottom: 0; left: 20%; right: 20%; height: 18%; border-bottom: none; }
         
-        /* Bonequinhos */
-        .player-dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); border: 1px solid #000; z-index: 10; transition: 0.4s; }
-        .dot-ours { background: #fff; box-shadow: 0 0 6px rgba(255,255,255,0.8); }
-        .dot-rival { background: var(--neon-rival); box-shadow: 0 0 6px var(--neon-rival); }
+        .player-dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); border: 1px solid rgba(0,0,0,0.5); z-index: 10; transition: 0.4s; }
+        .dot-ours { background: #fff; box-shadow: 0 0 6px rgba(255,255,255,0.5); }
+        .dot-rival { background: var(--dot-rival); box-shadow: 0 0 6px rgba(239,68,68,0.5); }
 
-        .pitch-label { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.8); color: #fff; padding: 2px 6px; font-size: 0.6rem; font-weight: bold; border-radius: 3px; z-index: 20; }
+        .pitch-label { position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 6px; font-size: 0.55rem; font-weight: bold; border-radius: 3px; z-index: 20; letter-spacing: 0.5px; }
 
-        /* --- TEXTOS DA IA --- */
-        .ai-advice { text-align: center; color: #fff; margin-bottom: 15px; }
-        .ai-title { font-family: 'Kanit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #38bdf8; display: block; line-height: 1.2; text-transform: uppercase;}
-        .ai-subtitle { font-size: 0.85rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 5px; display: block; }
+        /* --- DISPLAY DA IA (DENTRO DO QUADRO NEGRO) --- */
+        .ai-display { text-align: center; color: #fff; margin-bottom: 15px; }
+        .ai-title { font-family: 'Kanit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #fff; display: block; line-height: 1.1; letter-spacing: -0.5px; }
+        .ai-subtitle { font-size: 0.75rem; color: #a1a1aa; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        
+        .ai-details { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .badge { background: #3f3f46; color: #e4e4e7; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; border: 1px solid #52525b; }
+        .badge-alert { background: #7f1d1d; color: #fecaca; border-color: #991b1b; }
 
-        /* --- RASTREADOR 5x5 --- */
-        .tracker-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 20px;}
-        .tracker-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; }
-        .comp-title { font-size: 0.9rem; font-weight: 800; color: #1e293b; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; text-transform: uppercase; }
-        .row-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; }
-        .row-5:last-child { border-bottom: none; }
-        .sq { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 8px; border: 2px solid #cbd5e1; cursor: pointer; color: #64748b; font-size: 0.8rem; background: #f8fafc;}
-        .v { background: #10b981; color: #fff; border-color: #059669; }
-        .e { background: #f59e0b; color: #fff; border-color: #d97706; }
-        .d { background: #ef4444; color: #fff; border-color: #dc2626; }
+        /* --- RASTREADOR 5x5 MINIMALISTA --- */
+        .tracker-card { background: #fff; border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .comp-title { font-size: 0.85rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; border-bottom: 1px solid var(--border-light); padding-bottom: 5px; text-transform: uppercase; }
+        .row-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--border-light); }
+        .row-5:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .sq { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 6px; border: 1px solid var(--border-light); cursor: pointer; color: #a1a1aa; font-size: 0.75rem; background: var(--bg-body);}
+        
+        /* Cores de Resultado mais sóbrias */
+        .v { background: #2e7d32; color: #fff; border-color: #1b5e20; }
+        .e { background: #f57f17; color: #fff; border-color: #fbc02d; }
+        .d { background: #c62828; color: #fff; border-color: #b71c1c; }
 
-        /* Memorial */
-        .mem-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-del { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+        .mem-card { background: var(--bg-body); border: 1px solid var(--border-light); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-del { background: transparent; color: #c62828; border: 1px solid #c62828; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -88,27 +101,26 @@
     </aside>
 
     <main class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">Auxiliar de Campo</h1>
-            <p class="page-subtitle">Análise em tempo real e rastreio de desempenho da temporada.</p>
+        <div class="page-header" style="margin-bottom: 20px;">
+            <h1 class="page-title" style="color: var(--dark-panel);">Auxiliar Técnico</h1>
+            <p class="page-subtitle" style="color: #71717a;">Motor de decisão baseado em lógica tática.</p>
         </div>
 
-        <div class="card" style="border-top: 4px solid #475569;">
-            <div class="card-header"><h3><i class="fas fa-clipboard-list"></i> 1. Planejamento (Pré-Jogo)</h3></div>
-            <label style="font-size: 0.8rem; font-weight: 700; color: #475569;">Nível do Adversário:</label>
-            <div class="touch-grid">
+        <div class="card" style="border-top: 3px solid var(--text-main);">
+            <div class="card-header"><h3><i class="fas fa-clipboard-check"></i> 1. Pré-Jogo</h3></div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">Força do Adversário:</label>
+            <div class="touch-grid touch-grid-3">
                 <button class="btn-touch" onclick="setPre('fraco', this)">FRACO</button>
                 <button class="btn-touch active" onclick="setPre('igual', this)">IGUAL</button>
                 <button class="btn-touch" onclick="setPre('forte', this)">FORTE</button>
             </div>
             
-            <div class="tactical-board" style="max-width: 300px; margin: 0 auto;">
-                <div class="ai-advice">
-                    <span class="ai-subtitle">Formação Sugerida</span>
-                    <span class="ai-title" id="pre_title">EQUILIBRADO | 4-2-3-1</span>
+            <div class="tactical-board" style="max-width: 280px; margin: 0 auto; padding: 15px;">
+                <div class="ai-display">
+                    <span class="ai-title" id="pre_title" style="font-size: 1.3rem;">EQUILIBRADO<br>4-2-3-1</span>
                 </div>
                 <div class="pitch">
-                    <div class="pitch-label">VOCÊ</div>
+                    <div class="pitch-label">NOSSA BASE</div>
                     <div class="p-line p-center"></div><div class="p-line p-circle"></div>
                     <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
                     <div id="pitch_pre"></div>
@@ -116,50 +128,73 @@
             </div>
         </div>
 
-        <div class="card" style="border-top: 4px solid var(--btn-active);">
-            <div class="card-header"><h3><i class="fas fa-bolt"></i> 2. Leitura de Campo (Ao Vivo)</h3></div>
+        <div class="card" style="border-top: 3px solid var(--dark-panel);">
+            <div class="card-header"><h3><i class="fas fa-chess-knight"></i> 2. Ao Vivo (Leitura Dinâmica)</h3></div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <label style="font-size: 0.7rem; font-weight: 700; color: #71717a;">O QUE O RIVAL ESTÁ FAZENDO?</label>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
                 <div>
-                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">Postura do Rival:</label>
+                    <label style="font-size: 0.65rem; font-weight: bold;">Postura</label>
                     <div class="touch-grid" style="grid-template-columns: 1fr;">
-                        <button class="btn-touch" onclick="setLive('pos', 'ata', this)">ATACANDO</button>
-                        <button class="btn-touch active" onclick="setLive('pos', 'equ', this)">EQUILIBRADO</button>
-                        <button class="btn-touch" onclick="setLive('pos', 'ret', this)">RETRANCA</button>
+                        <button class="btn-touch active" onclick="setLive('pos', 'equ', this)">Equilibrado</button>
+                        <button class="btn-touch" onclick="setLive('pos', 'ata', this)">Atacando</button>
+                        <button class="btn-touch" onclick="setLive('pos', 'ret', this)">Retranca</button>
                     </div>
                 </div>
                 <div>
-                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">Foco do Ataque:</label>
+                    <label style="font-size: 0.65rem; font-weight: bold;">Estilo de Marcação</label>
                     <div class="touch-grid" style="grid-template-columns: 1fr;">
-                        <button class="btn-touch active" onclick="setLive('atk', 'meio', this)">PELO MEIO</button>
-                        <button class="btn-touch" onclick="setLive('atk', 'alas', this)">PELAS ALAS</button>
+                        <button class="btn-touch" onclick="setLive('marcRival', 'leve', this)">Leve</button>
+                        <button class="btn-touch active" onclick="setLive('marcRival', 'pesada', this)">Pesada</button>
+                        <button class="btn-touch" onclick="setLive('marcRival', 'muito', this)">Muito Pesada</button>
                     </div>
                 </div>
             </div>
 
-            <label style="font-size: 0.75rem; font-weight: 700; color: #475569; margin-top: 10px; display:block;">Formação do Rival:</label>
-            <div class="touch-grid">
-                <button class="btn-touch active" onclick="setLive('form', '442', this)">4-4-2</button>
+            <div style="margin-top: 5px;">
+                <label style="font-size: 0.65rem; font-weight: bold;">Condição do Gramado</label>
+                <div class="touch-grid touch-grid-2">
+                    <button class="btn-touch active" onclick="setLive('gramado', 'bom', this)">Excelente / Bom</button>
+                    <button class="btn-touch" onclick="setLive('gramado', 'ruim', this)">Ruim / Péssimo</button>
+                </div>
+            </div>
+
+            <label style="font-size: 0.65rem; font-weight: bold; margin-top: 5px; display:block;">Formação do Rival</label>
+            <div class="touch-grid touch-grid-3">
+                <button class="btn-touch active" onclick="setLive('form', '442def', this)">4-4-2 DEF</button>
+                <button class="btn-touch" onclick="setLive('form', '442of', this)">4-4-2 OF</button>
+                <button class="btn-touch" onclick="setLive('form', '442los', this)">4-4-2 LOS</button>
+                
                 <button class="btn-touch" onclick="setLive('form', '433', this)">4-3-3</button>
+                <button class="btn-touch" onclick="setLive('form', '343', this)">3-4-3</button>
                 <button class="btn-touch" onclick="setLive('form', '352', this)">3-5-2</button>
+                
+                <button class="btn-touch" onclick="setLive('form', '532', this)">5-3-2</button>
+                <button class="btn-touch" onclick="setLive('form', '541', this)">5-4-1</button>
                 <button class="btn-touch" onclick="setLive('form', '451', this)">4-5-1</button>
             </div>
 
-            <div class="tactical-board">
-                <div class="ai-advice">
-                    <span class="ai-subtitle" id="live_instrucao">Ajuste tático calculado</span>
+            <div class="tactical-board" style="margin-top: 20px;">
+                <div class="ai-display">
+                    <span class="ai-subtitle">Nossa Resposta Tática</span>
                     <span class="ai-title" id="live_title">CARREGANDO...</span>
+                    <div class="ai-details">
+                        <span class="badge" id="live_foco">Foco: --</span>
+                        <span class="badge" id="live_marc">Marcação: --</span>
+                    </div>
+                    <div id="aviso_falta" style="display:none; color: #fecaca; font-size: 0.65rem; margin-top: 8px; font-weight: 600;">⚠️ Risco alto de expulsões e faltas perigosas.</div>
                 </div>
                 
                 <div class="pitch-container">
                     <div class="pitch">
-                        <div class="pitch-label" style="background: #ef4444;">RIVAL</div>
+                        <div class="pitch-label" style="background: #7f1d1d;">RIVAL</div>
                         <div class="p-line p-center"></div><div class="p-line p-circle"></div>
                         <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
                         <div id="pitch_rival"></div>
                     </div>
                     <div class="pitch">
-                        <div class="pitch-label" style="background: #2563eb;">NOSSO TIME</div>
+                        <div class="pitch-label" style="background: #3f3f46;">NÓS</div>
                         <div class="p-line p-center"></div><div class="p-line p-circle"></div>
                         <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
                         <div id="pitch_ours"></div>
@@ -168,42 +203,55 @@
             </div>
         </div>
 
-        <div class="card" style="margin-top: 25px; border-top: 4px solid #10b981;">
+        <div class="card" style="border-top: 3px solid var(--border-light);">
             <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <h3><i class="fas fa-chart-line"></i> Desempenho (5x5)</h3>
+                <h3><i class="fas fa-chart-line"></i> Desempenho</h3>
                 <div style="display: flex; gap: 8px;">
-                    <input type="text" id="archive_name" placeholder="Ex: Galo 2026" style="width: 130px; font-size: 0.8rem; padding: 8px; border-radius: 8px; border: 1px solid #cbd5e1;">
-                    <button class="btn-touch" onclick="arquivarTemporada()" style="background: #1e293b; color: #fff; margin:0; padding: 8px 12px; box-shadow: none;">SALVAR</button>
+                    <input type="text" id="archive_name" placeholder="Ex: Galo 2026" style="width: 120px; font-size: 0.75rem; padding: 6px; border-radius: 6px; border: 1px solid var(--border-light);">
+                    <button class="btn-touch" onclick="arquivarTemporada()" style="background: var(--dark-panel); color: #fff; margin:0; padding: 6px 12px;">SALVAR</button>
                 </div>
             </div>
-            <div class="tracker-wrapper" id="tracker_root"></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px;" id="tracker_root"></div>
         </div>
 
-        <div id="memorial_list" style="margin-top: 20px;"></div>
+        <div id="memorial_list" style="margin-top: 15px;"></div>
     </main>
 
     <script>
-        // --- COORDENADAS DOS JOGADORES (PROPORÇÃO 2:3) ---
+        // --- COORDENADAS DOS JOGADORES TÁTICOS ---
         const coords = {
-            "442": [[50,90], [15,75], [38,78], [62,78], [85,75], [20,48], [40,50], [60,50], [80,48], [38,25], [62,25]],
             "433": [[50,90], [15,75], [38,78], [62,78], [85,75], [25,55], [50,58], [75,55], [18,25], [50,18], [82,25]],
             "4231": [[50,90], [15,75], [38,78], [62,78], [85,75], [35,60], [65,60], [20,38], [50,32], [80,38], [50,18]],
-            "451": [[50,90], [15,75], [38,78], [62,78], [85,75], [10,55], [30,55], [50,55], [70,55], [90,55], [50,22]],
-            "352": [[50,90], [25,78], [50,80], [75,78], [10,50], [30,50], [50,50], [70,50], [90,50], [35,25], [65,25]]
+            "442def": [[50,90], [15,75], [38,78], [62,78], [85,75], [25,60], [50,62], [75,60], [50,45], [38,25], [62,25]],
+            "442of": [[50,90], [15,75], [38,78], [62,78], [85,75], [35,55], [65,55], [20,35], [80,35], [38,20], [62,20]],
+            "442los": [[50,90], [15,75], [38,78], [62,78], [85,75], [50,65], [30,50], [70,50], [50,35], [38,20], [62,20]],
+            "4321": [[50,90], [15,75], [38,78], [62,78], [85,75], [30,55], [50,58], [70,55], [35,35], [65,35], [50,20]],
+            "343": [[50,90], [25,80], [50,82], [75,80], [15,55], [38,58], [62,58], [85,55], [20,25], [50,20], [80,25]],
+            "352": [[50,90], [25,78], [50,80], [75,78], [10,50], [30,50], [50,50], [70,50], [90,50], [35,25], [65,25]],
+            "532": [[50,90], [10,75], [30,80], [50,82], [70,80], [90,75], [25,55], [50,58], [75,55], [35,25], [65,25]],
+            "541": [[50,90], [10,75], [30,80], [50,82], [70,80], [90,75], [20,55], [40,58], [60,58], [80,55], [50,20]],
+            "451": [[50,90], [15,75], [38,78], [62,78], [85,75], [10,55], [30,55], [50,55], [70,55], [90,55], [50,22]]
         };
 
-        let state = { pos: 'equ', atk: 'meio', form: '442' };
+        // Regras de Formação (Se -> Então)
+        const regrasFormacao = {
+            "442def": "433", "442of": "4231", "442los": "4321",
+            "433": "451", "343": "4231", "352": "4231",
+            "532": "343", "541": "433", "451": "352"
+        };
+
+        let state = { pos: 'equ', gramado: 'bom', form: '442def', marcRival: 'pesada' };
 
         // --- PRÉ-JOGO ---
         function setPre(v, btn) {
             btn.parentElement.querySelectorAll('.btn-touch').forEach(x => x.classList.remove('active'));
             btn.classList.add('active');
-            let f = v==='fraco' ? '433' : v==='igual' ? '4231' : '442';
-            document.getElementById('pre_title').innerText = v==='fraco' ? 'ATAQUE TOTAL | 4-3-3' : v==='igual' ? 'EQUILIBRADO | 4-2-3-1' : 'CONTRA-ATAQUE | 4-4-2';
+            let f = v==='fraco' ? '433' : v==='igual' ? '4231' : '442def';
+            document.getElementById('pre_title').innerHTML = v==='fraco' ? 'ATAQUE TOTAL<br>4-3-3' : v==='igual' ? 'EQUILIBRADO<br>4-2-3-1' : 'RETRANCA<br>4-4-2 DEF';
             renderDots(f, 'pitch_pre', 'dot-ours');
         }
 
-        // --- AO VIVO ---
+        // --- AO VIVO (INTELIGÊNCIA MATEMÁTICA) ---
         function setLive(tipo, valor, btn) {
             btn.parentElement.querySelectorAll('.btn-touch').forEach(x => x.classList.remove('active'));
             btn.classList.add('active');
@@ -212,20 +260,42 @@
         }
 
         function updateAI() {
-            let p = "Equilibrado", f = "433", foco = "Pelas Alas", marc = "Pesada";
+            // 1. Calcular Postura
+            let p = "EQUILIBRADO";
+            if(state.pos === 'ata') p = "CONTRA-ATAQUE";
+            else if(state.pos === 'ret') p = "ATAQUE TOTAL";
+
+            // 2. Calcular Formação
+            let f = regrasFormacao[state.form] || "433";
+
+            // 3. Calcular Foco (onde o rival é vulnerável ou adensado)
+            let foco = "PELAS LATERAIS"; 
+            if(state.form === '433' || state.form === '442of' || state.form === '343' || state.form === '541') {
+                foco = "PELO MEIO"; // Espaço no meio
+            }
+
+            // 4. Calcular Marcação com base no Gramado e Postura do Rival
+            let marc = "PESADA";
+            let alertFalta = document.getElementById('aviso_falta');
+            let badgeMarc = document.getElementById('live_marc');
             
-            if(state.pos === 'ata') p = "Contra-Ataque";
-            else if(state.pos === 'ret') p = "Ataque Total";
+            alertFalta.style.display = 'none';
+            badgeMarc.className = 'badge';
 
-            if(state.form === '442') f = "433";
-            else if(state.form === '433') f = "451";
-            else if(state.form === '352') f = "4231";
-            else f = "352";
+            if(state.gramado === 'ruim') {
+                marc = "MUITO PESADA (JOGO FÍSICO)";
+                alertFalta.style.display = 'block';
+                badgeMarc.className = 'badge badge-alert';
+            } else if (state.pos === 'ata') {
+                marc = "PESADA";
+            } else {
+                marc = "LEVE / NORMAL";
+            }
 
-            foco = state.atk === 'meio' ? "Explorar as Alas" : "Forçar pelo Meio";
-
-            document.getElementById('live_title').innerText = `${p} | ${f.split('').join('-')}`;
-            document.getElementById('live_instrucao').innerText = `Foco: ${foco} • Marcação: ${marc}`;
+            // Atualizar UI
+            document.getElementById('live_title').innerHTML = `${p}<br>${f.replace(/def|of|los/g, '').split('').join('-')}`;
+            document.getElementById('live_foco').innerText = `Foco: ${foco}`;
+            document.getElementById('live_marc').innerText = `Marcação: ${marc}`;
             
             renderDots(state.form, 'pitch_rival', 'dot-rival');
             renderDots(f, 'pitch_ours', 'dot-ours');
@@ -234,7 +304,7 @@
         function renderDots(form, id, cl) {
             const container = document.getElementById(id); if(!container) return;
             container.innerHTML = "";
-            (coords[form] || coords["442"]).forEach(pt => {
+            (coords[form] || coords["442def"]).forEach(pt => {
                 const dot = document.createElement('div');
                 dot.className = `player-dot ${cl}`;
                 dot.style.left = pt[0] + "%"; dot.style.top = pt[1] + "%";
@@ -247,7 +317,7 @@
 
         function renderTracker() {
             const root = document.getElementById('tracker_root'); root.innerHTML = "";
-            let data = JSON.parse(localStorage.getItem('hub_jogos_live') || '{}');
+            let data = JSON.parse(localStorage.getItem('hub_jogos_neutro') || '{}');
             
             configTracker.forEach(conf => {
                 const card = document.createElement('div'); card.className = 'tracker-card';
@@ -261,7 +331,7 @@
                     sq.onclick = () => {
                         const st = ['', 'v', 'e', 'd'];
                         data[id] = st[(st.indexOf(data[id]||'')+1)%4];
-                        localStorage.setItem('hub_jogos_live', JSON.stringify(data));
+                        localStorage.setItem('hub_jogos_neutro', JSON.stringify(data));
                         sq.className = `sq ${data[id]}`;
                     };
                     row.appendChild(sq);
@@ -273,29 +343,29 @@
         // --- MEMORIAL DE ARQUIVAMENTO ---
         function arquivarTemporada() {
             const nome = document.getElementById('archive_name').value.trim();
-            if(!nome) return alert("Digite um nome para salvar a temporada!");
-            let data = JSON.parse(localStorage.getItem('hub_jogos_live') || '{}');
+            if(!nome) return alert("Digite um nome para o save!");
+            let data = JSON.parse(localStorage.getItem('hub_jogos_neutro') || '{}');
             let v=0, e=0, d=0; Object.values(data).forEach(x => { if(x==='v') v++; if(x==='e') e++; if(x==='d') d++; });
-            if(v+e+d === 0) return alert("Não há jogos registrados para arquivar!");
+            if(v+e+d === 0) return alert("Nenhum jogo para salvar!");
 
-            let mem = JSON.parse(localStorage.getItem('hub_memorial_live') || '[]');
+            let mem = JSON.parse(localStorage.getItem('hub_mem_neutro') || '[]');
             mem.unshift({ nome, v, e, d, total: v+e+d, data: new Date().toLocaleDateString() });
-            localStorage.setItem('hub_memorial_live', JSON.stringify(mem));
-            localStorage.removeItem('hub_jogos_live');
+            localStorage.setItem('hub_mem_neutro', JSON.stringify(mem));
+            localStorage.removeItem('hub_jogos_neutro');
             document.getElementById('archive_name').value = "";
             renderTracker(); renderMemorial();
         }
 
         function renderMemorial() {
             const list = document.getElementById('memorial_list');
-            let mem = JSON.parse(localStorage.getItem('hub_memorial_live') || '[]');
+            let mem = JSON.parse(localStorage.getItem('hub_mem_neutro') || '[]');
             list.innerHTML = mem.map((m, idx) => `
                 <div class="mem-card">
-                    <div><strong>${m.nome}</strong><br><small style="color:#64748b">${m.data}</small></div>
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div style="text-align:right; font-size:0.75rem;">
+                    <div><strong style="color:var(--text-main);">${m.nome}</strong><br><small style="color:#a1a1aa">${m.data}</small></div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="text-align:right; font-size:0.75rem; color:var(--text-main);">
                             ${m.v}V | ${m.e}E | ${m.d}D<br>
-                            <span style="font-weight:800; color:#1e293b; font-size:0.85rem">Aproveitamento: ${((m.v*3+m.e)/(m.total*3)*100).toFixed(1)}%</span>
+                            <span style="font-weight:800; font-size:0.8rem">APR: ${((m.v*3+m.e)/(m.total*3)*100).toFixed(1)}%</span>
                         </div>
                         <button class="btn-del" onclick="excluirMemoria(${idx})"><i class="fas fa-trash"></i></button>
                     </div>
@@ -304,20 +374,15 @@
         }
 
         function excluirMemoria(idx) {
-            if(!confirm("Tem certeza que deseja apagar este save?")) return;
-            let mem = JSON.parse(localStorage.getItem('hub_memorial_live') || '[]');
+            if(!confirm("Apagar este registro?")) return;
+            let mem = JSON.parse(localStorage.getItem('hub_mem_neutro') || '[]');
             mem.splice(idx, 1);
-            localStorage.setItem('hub_memorial_live', JSON.stringify(mem));
+            localStorage.setItem('hub_mem_neutro', JSON.stringify(mem));
             renderMemorial();
         }
 
-        // Inicialização
-        window.onload = () => {
-            renderTracker();
-            renderMemorial();
-            setPre('igual', document.querySelector('.btn-touch.active'));
-            updateAI();
-        };
+        // Init
+        window.onload = () => { renderTracker(); renderMemorial(); setPre('igual', document.querySelector('.btn-touch.active')); updateAI(); };
     </script>
 </body>
 </html>
