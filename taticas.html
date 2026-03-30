@@ -2,68 +2,85 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Táticas e Jogos - Hub do Treinador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Auxiliar Técnico - Hub do Treinador</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- ESTILOS DO CAMPO TÁTICO --- */
-        .pitch { 
-            position: relative; width: 100%; height: 260px; background: #15803d; 
-            border: 2px solid #fff; border-radius: 8px; overflow: hidden; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2); margin-top: 15px;
+        /* --- CORES E VARIÁVEIS --- */
+        :root {
+            --pitch-grass: #2d8a39;   
+            --pitch-lines: rgba(255, 255, 255, 0.6);
+            --dark-panel: #1e293b;    
+            --btn-bg: #f8fafc;
+            --btn-active: #2563eb;    
+            --neon-rival: #ccff00;    
         }
-        .pitch::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.4); }
-        .pitch-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; }
-        .pitch-area-top { position: absolute; top: 0; left: 25%; width: 50%; height: 15%; border: 2px solid rgba(255,255,255,0.4); border-top: none; }
-        .pitch-area-bottom { position: absolute; bottom: 0; left: 25%; width: 50%; height: 15%; border: 2px solid rgba(255,255,255,0.4); border-bottom: none; }
-        
-        .player-dot { 
-            position: absolute; width: 18px; height: 18px; border-radius: 50%; 
-            transform: translate(-50%, -50%); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4); font-size: 0;
+
+        /* --- BOTÕES OTIMIZADOS PARA CELULAR --- */
+        .touch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; margin-bottom: 15px; }
+        .btn-touch { 
+            background: var(--btn-bg); border: 2px solid #cbd5e1; border-radius: 10px; 
+            padding: 12px 4px; font-size: 0.75rem; font-weight: 800; color: #475569; 
+            text-align: center; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 4px 0 #cbd5e1; transition: all 0.1s;
         }
-        .dot-nosso { background: #ffffff; border: 3px solid var(--text-main); }
-        .dot-nosso.gk { background: var(--warning); }
-        .dot-rival { background: var(--danger); border: 2px solid #7f1d1d; }
-        .dot-rival.gk { background: #000; }
+        .btn-touch:active { transform: translateY(4px); box-shadow: none; }
+        .btn-touch.active { 
+            background: var(--btn-active); color: #fff; 
+            border-color: #1e3a8a; box-shadow: 0 4px 0 #1e3a8a; 
+        }
 
-        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px; }
-        .btn-tat { padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-app); cursor: pointer; transition: 0.2s; font-weight: 600; color: var(--text-muted); }
-        .btn-tat-nosso:hover { border-color: var(--primary); color: var(--primary); }
-        .btn-tat-nosso.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-        .btn-tat-adv:hover { border-color: var(--danger); color: var(--danger); }
-        .btn-tat-adv.active { background: var(--danger); color: #fff; border-color: var(--danger); }
-
-        .scout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 5px; }
-        .scout-grid select { padding: 8px; font-size: 0.8rem; margin-bottom: 0; border-radius: 6px; border: 1px solid var(--border); color: var(--text-main); background: var(--bg-surface); }
+        /* --- MINICAMPOS DE FUTEBOL --- */
+        .tactical-board { background: var(--dark-panel); padding: 15px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
+        .pitch-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         
-        .info-tag { font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-        .info-val { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+        .pitch {
+            position: relative; width: 100%; aspect-ratio: 2 / 3; 
+            background: var(--pitch-grass); border: 2px solid #fff; border-radius: 4px;
+            overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
 
-        /* --- CALENDÁRIO --- */
-        .cal-header { background: var(--bg-app); border: 1px solid var(--border); padding: 8px; text-align: center; font-weight: 600; font-size: 0.85rem; border-radius: 6px 6px 0 0; color: var(--text-main); text-transform: uppercase; }
-        .cal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-top: none; }
-        .cal-box { background: var(--bg-surface); padding: 10px 5px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
-        .cal-box:hover { filter: brightness(0.95); }
-        .state-v { background: var(--success) !important; color: #fff !important; }
-        .state-e { background: var(--warning) !important; color: #fff !important; }
-        .state-d { background: var(--danger) !important; color: #fff !important; }
-
-        /* --- ARQUIVO HISTÓRICO --- */
-        .archive-item { background: var(--bg-app); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .stats-badge { background: var(--bg-surface); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--border); color: var(--text-main); }
-        .btn-archive { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 15px; transition: 0.2s; }
-        .btn-archive:hover { background: var(--primary-hover); }
+        /* Linhas do Campo */
+        .p-line { position: absolute; border: 1.5px solid var(--pitch-lines); }
+        .p-center { top: 50%; left: 0; right: 0; }
+        .p-circle { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; border-radius: 50%; }
+        .p-area-top { top: 0; left: 20%; right: 20%; height: 18%; border-top: none; }
+        .p-area-bot { bottom: 0; left: 20%; right: 20%; height: 18%; border-bottom: none; }
         
-        .action-icon { border: none; background: transparent; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
-        .action-icon:hover { opacity: 0.7; transform: scale(1.1); }
+        /* Bonequinhos */
+        .player-dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); border: 1px solid #000; z-index: 10; transition: 0.4s; }
+        .dot-ours { background: #fff; box-shadow: 0 0 6px rgba(255,255,255,0.8); }
+        .dot-rival { background: var(--neon-rival); box-shadow: 0 0 6px var(--neon-rival); }
+
+        .pitch-label { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.8); color: #fff; padding: 2px 6px; font-size: 0.6rem; font-weight: bold; border-radius: 3px; z-index: 20; }
+
+        /* --- TEXTOS DA IA --- */
+        .ai-advice { text-align: center; color: #fff; margin-bottom: 15px; }
+        .ai-title { font-family: 'Kanit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #38bdf8; display: block; line-height: 1.2; text-transform: uppercase;}
+        .ai-subtitle { font-size: 0.85rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 5px; display: block; }
+
+        /* --- RASTREADOR 5x5 --- */
+        .tracker-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 20px;}
+        .tracker-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; }
+        .comp-title { font-size: 0.9rem; font-weight: 800; color: #1e293b; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; text-transform: uppercase; }
+        .row-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; }
+        .row-5:last-child { border-bottom: none; }
+        .sq { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 8px; border: 2px solid #cbd5e1; cursor: pointer; color: #64748b; font-size: 0.8rem; background: #f8fafc;}
+        .v { background: #10b981; color: #fff; border-color: #059669; }
+        .e { background: #f59e0b; color: #fff; border-color: #d97706; }
+        .d { background: #ef4444; color: #fff; border-color: #dc2626; }
+
+        /* Memorial */
+        .mem-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-del { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body>
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
 
     <aside class="sidebar">
-        <div class="brand"><i class="fas fa-terminal" style="color: var(--primary);"></i> <span>Hub do Treinador</span></div>
+        <div class="brand"><i class="fas fa-terminal"></i> <span>Treinador</span></div>
         <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
         <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
         <a href="elenco.html" class="nav-link"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
@@ -72,391 +89,234 @@
 
     <main class="main-content">
         <div class="page-header">
-            <h1 class="page-title">Quadro Tático e Jogos</h1>
-            <p class="page-subtitle">Análise avançada de adversários e registro histórico de temporadas.</p>
+            <h1 class="page-title">Auxiliar de Campo</h1>
+            <p class="page-subtitle">Análise em tempo real e rastreio de desempenho da temporada.</p>
         </div>
 
-        <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 25px;">
+        <div class="card" style="border-top: 4px solid #475569;">
+            <div class="card-header"><h3><i class="fas fa-clipboard-list"></i> 1. Planejamento (Pré-Jogo)</h3></div>
+            <label style="font-size: 0.8rem; font-weight: 700; color: #475569;">Nível do Adversário:</label>
+            <div class="touch-grid">
+                <button class="btn-touch" onclick="setPre('fraco', this)">FRACO</button>
+                <button class="btn-touch active" onclick="setPre('igual', this)">IGUAL</button>
+                <button class="btn-touch" onclick="setPre('forte', this)">FORTE</button>
+            </div>
             
-            <div class="card" style="border-top: 4px solid var(--danger);">
-                <div class="card-header"><i class="fas fa-search" style="color: var(--danger);"></i><h3>Relatório do Adversário</h3></div>
-                
-                <div class="btn-group" id="btn_adv_taticas" style="margin-bottom: 15px;">
-                    <button class="btn-tat btn-tat-adv active" onclick="setAdvTatica('442', this)">4-4-2</button>
-                    <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('433', this)">4-3-3</button>
-                    <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('352', this)">3-5-2</button>
-                    <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('451', this)">4-5-1</button>
-                    <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('343', this)">3-4-3</button>
-                    <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('532', this)">5-3-2</button>
-                    <button class="btn-tat btn-tat-adv" onclick="setAdvTatica('541', this)">5-4-1</button>
+            <div class="tactical-board" style="max-width: 300px; margin: 0 auto;">
+                <div class="ai-advice">
+                    <span class="ai-subtitle">Formação Sugerida</span>
+                    <span class="ai-title" id="pre_title">EQUILIBRADO | 4-2-3-1</span>
                 </div>
-
-                <div class="scout-grid">
-                    <div>
-                        <span class="info-tag">Força Relativa</span>
-                        <select id="adv_forca" onchange="analisarAdversario()">
-                            <option value="igual">Força Igual</option>
-                            <option value="forte">Mais Forte</option>
-                            <option value="fraco">Mais Fraco</option>
-                        </select>
-                    </div>
-                    <div>
-                        <span class="info-tag">Foco do Ataque</span>
-                        <select id="adv_foco" onchange="analisarAdversario()">
-                            <option value="misto">Misto (Normal)</option>
-                            <option value="meio">Pelo Meio</option>
-                            <option value="laterais">Pelas Laterais</option>
-                        </select>
-                    </div>
-                    <div>
-                        <span class="info-tag">Postura / Ment.</span>
-                        <select id="adv_ment" onchange="analisarAdversario()">
-                            <option value="equilibrado">Equilibrado</option>
-                            <option value="ataque">Ataque Total</option>
-                            <option value="retranca">Retranca / Contra</option>
-                        </select>
-                    </div>
-                    <div>
-                        <span class="info-tag">Marcação deles</span>
-                        <select id="adv_marc" onchange="analisarAdversario()">
-                            <option value="pesada">Pesada</option>
-                            <option value="leve">Leve (Cercam)</option>
-                            <option value="muitopesada">M. Pesada (Agressiva)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="pitch"><div id="layer_rival"></div></div>
-            </div>
-
-            <div class="card" style="border-top: 4px solid var(--primary);">
-                <div class="card-header"><i class="fas fa-clipboard-check" style="color: var(--primary);"></i><h3>Plano de Jogo Recomendado</h3></div>
-                
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: var(--bg-app); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                    <div><span class="info-tag">Tática Ideal</span><span id="nossa_form" class="info-val" style="color: var(--primary); font-size: 1.2rem;">4-4-2</span></div>
-                    <div><span class="info-tag">Mentalidade</span><span id="nossa_ment" class="info-val">Equilibrado</span></div>
-                    <div><span class="info-tag">Marcação</span><span id="nossa_marc" class="info-val">Pesada</span></div>
-                    <div style="grid-column: span 3; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 5px;">
-                        <span class="info-tag">Instrução de Vestiário (Scout)</span>
-                        <span id="nossa_instrucao" class="info-val" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Aguardando análise tática...</span>
-                    </div>
-                </div>
-
-                <div class="btn-group" id="btn_nossas_taticas" style="margin-bottom: 10px; margin-top: 15px;">
-                    <button class="btn-tat btn-tat-nosso active" onclick="setNossaTatica('442', this)">4-4-2</button>
-                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('433', this)">4-3-3</button>
-                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('352', this)">3-5-2</button>
-                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('451', this)">4-5-1</button>
-                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('343', this)">3-4-3</button>
-                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('532', this)">5-3-2</button>
-                    <button class="btn-tat btn-tat-nosso" onclick="setNossaTatica('541', this)">5-4-1</button>
-                </div>
-
-                <div class="pitch"><div id="layer_nosso"></div></div>
-            </div>
-
-            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--text-main);">
-                <div class="card-header" style="justify-content: space-between;">
-                    <div style="display:flex; align-items:center; gap:10px;"><i class="fas fa-calendar-alt"></i><h3>Temporada Atual</h3></div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 10px;">
-                        <span><i class="fas fa-square" style="color: var(--success);"></i> Vit</span>
-                        <span><i class="fas fa-square" style="color: var(--warning);"></i> Emp</span>
-                        <span><i class="fas fa-square" style="color: var(--danger);"></i> Der</span>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px;">
-                    <div><div class="cal-header">Estadual</div><div class="cal-grid" id="grid_estadual"></div></div>
-                    <div><div class="cal-header">BR (1º T)</div><div class="cal-grid" id="grid_br1"></div></div>
-                    <div><div class="cal-header">BR (2º T)</div><div class="cal-grid" id="grid_br2"></div></div>
-                    <div><div class="cal-header">Copas</div><div class="cal-grid" id="grid_copa"></div></div>
-                </div>
-
-                <div style="background: var(--bg-app); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
-                    <h4 style="margin-bottom: 15px; color: var(--text-main);"><i class="fas fa-flag-checkered"></i> Encerrar e Arquivar Temporada</h4>
-                    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:15px; align-items: flex-end;">
-                        <div class="input-group" style="margin:0;"><label>Nome / Ano do Save</label><input type="text" id="arc_ano" placeholder="Ex: 2026 - Galo Manager"></div>
-                        <div class="input-group" style="margin:0;"><label>Posição Final</label><input type="text" id="arc_pos" placeholder="Ex: 2º Lugar"></div>
-                        <div class="input-group" style="margin:0;"><label>Conquistou Título?</label><select id="arc_titulo"><option value="Não">Não</option><option value="🏆 CAMPEÃO">Sim, Fomos Campeões!</option></select></div>
-                    </div>
-                    <button class="btn-archive" onclick="arquivarTemporada()"><i class="fas fa-save"></i> ARQUIVAR DESEMPENHO E RESETAR JOGOS</button>
+                <div class="pitch">
+                    <div class="pitch-label">VOCÊ</div>
+                    <div class="p-line p-center"></div><div class="p-line p-circle"></div>
+                    <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                    <div id="pitch_pre"></div>
                 </div>
             </div>
-
-            <div class="card" style="grid-column: span 2; border-top: 4px solid var(--warning);">
-                <div class="card-header"><i class="fas fa-medal" style="color: var(--warning);"></i><h3>Memorial de Temporadas Arquivadas</h3></div>
-                <div id="lista_arquivos">
-                    </div>
-            </div>
-
         </div>
+
+        <div class="card" style="border-top: 4px solid var(--btn-active);">
+            <div class="card-header"><h3><i class="fas fa-bolt"></i> 2. Leitura de Campo (Ao Vivo)</h3></div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">Postura do Rival:</label>
+                    <div class="touch-grid" style="grid-template-columns: 1fr;">
+                        <button class="btn-touch" onclick="setLive('pos', 'ata', this)">ATACANDO</button>
+                        <button class="btn-touch active" onclick="setLive('pos', 'equ', this)">EQUILIBRADO</button>
+                        <button class="btn-touch" onclick="setLive('pos', 'ret', this)">RETRANCA</button>
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">Foco do Ataque:</label>
+                    <div class="touch-grid" style="grid-template-columns: 1fr;">
+                        <button class="btn-touch active" onclick="setLive('atk', 'meio', this)">PELO MEIO</button>
+                        <button class="btn-touch" onclick="setLive('atk', 'alas', this)">PELAS ALAS</button>
+                    </div>
+                </div>
+            </div>
+
+            <label style="font-size: 0.75rem; font-weight: 700; color: #475569; margin-top: 10px; display:block;">Formação do Rival:</label>
+            <div class="touch-grid">
+                <button class="btn-touch active" onclick="setLive('form', '442', this)">4-4-2</button>
+                <button class="btn-touch" onclick="setLive('form', '433', this)">4-3-3</button>
+                <button class="btn-touch" onclick="setLive('form', '352', this)">3-5-2</button>
+                <button class="btn-touch" onclick="setLive('form', '451', this)">4-5-1</button>
+            </div>
+
+            <div class="tactical-board">
+                <div class="ai-advice">
+                    <span class="ai-subtitle" id="live_instrucao">Ajuste tático calculado</span>
+                    <span class="ai-title" id="live_title">CARREGANDO...</span>
+                </div>
+                
+                <div class="pitch-container">
+                    <div class="pitch">
+                        <div class="pitch-label" style="background: #ef4444;">RIVAL</div>
+                        <div class="p-line p-center"></div><div class="p-line p-circle"></div>
+                        <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                        <div id="pitch_rival"></div>
+                    </div>
+                    <div class="pitch">
+                        <div class="pitch-label" style="background: #2563eb;">NOSSO TIME</div>
+                        <div class="p-line p-center"></div><div class="p-line p-circle"></div>
+                        <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                        <div id="pitch_ours"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 25px; border-top: 4px solid #10b981;">
+            <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <h3><i class="fas fa-chart-line"></i> Desempenho (5x5)</h3>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="archive_name" placeholder="Ex: Galo 2026" style="width: 130px; font-size: 0.8rem; padding: 8px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                    <button class="btn-touch" onclick="arquivarTemporada()" style="background: #1e293b; color: #fff; margin:0; padding: 8px 12px; box-shadow: none;">SALVAR</button>
+                </div>
+            </div>
+            <div class="tracker-wrapper" id="tracker_root"></div>
+        </div>
+
+        <div id="memorial_list" style="margin-top: 20px;"></div>
     </main>
 
     <script>
-        // ==========================================
-        // CONFIGURAÇÕES DO CAMPO E PEÇAS
-        // ==========================================
+        // --- COORDENADAS DOS JOGADORES (PROPORÇÃO 2:3) ---
         const coords = {
-            "442": [[50,92], [15,75], [38,75], [62,75], [85,75], [15,45], [38,45], [62,45], [85,45], [35,18], [65,18]],
-            "433": [[50,92], [15,75], [38,75], [62,75], [85,75], [25,48], [50,48], [75,48], [20,18], [50,18], [80,18]],
-            "352": [[50,92], [25,75], [50,75], [75,75], [15,45], [33,45], [50,45], [67,45], [85,45], [35,18], [65,18]],
-            "451": [[50,92], [15,75], [38,75], [62,75], [85,75], [15,45], [33,45], [50,45], [67,45], [85,45], [50,15]],
-            "343": [[50,92], [25,75], [50,75], [75,75], [20,48], [40,48], [60,48], [80,48], [20,18], [50,18], [80,18]],
-            "532": [[50,92], [10,75], [30,75], [50,75], [70,75], [90,75], [25,48], [50,48], [75,48], [35,18], [65,18]],
-            "541": [[50,92], [10,75], [30,75], [50,75], [70,75], [90,75], [20,45], [40,45], [60,45], [80,45], [50,15]]
+            "442": [[50,90], [15,75], [38,78], [62,78], [85,75], [20,48], [40,50], [60,50], [80,48], [38,25], [62,25]],
+            "433": [[50,90], [15,75], [38,78], [62,78], [85,75], [25,55], [50,58], [75,55], [18,25], [50,18], [82,25]],
+            "4231": [[50,90], [15,75], [38,78], [62,78], [85,75], [35,60], [65,60], [20,38], [50,32], [80,38], [50,18]],
+            "451": [[50,90], [15,75], [38,78], [62,78], [85,75], [10,55], [30,55], [50,55], [70,55], [90,55], [50,22]],
+            "352": [[50,90], [25,78], [50,80], [75,78], [10,50], [30,50], [50,50], [70,50], [90,50], [35,25], [65,25]]
         };
 
-        function desenharCampo(formacao, layerId, isRival) {
-            const layer = document.getElementById(layerId);
-            const pos = coords[formacao] || coords["442"];
-            let html = '';
-            pos.forEach((p, index) => {
-                let dotClass = isRival ? 'dot-rival' : 'dot-nosso';
-                let isGk = index === 0 ? 'gk' : '';
-                html += `<div class="player-dot ${dotClass} ${isGk}" style="left:${p[0]}%; top:${p[1]}%;"></div>`;
+        let state = { pos: 'equ', atk: 'meio', form: '442' };
+
+        // --- PRÉ-JOGO ---
+        function setPre(v, btn) {
+            btn.parentElement.querySelectorAll('.btn-touch').forEach(x => x.classList.remove('active'));
+            btn.classList.add('active');
+            let f = v==='fraco' ? '433' : v==='igual' ? '4231' : '442';
+            document.getElementById('pre_title').innerText = v==='fraco' ? 'ATAQUE TOTAL | 4-3-3' : v==='igual' ? 'EQUILIBRADO | 4-2-3-1' : 'CONTRA-ATAQUE | 4-4-2';
+            renderDots(f, 'pitch_pre', 'dot-ours');
+        }
+
+        // --- AO VIVO ---
+        function setLive(tipo, valor, btn) {
+            btn.parentElement.querySelectorAll('.btn-touch').forEach(x => x.classList.remove('active'));
+            btn.classList.add('active');
+            state[tipo] = valor;
+            updateAI();
+        }
+
+        function updateAI() {
+            let p = "Equilibrado", f = "433", foco = "Pelas Alas", marc = "Pesada";
+            
+            if(state.pos === 'ata') p = "Contra-Ataque";
+            else if(state.pos === 'ret') p = "Ataque Total";
+
+            if(state.form === '442') f = "433";
+            else if(state.form === '433') f = "451";
+            else if(state.form === '352') f = "4231";
+            else f = "352";
+
+            foco = state.atk === 'meio' ? "Explorar as Alas" : "Forçar pelo Meio";
+
+            document.getElementById('live_title').innerText = `${p} | ${f.split('').join('-')}`;
+            document.getElementById('live_instrucao').innerText = `Foco: ${foco} • Marcação: ${marc}`;
+            
+            renderDots(state.form, 'pitch_rival', 'dot-rival');
+            renderDots(f, 'pitch_ours', 'dot-ours');
+        }
+
+        function renderDots(form, id, cl) {
+            const container = document.getElementById(id); if(!container) return;
+            container.innerHTML = "";
+            (coords[form] || coords["442"]).forEach(pt => {
+                const dot = document.createElement('div');
+                dot.className = `player-dot ${cl}`;
+                dot.style.left = pt[0] + "%"; dot.style.top = pt[1] + "%";
+                container.appendChild(dot);
             });
-            layer.innerHTML = html;
         }
 
-        let advFormacaoAtual = '442';
+        // --- RASTREADOR 5x5 ---
+        const configTracker = [{n:'Estadual', j:15}, {n:'Brasileirão', j:38}, {n:'Libertadores', j:13}, {n:'Copa do Brasil', j:12}];
 
-        function setAdvTatica(formacao, btn) {
-            document.querySelectorAll('#btn_adv_taticas .btn-tat').forEach(x => x.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            advFormacaoAtual = formacao;
-            analisarAdversario();
-        }
-
-        // ==========================================
-        // 🧠 O CÉREBRO TÁTICO COMPLETO (INTEGRAL)
-        // ==========================================
-        function analisarAdversario() {
-            const forca = document.getElementById('adv_forca').value;
-            const form = advFormacaoAtual;
-            const ment = document.getElementById('adv_ment').value;
-            const foco = document.getElementById('adv_foco').value;
-            const marc = document.getElementById('adv_marc').value;
-
-            let nossaForm = "442";
-            let nossaMent = "Equilibrado";
-            let nossaMarc = "Pesada";
-            let instrucao = "";
-
-            // 1. ANÁLISE DE FORMAÇÃO (Anti-Tática Pura do Brasfoot)
-            if (form === "343") {
-                nossaForm = (forca === "forte") ? "451" : "442";
-                instrucao += "O 3-4-3 deixa espaços atrás dos alas. Explore as pontas com passes longos. ";
-            } else if (form === "352") {
-                nossaForm = (forca === "forte") ? "451" : "433";
-                instrucao += "Eles congestionam o meio. Force o jogo pelas pontas com 3 atacantes para sobrecarregar os zagueiros. ";
-            } else if (form === "433") {
-                nossaForm = (forca === "fraco") ? "343" : "442";
-                instrucao += "Atenção aos pontas! Tranque a defesa com laterais duplas se o jogo for duro. ";
-            } else if (form === "442") {
-                nossaForm = (forca === "fraco") ? "433" : "352";
-                instrucao += "Formação clássica. Tente ganhar o meio-campo no 3-5-2 ou agrida no 4-3-3 se for favorito. ";
-            } else if (form === "451") {
-                nossaForm = (forca === "forte") ? "442" : "433";
-                instrucao += "Vão estacionar o autocarro e jogar no seu erro. Paciência na criação. ";
-            } else if (form === "532" || form === "541") {
-                nossaForm = (forca === "forte") ? "451" : "343";
-                instrucao += "Adversário super defensivo. Suba as linhas e sufoque no campo deles para abrir a lata. ";
-            }
-
-            // 2. MENTALIDADE E MARCAÇÃO (Análise de Força e Agressividade)
-            if (forca === "forte") {
-                if (ment === "ataque") {
-                    nossaMent = "Contra-Ataque";
-                    nossaMarc = "Muito Pesada";
-                    instrucao += "Eles vêm para cima com força! Feche a casa e explore a transição rápida. ";
-                } else {
-                    nossaMent = "Defensivo";
-                    nossaMarc = "Pesada";
-                    instrucao += "Eles são fortes, mas cautelosos. Jogue no erro deles. ";
+        function renderTracker() {
+            const root = document.getElementById('tracker_root'); root.innerHTML = "";
+            let data = JSON.parse(localStorage.getItem('hub_jogos_live') || '{}');
+            
+            configTracker.forEach(conf => {
+                const card = document.createElement('div'); card.className = 'tracker-card';
+                card.innerHTML = `<div class="comp-title">${conf.n}</div>`;
+                let row;
+                for(let i=1; i<=conf.j; i++) {
+                    if((i-1)%5 === 0) { row = document.createElement('div'); row.className = 'row-5'; card.appendChild(row); }
+                    const id = `${conf.n}_${i}`;
+                    const sq = document.createElement('div'); sq.className = `sq ${data[id]||''}`;
+                    sq.innerText = i;
+                    sq.onclick = () => {
+                        const st = ['', 'v', 'e', 'd'];
+                        data[id] = st[(st.indexOf(data[id]||'')+1)%4];
+                        localStorage.setItem('hub_jogos_live', JSON.stringify(data));
+                        sq.className = `sq ${data[id]}`;
+                    };
+                    row.appendChild(sq);
                 }
-            } else if (forca === "fraco") {
-                nossaMent = "Ataque Total";
-                nossaMarc = (marc === "muitopesada") ? "Leve" : "Pesada";
-                instrucao += "Somos muito superiores. Imponha o ritmo desde o apito inicial. ";
-                if (marc === "muitopesada") instrucao += "Toque a bola rápido para evitar lesões contra a marcação agressiva. ";
-            } else { // Força Igual
-                if (ment === "retranca") {
-                    nossaMent = "Ataque Total";
-                    nossaMarc = "Pesada";
-                } else if (ment === "ataque") {
-                    nossaMent = "Contra-Ataque";
-                    nossaMarc = "Muito Pesada";
-                    instrucao += "Jogo equilibrado. Deixe eles se exporem e castigue no contra-ataque. ";
-                } else {
-                    nossaMent = "Equilibrado";
-                    nossaMarc = "Pesada";
-                }
-            }
-
-            // 3. REFINAMENTO DE FOCO DE ATAQUE
-            if (foco === "laterais" && nossaForm !== "442" && nossaForm !== "451") {
-                instrucao += "Proteja bem os flancos, não suba muito com os laterais. ";
-            } else if (foco === "meio" && (nossaForm === "442" || nossaForm === "433")) {
-                instrucao += "Eles forçam pelo centro. Os seus volantes precisam focar na marcação. ";
-            }
-
-            // 4. ATUALIZAR INTERFACE
-            document.getElementById('nossa_form').innerText = nossaForm;
-            document.getElementById('nossa_ment').innerText = nossaMent;
-            document.getElementById('nossa_marc').innerText = nossaMarc;
-            document.getElementById('nossa_instrucao').innerText = instrucao;
-
-            // Mover as peças nos campos
-            desenharCampo(form, 'layer_rival', true);
-            let btnAlvo = Array.from(document.querySelectorAll('#btn_nossas_taticas .btn-tat')).find(b => b.innerText.replace(/-/g, '') === nossaForm);
-            if(btnAlvo) setNossaTatica(nossaForm, btnAlvo);
+                root.appendChild(card);
+            });
         }
 
-        // Seleção manual da nossa tática
-        function setNossaTatica(formacao, btn) {
-            document.querySelectorAll('#btn_nossas_taticas .btn-tat').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            desenharCampo(formacao, 'layer_nosso', false);
-            localStorage.setItem('galo_tat_ativa', formacao);
-        }
-
-        // ==========================================
-        // SISTEMA DE CALENDÁRIO E ARQUIVO HISTÓRICO
-        // ==========================================
-        const grids = {
-            'grid_estadual': ['1','2','3','4','5','6','7','8','9','10','11','SF1','SF2','F1','F2'],
-            'grid_br1': Array.from({length: 19}, (_, i) => `${i + 1}`),
-            'grid_br2': Array.from({length: 19}, (_, i) => `${i + 20}`),
-            'grid_copa': ['C1','C2','C3','C4','O1','O2','Q1','Q2','S1','S2','F1','F2']
-        };
-        const states = ['', 'state-v', 'state-e', 'state-d'];
-
-        function renderCalendario() {
-            let data = JSON.parse(localStorage.getItem('galo_Jogos') || '{}');
-            for (let gridId in grids) {
-                let container = document.getElementById(gridId);
-                let html = '';
-                grids[gridId].forEach((jogo, index) => {
-                    let idUnico = `${gridId}_${index}`;
-                    let estado = data[idUnico] || 0;
-                    html += `<div class="cal-box ${states[estado]}" id="${idUnico}" onclick="mudarEstado('${idUnico}')">${jogo}</div>`;
-                });
-                container.innerHTML = html;
-            }
-        }
-
-        function mudarEstado(idUnico) {
-            let data = JSON.parse(localStorage.getItem('galo_Jogos') || '{}');
-            let novo = ((data[idUnico] || 0) + 1) % 4;
-            data[idUnico] = novo;
-            localStorage.setItem('galo_Jogos', JSON.stringify(data));
-            document.getElementById(idUnico).className = `cal-box ${states[novo]}`;
-        }
-
+        // --- MEMORIAL DE ARQUIVAMENTO ---
         function arquivarTemporada() {
-            let data = JSON.parse(localStorage.getItem('galo_Jogos') || '{}');
-            let v = 0, e = 0, d = 0;
-            
-            Object.values(data).forEach(st => {
-                if(st === 1) v++; if(st === 2) e++; if(st === 3) d++;
-            });
+            const nome = document.getElementById('archive_name').value.trim();
+            if(!nome) return alert("Digite um nome para salvar a temporada!");
+            let data = JSON.parse(localStorage.getItem('hub_jogos_live') || '{}');
+            let v=0, e=0, d=0; Object.values(data).forEach(x => { if(x==='v') v++; if(x==='e') e++; if(x==='d') d++; });
+            if(v+e+d === 0) return alert("Não há jogos registrados para arquivar!");
 
-            let totalJogos = v + e + d;
-            if(totalJogos === 0) { 
-                alert("Você não registrou nenhum jogo! Pinte o calendário antes de arquivar."); 
-                return; 
-            }
-
-            let aproveitamento = (((v * 3) + (e * 1)) / (totalJogos * 3) * 100).toFixed(1);
-            
-            let novoArquivo = {
-                id: Date.now(),
-                ano: document.getElementById('arc_ano').value || "Temporada sem nome",
-                pos: document.getElementById('arc_pos').value || "--",
-                titulo: document.getElementById('arc_titulo').value,
-                v, e, d, total: totalJogos, aproveitamento,
-                dadosOriginais: data
-            };
-
-            let arquivos = JSON.parse(localStorage.getItem('hub_Arquivos') || '[]');
-            arquivos.unshift(novoArquivo); // Adiciona no início da lista
-            localStorage.setItem('hub_Arquivos', JSON.stringify(arquivos));
-
-            // Limpa a temporada atual
-            localStorage.removeItem('galo_Jogos');
-            document.getElementById('arc_ano').value = "";
-            document.getElementById('arc_pos').value = "";
-            document.getElementById('arc_titulo').value = "Não";
-            
-            renderCalendario();
-            renderArquivos();
-            alert("Sucesso! A temporada foi arquivada no Memorial Histórico.");
+            let mem = JSON.parse(localStorage.getItem('hub_memorial_live') || '[]');
+            mem.unshift({ nome, v, e, d, total: v+e+d, data: new Date().toLocaleDateString() });
+            localStorage.setItem('hub_memorial_live', JSON.stringify(mem));
+            localStorage.removeItem('hub_jogos_live');
+            document.getElementById('archive_name').value = "";
+            renderTracker(); renderMemorial();
         }
 
-        function renderArquivos() {
-            let arquivos = JSON.parse(localStorage.getItem('hub_Arquivos') || '[]');
-            let html = '';
-            
-            arquivos.forEach(a => {
-                let colorTitle = a.titulo !== 'Não' ? `color: var(--success); font-weight: 700;` : `color: var(--text-muted);`;
-                
-                html += `
-                <div class="archive-item">
-                    <div>
-                        <strong style="color:var(--text-main); font-size: 1.1rem;">${a.ano}</strong> <br>
-                        <span style="font-size: 0.85rem; color: var(--text-muted);">Posição: <strong>${a.pos}</strong> | <span style="${colorTitle}">${a.titulo !== 'Não' ? a.titulo : 'Sem Títulos'}</span></span><br>
-                        <small style="color:var(--text-muted); margin-top: 5px; display: inline-block;">
-                            ${a.total} Jogos <span style="margin:0 5px;">|</span> <strong style="color:var(--success)">${a.v}V</strong> - <strong style="color:var(--warning)">${a.e}E</strong> - <strong style="color:var(--danger)">${a.d}D</strong>
-                        </small>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                        <div class="stats-badge" style="background: var(--bg-app); border-color: var(--border); color: var(--text-main); font-family: 'Kanit'; font-size: 1.2rem;">${a.aproveitamento}%</div>
-                        <div style="display:flex; gap: 15px; margin-top: 5px;">
-                            <button class="action-icon" style="color:var(--blue);" onclick="desarquivar(${a.id})" title="Restaurar estes jogos para o calendário atual"><i class="fas fa-undo"></i></button>
-                            <button class="action-icon" style="color:var(--danger);" onclick="deletarArquivo(${a.id})" title="Excluir este arquivo para sempre"><i class="fas fa-trash"></i></button>
+        function renderMemorial() {
+            const list = document.getElementById('memorial_list');
+            let mem = JSON.parse(localStorage.getItem('hub_memorial_live') || '[]');
+            list.innerHTML = mem.map((m, idx) => `
+                <div class="mem-card">
+                    <div><strong>${m.nome}</strong><br><small style="color:#64748b">${m.data}</small></div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div style="text-align:right; font-size:0.75rem;">
+                            ${m.v}V | ${m.e}E | ${m.d}D<br>
+                            <span style="font-weight:800; color:#1e293b; font-size:0.85rem">Aproveitamento: ${((m.v*3+m.e)/(m.total*3)*100).toFixed(1)}%</span>
                         </div>
+                        <button class="btn-del" onclick="excluirMemoria(${idx})"><i class="fas fa-trash"></i></button>
                     </div>
-                </div>`;
-            });
-            
-            if(arquivos.length === 0) {
-                html = '<p style="text-align:center; color:var(--text-muted); padding: 20px;">Nenhuma temporada arquivada ainda. Termine uma temporada e clique em Arquivar.</p>';
-            }
-            
-            document.getElementById('lista_arquivos').innerHTML = html;
+                </div>
+            `).join('') || '';
         }
 
-        function desarquivar(id) {
-            if(!confirm("Atenção: Restaurar esta temporada vai APAGAR os jogos que estão no calendário atual. Tem certeza que deseja recuperar estes jogos antigos?")) return;
-            
-            let arquivos = JSON.parse(localStorage.getItem('hub_Arquivos') || '[]');
-            let arc = arquivos.find(x => x.id === id);
-            
-            localStorage.setItem('galo_Jogos', JSON.stringify(arc.dadosOriginais));
-            renderCalendario();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function excluirMemoria(idx) {
+            if(!confirm("Tem certeza que deseja apagar este save?")) return;
+            let mem = JSON.parse(localStorage.getItem('hub_memorial_live') || '[]');
+            mem.splice(idx, 1);
+            localStorage.setItem('hub_memorial_live', JSON.stringify(mem));
+            renderMemorial();
         }
 
-        function deletarArquivo(id) {
-            if(!confirm("Tem certeza absoluta? Esta temporada será excluída para sempre.")) return;
-            
-            let arquivos = JSON.parse(localStorage.getItem('hub_Arquivos') || '[]');
-            arquivos = arquivos.filter(x => x.id !== id);
-            
-            localStorage.setItem('hub_Arquivos', JSON.stringify(arquivos));
-            renderArquivos();
-        }
-
-        window.onload = function() { 
-            // Inicializa a análise com valores neutros
-            document.getElementById('adv_forca').value = "igual";
-            document.getElementById('adv_foco').value = "misto";
-            document.getElementById('adv_ment').value = "equilibrado";
-            document.getElementById('adv_marc').value = "pesada";
-            
-            analisarAdversario();
-            renderCalendario(); 
-            renderArquivos();
+        // Inicialização
+        window.onload = () => {
+            renderTracker();
+            renderMemorial();
+            setPre('igual', document.querySelector('.btn-touch.active'));
+            updateAI();
         };
     </script>
 </body>
