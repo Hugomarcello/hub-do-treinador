@@ -115,9 +115,12 @@
         .stat-card .stat-value { font-size: 1.6rem; font-weight: 900; color: var(--text-main); line-height: 1.1; }
         .stat-card .stat-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
 
-        /* Widgets */
+        /* Widgets Gerais */
         .widget-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
         @media (min-width: 768px) { .widget-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .grid-2-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        @media (min-width: 600px) { .grid-2-col { grid-template-columns: 1fr 1fr; } }
 
         .form-tracker { display: flex; gap: 6px; }
         .form-dot { width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: #fff; }
@@ -131,7 +134,23 @@
         .info-label { color: var(--text-muted); font-weight: 700; }
         .info-val { color: var(--text-main); font-weight: 800; }
 
-        .nav-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        /* Formulários e Inputs */
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .input-global { 
+            width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; 
+            font-size: 0.85rem; color: var(--text-main); background: var(--bg-body); 
+            transition: background-color 0.3s, border-color 0.3s; outline: none;
+        }
+        .input-global:focus { border-color: var(--btn-active); background: var(--card-bg); }
+
+        /* Blocos Financeiros */
+        .fin-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .fin-row label { flex: 1; font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+        .fin-perc { width: 60px; text-align: center; font-weight: 800; color: var(--info); }
+        .fin-val { width: 90px; text-align: right; background: transparent; font-weight: 800; cursor: not-allowed; }
+
+        .nav-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;}
         @media (min-width: 600px) { .nav-grid { grid-template-columns: 1fr 1fr 1fr; } }
 
         .nav-card { 
@@ -224,7 +243,62 @@
             </div>
         </div>
 
-        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Ferramentas</h3>
+        <div class="card" style="border-top: 3px solid #0284c7;">
+            <div class="card-header"><i class="fas fa-sack-dollar" style="color: #0284c7;"></i> Planejamento Financeiro</div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: -10px; margin-bottom: 15px;">Defina o orçamento e o sistema calcula automaticamente os valores em Milhões (R$).</p>
+
+            <div class="grid-2-col" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label style="color: var(--text-main);">1. Dinheiro Total em Caixa (M)</label>
+                    <input type="number" id="fin_caixa_total" class="input-global" style="font-size: 1.2rem; font-weight: 900; color: #0284c7; border-color: #0284c7;" placeholder="Ex: 42.3" oninput="calcularFinancas(); salvarFinancas();">
+                </div>
+                <div class="form-group">
+                    <label>Meta de Venda de Atletas (M)</label>
+                    <input type="number" id="fin_vendas" class="input-global" placeholder="Ex: 15.0" oninput="salvarFinancas()">
+                </div>
+            </div>
+
+            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; display: block; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px;">2. Distribuição da Verba (%)</label>
+            
+            <div class="grid-2-col">
+                <div>
+                    <div class="fin-row">
+                        <label>Caixa (Reserva Livre)</label>
+                        <input type="number" id="fin_perc_reserva" class="input-global fin-perc" value="20" oninput="calcularFinancas(); salvarFinancas();">%
+                        <input type="text" id="fin_val_reserva" class="input-global fin-val" readonly>
+                    </div>
+                    <div class="fin-row">
+                        <label>Contratações (Profissional)</label>
+                        <input type="number" id="fin_perc_pro" class="input-global fin-perc" value="60" oninput="calcularFinancas(); salvarFinancas();">%
+                        <input type="text" id="fin_val_pro" class="input-global fin-val" readonly>
+                    </div>
+                </div>
+                <div>
+                    <div class="fin-row">
+                        <label>Contratações (Base)</label>
+                        <input type="number" id="fin_perc_base" class="input-global fin-perc" value="10" oninput="calcularFinancas(); salvarFinancas();">%
+                        <input type="text" id="fin_val_base" class="input-global fin-val" readonly>
+                    </div>
+                    <div class="fin-row">
+                        <label>Obras no Estádio</label>
+                        <input type="number" id="fin_perc_estadio" class="input-global fin-perc" value="10" oninput="calcularFinancas(); salvarFinancas();">%
+                        <input type="text" id="fin_val_estadio" class="input-global fin-val" readonly>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="fin_aviso" style="font-size: 0.75rem; color: #fff; background: var(--danger); padding: 6px 10px; border-radius: 6px; font-weight: bold; margin-top: 5px; display: none; text-align: center;">⚠️ A soma das porcentagens ultrapassa 100%! Ajuste os valores.</div>
+
+            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-top: 20px; margin-bottom: 10px; display: block; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px;">3. Expectativa de Premiações (M)</label>
+            <div class="grid-2-col">
+                <div class="form-group"><label>Estadual</label><input type="number" id="fin_premio_est" class="input-global" placeholder="R$ 0.0" oninput="salvarFinancas()"></div>
+                <div class="form-group"><label>Brasileirão</label><input type="number" id="fin_premio_bra" class="input-global" placeholder="R$ 0.0" oninput="salvarFinancas()"></div>
+                <div class="form-group"><label>Copa do Brasil</label><input type="number" id="fin_premio_cdb" class="input-global" placeholder="R$ 0.0" oninput="salvarFinancas()"></div>
+                <div class="form-group"><label>Libertadores</label><input type="number" id="fin_premio_lib" class="input-global" placeholder="R$ 0.0" oninput="salvarFinancas()"></div>
+            </div>
+        </div>
+
+        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Navegação do Hub</h3>
         <div class="nav-grid">
             <a href="diretrizes.html" class="nav-card">
                 <i class="fas fa-dna"></i>
@@ -248,17 +322,14 @@
     <script>
         // --- TEMA E SIDEBAR STATE ---
         function applyInitialStates() {
-            // Tema
             if(localStorage.getItem('hub_theme') === 'dark') {
                 document.body.classList.add('dark-theme');
                 document.getElementById('theme_icon').classList.replace('fa-moon', 'fa-sun');
             }
-            // Sidebar Desktop
             if(window.innerWidth > 768 && localStorage.getItem('hub_sidebar_state') === 'collapsed') {
                 document.getElementById('sidebar').classList.add('collapsed');
                 document.getElementById('main_content').classList.add('expanded');
             }
-            // Ajuste estético para a margem do título no mobile
             if(window.innerWidth <= 768) {
                 document.querySelector('.header-title-mobile').style.marginLeft = '45px';
             } else {
@@ -297,15 +368,62 @@
             }
         }
 
-        // --- NOVA FUNÇÃO: RESET TOTAL ---
-        function resetarHub() {
-            if(!confirm("⚠️ ATENÇÃO: HARD RESET ⚠️\n\nTem a certeza que deseja APAGAR TODOS OS DADOS DO HUB?\nIsso inclui Diretrizes, Elenco, Alvos de Mercado, Táticas e Histórico de Salves.\n\nUse apenas para começar uma carreira completamente do zero.")) return;
+        // --- SISTEMA FINANCEIRO ---
+        const FINANCAS_KEY = 'hub_financas_v1';
+
+        function carregarFinancas() {
+            const data = JSON.parse(localStorage.getItem(FINANCAS_KEY) || '{}');
+            const campos = ['fin_caixa_total', 'fin_vendas', 'fin_perc_reserva', 'fin_perc_pro', 'fin_perc_base', 'fin_perc_estadio', 'fin_premio_est', 'fin_premio_bra', 'fin_premio_cdb', 'fin_premio_lib'];
+            campos.forEach(id => {
+                if (data[id] !== undefined && document.getElementById(id)) {
+                    document.getElementById(id).value = data[id];
+                }
+            });
+            calcularFinancas();
+        }
+
+        function salvarFinancas() {
+            const campos = ['fin_caixa_total', 'fin_vendas', 'fin_perc_reserva', 'fin_perc_pro', 'fin_perc_base', 'fin_perc_estadio', 'fin_premio_est', 'fin_premio_bra', 'fin_premio_cdb', 'fin_premio_lib'];
+            const data = {};
+            campos.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) data[id] = el.value;
+            });
+            localStorage.setItem(FINANCAS_KEY, JSON.stringify(data));
+        }
+
+        function calcularFinancas() {
+            const total = parseFloat(document.getElementById('fin_caixa_total').value) || 0;
             
-            // Lista com todas as chaves do Hub para deletar, preservando o Tema e o estado da Sidebar
+            const pReserva = parseFloat(document.getElementById('fin_perc_reserva').value) || 0;
+            const pPro = parseFloat(document.getElementById('fin_perc_pro').value) || 0;
+            const pBase = parseFloat(document.getElementById('fin_perc_base').value) || 0;
+            const pEstadio = parseFloat(document.getElementById('fin_perc_estadio').value) || 0;
+            
+            const somaPerc = pReserva + pPro + pBase + pEstadio;
+            const aviso = document.getElementById('fin_aviso');
+            
+            if (somaPerc > 100) {
+                aviso.style.display = 'block';
+            } else {
+                aviso.style.display = 'none';
+            }
+
+            // Calcula valores em R$ M
+            document.getElementById('fin_val_reserva').value = "R$ " + ((total * pReserva) / 100).toFixed(1);
+            document.getElementById('fin_val_pro').value = "R$ " + ((total * pPro) / 100).toFixed(1);
+            document.getElementById('fin_val_base').value = "R$ " + ((total * pBase) / 100).toFixed(1);
+            document.getElementById('fin_val_estadio').value = "R$ " + ((total * pEstadio) / 100).toFixed(1);
+        }
+
+        // --- RESET TOTAL ---
+        function resetarHub() {
+            if(!confirm("⚠️ ATENÇÃO: HARD RESET ⚠️\n\nTem a certeza que deseja APAGAR TODOS OS DADOS DO HUB?\nIsso inclui Diretrizes, Elenco, Mercado, Táticas, Histórico e Finanças.\n\nUse apenas para começar uma carreira completamente do zero.")) return;
+            
             const chavesParaApagar = [
                 'hub_diretrizes_v1', 'hub_okrs_v1', 
                 'hub_elenco_master', 'hub_mercado', 'hub_notas_livres', 'hub_outros', 'hub_base_count', 
-                'hub_jogos_taticas_v1', 'hub_mem_taticas_v1'
+                'hub_jogos_taticas_v1', 'hub_mem_taticas_v1', FINANCAS_KEY
             ];
             
             chavesParaApagar.forEach(chave => localStorage.removeItem(chave));
@@ -359,14 +477,12 @@
             // Puxar os últimos 5 jogos da temporada atual (forma)
             const jogosAtuais = JSON.parse(localStorage.getItem('hub_jogos_taticas_v1') || '{}');
             let ultimosResultados = [];
-            // Itera pelas chaves para pegar os jogos preenchidos na ordem
             Object.values(jogosAtuais).forEach(val => {
                 if(val === 'v' || val === 'e' || val === 'd') {
                     ultimosResultados.push(val);
                 }
             });
             
-            // Pega apenas os 5 últimos
             const top5 = ultimosResultados.slice(-5);
             if(top5.length > 0) {
                 let htmlForma = '';
@@ -375,7 +491,6 @@
                     if(r==='e') htmlForma += `<div class="form-dot f-e">E</div>`;
                     if(r==='d') htmlForma += `<div class="form-dot f-d">D</div>`;
                 });
-                // Preenche espaços vazios se tiver menos de 5
                 for(let i=top5.length; i<5; i++) { htmlForma += `<div class="form-dot f-none">-</div>`; }
                 document.getElementById('dash_forma').innerHTML = htmlForma;
             }
@@ -385,9 +500,9 @@
         window.onload = () => { 
             applyInitialStates(); 
             carregarResumo();
+            carregarFinancas();
         };
         
-        // Ajuste no redimensionamento da tela
         window.addEventListener('resize', () => {
             if(window.innerWidth <= 768) {
                 document.querySelector('.header-title-mobile').style.marginLeft = '45px';
