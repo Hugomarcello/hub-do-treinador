@@ -14,16 +14,17 @@
             --text-main: #3f3f46;
             --text-muted: #71717a;
             --btn-bg: #ffffff;
-            --btn-active: #059669; /* Verde Esmeralda */
+            --btn-active: #059669; 
             --border-light: #e4e4e7;
             --pitch-grass: #16a34a; 
             --danger: #dc2626;
             --warning: #f59e0b;
+            --info: #0284c7;
         }
 
         body.dark-theme {
-            --bg-body: #09090b; /* Zinc 950 */
-            --card-bg: #18181b; /* Zinc 900 */
+            --bg-body: #09090b; 
+            --card-bg: #18181b; 
             --dark-panel: #202024; 
             --text-main: #f4f4f5; 
             --text-muted: #a1a1aa; 
@@ -32,91 +33,86 @@
             --border-light: #3f3f46; 
         }
 
-        /* --- ZERANDO MARGENS PARA APROVEITAR 100% DA TELA --- */
+        /* --- ZERANDO MARGENS --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { overflow-x: hidden; width: 100%; max-width: 100vw; transition: background-color 0.3s ease, color 0.3s ease; }
         body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Inter', sans-serif; }
 
-        /* --- BARRA LATERAL MOBILE --- */
+        /* --- BARRA LATERAL MOBILE & DESKTOP --- */
         .sidebar {
-            position: fixed; left: -260px; top: 0; bottom: 0; width: 260px;
-            background: var(--card-bg); z-index: 1000; transition: left 0.3s ease, background-color 0.3s;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1); padding: 20px; overflow-y: auto; border-right: 1px solid var(--border-light);
+            position: fixed; top: 0; bottom: 0; background: var(--card-bg); z-index: 1000; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1); overflow-y: auto; border-right: 1px solid var(--border-light);
+            transition: left 0.3s ease, width 0.3s ease, background-color 0.3s;
         }
+        
+        .sidebar { left: -260px; width: 260px; padding: 20px; }
         .sidebar.open { left: 0; }
+        
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; }
         .sidebar-overlay.open { display: block; }
 
-        .brand { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 30px; margin-top: 40px;}
-        .nav-link { display: block; padding: 12px; margin-bottom: 5px; color: var(--text-main); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem;}
+        .brand { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 30px; margin-top: 40px; display: flex; align-items: center; gap: 10px; position: relative;}
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 12px; margin-bottom: 5px; color: var(--text-main); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; overflow: hidden;}
+        .nav-link:hover { background: var(--bg-body); }
         .nav-link.active { background: var(--border-light); color: var(--btn-active); }
+        .nav-link i { min-width: 20px; text-align: center; }
 
         .menu-toggle {
             position: fixed; top: 12px; left: 12px; z-index: 1001;
             background: var(--dark-panel); color: #fff; border: none;
             padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
         }
+        .desktop-toggle { display: none; }
 
-        .main-content { padding: 65px 10px 20px 10px; transition: margin-left 0.3s ease; width: 100%; }
+        .main-content { padding: 65px 10px 20px 10px; transition: margin-left 0.3s ease, width 0.3s ease; width: 100%; }
 
         @media (min-width: 769px) {
             .sidebar { left: 0; }
             .menu-toggle, .sidebar-overlay { display: none; }
+            .brand { margin-top: 0; justify-content: space-between; }
+            .desktop-toggle { display: block; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; transition: 0.2s; padding: 5px; }
+            .desktop-toggle:hover { color: var(--btn-active); }
+            
             .main-content { margin-left: 260px; padding: 20px 20px 20px 30px; width: calc(100% - 260px); }
-            .brand { margin-top: 0; }
+
+            .sidebar.collapsed { width: 80px; padding: 20px 10px; }
+            .sidebar.collapsed .brand span { display: none; }
+            .sidebar.collapsed .brand { justify-content: center; }
+            .sidebar.collapsed .desktop-toggle { transform: rotate(180deg); margin: 0 auto; }
+            .sidebar.collapsed .nav-link span { display: none; }
+            .sidebar.collapsed .nav-link { justify-content: center; padding: 12px 0; }
+            
+            .main-content.expanded { margin-left: 80px; width: calc(100% - 80px); }
         }
 
-        /* --- CARDS RESPONSIVOS --- */
-        .card { background: var(--card-bg); border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: background-color 0.3s, border-color 0.3s; }
-        .card-header h3 { font-size: 1rem; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-
+        /* --- CARDS E GRIDS --- */
+        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: background-color 0.3s, border-color 0.3s; }
+        .card-header { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px; margin-bottom: 15px;}
+        .card-header h3 { font-size: 1.05rem; color: var(--text-main); margin: 0; }
+        
         .elenco-container-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
         @media (min-width: 768px) { 
             .elenco-container-grid { grid-template-columns: 1fr 1fr; gap: 20px;} 
-            .card { padding: 18px; margin-bottom: 20px; }
         }
 
         /* --- BOTÕES E INPUTS --- */
-        .btn-touch { 
-            background: var(--dark-panel); border: none; border-radius: 8px; 
-            padding: 10px 12px; font-size: 0.75rem; font-weight: 800; color: #fff; 
-            cursor: pointer; text-transform: uppercase; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; justify-content: center;
-        }
-        .btn-touch-outline { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-light); }
-        .input-mobile { width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.85rem; color: var(--text-main); background: var(--bg-body); transition: background-color 0.3s; }
-        .input-mobile:focus { outline: none; border-color: var(--btn-active); background: var(--card-bg); }
-
-        .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .market-full { grid-column: 1 / -1; }
-
-        /* --- TABELAS TOUCH --- */
-        .table-container { width: 100%; overflow-x: hidden; margin-top: 10px; }
-        .table-elenco { width: 100%; border-collapse: collapse; font-size: 0.8rem; table-layout: fixed; }
+        .btn-touch { background: var(--dark-panel); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; font-size: 0.75rem;}
+        .btn-touch-outline { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-light); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s;}
+        .btn-touch-outline:hover { border-color: var(--btn-active); color: var(--btn-active); }
         
-        .col-pos { width: 45px; }
-        .col-nome { width: auto; }
-        .col-forca { width: 55px; text-align: center; }
-        .col-status { width: 30px; text-align: center; }
+        .input-mobile { width: 100%; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 6px; font-size: 0.8rem; color: var(--text-main); background: var(--bg-body); transition: background-color 0.3s; outline: none;}
+        .input-mobile:focus { border-color: var(--btn-active); background: var(--card-bg); }
 
-        .table-elenco th { text-align: left; padding: 10px 4px; border-bottom: 2px solid var(--border-light); color: var(--text-muted); text-transform: uppercase; font-size: 0.65rem; }
-        .table-elenco td { padding: 6px 4px; border-bottom: 1px dashed var(--border-light); vertical-align: middle; }
-        .table-elenco input { border: 1px solid transparent; background: transparent; padding: 8px 4px; font-weight: 600; width: 100%; color: var(--text-main); border-radius: 6px; font-size: 0.8rem; }
-        .table-elenco input:focus { background: var(--bg-body); border-color: var(--border-light); outline: none; }
-        
-        .pos-badge { background: var(--dark-panel); color: white; padding: 4px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; display: inline-block; width: 100%; text-align: center; }
-        
-        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin: 0 auto; }
-        .status-ok { background: var(--btn-active); }
-        .status-bad { background: var(--danger); }
-        .status-none { background: var(--border-light); }
-
-        /* --- CAMPINHO IDEAL --- */
-        .pitch-ideal { 
-            position: relative; width: 100%; height: 350px; background: var(--pitch-grass); 
+        /* --- CAMPOS DE FUTEBOL --- */
+        .pitch-container { 
+            position: relative; width: 100%; background: var(--pitch-grass); 
             border: 2px solid #fff; border-radius: 8px; overflow: hidden; margin-top: 10px;
         }
-        .pitch-ideal::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.4); }
-        .pitch-ideal::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; }
+        .pitch-ideal { height: 350px; }
+        .pitch-interativo { height: 420px; } 
+        
+        .pitch-container::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.4); }
+        .pitch-container::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; }
         
         .player-box {
             position: absolute; transform: translate(-50%, -50%); background: var(--card-bg);
@@ -128,19 +124,57 @@
         
         .desktop-text { display: none; }
         .mobile-text { display: block; font-size: 0.55rem; font-weight: 700; }
-        
         @media (min-width: 480px) {
             .desktop-text { display: block; font-size: 0.65rem; font-weight: 700; }
             .mobile-text { display: none; }
             .player-box { padding: 6px 10px; border-radius: 6px; }
         }
 
-        /* --- EXTRAS --- */
+        /* ESTILOS ESPECÍFICOS DO PITCH INTERATIVO COM FORÇA */
+        .player-box-int {
+            position: absolute; transform: translate(-50%, -50%); background: var(--card-bg);
+            padding: 5px; border-radius: 6px; border-left: 4px solid var(--info);
+            text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.4); 
+            width: 120px; 
+            z-index: 2;
+        }
+        .player-box-int span { display: block; color: var(--text-main); font-size: 0.65rem; font-weight: 800; margin-bottom: 3px; }
+        
+        .pitch-row-input { display: flex; gap: 4px; margin-bottom: 3px; } 
+        .pitch-row-input:last-child { margin-bottom: 0; }
+        
+        .pitch-input { 
+            border: 1px solid var(--border-light); background: var(--bg-body); 
+            color: var(--text-main); font-size: 0.65rem; padding: 4px; text-align: center; 
+            border-radius: 4px; outline: none; font-weight: 600;
+        }
+        .pitch-input:focus { border-color: var(--info); }
+        .pitch-input.name-input { flex: 1; text-align: left; padding-left: 6px; width: 100%;}
+        .pitch-input.force-input { width: 42px; padding: 4px; font-weight: 800;} 
+        
+        .p-titular { border-left: 2px solid var(--btn-active); } 
+        .p-reserva { border-left: 2px solid var(--warning); } 
+
+        /* --- TABELAS --- */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
+        .table-elenco { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 320px; }
+        .table-elenco th { text-align: left; padding: 10px 4px; border-bottom: 2px solid var(--border-light); color: var(--text-muted); text-transform: uppercase; font-size: 0.65rem; }
+        .table-elenco td { padding: 6px 4px; border-bottom: 1px dashed var(--border-light); vertical-align: middle; }
+        .table-elenco input { border: 1px solid transparent; background: transparent; padding: 8px 4px; font-weight: 600; width: 100%; color: var(--text-main); border-radius: 6px; font-size: 0.8rem; }
+        .table-elenco input:focus { background: var(--bg-body); border-color: var(--border-light); outline: none; }
+        
+        .pos-badge { background: var(--dark-panel); color: white; padding: 4px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; display: inline-block; width: 100%; text-align: center; min-width: 35px;}
+        
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin: 0 auto; }
+        .status-ok { background: var(--btn-active); }
+        .status-bad { background: var(--danger); }
+        .status-none { background: var(--border-light); }
+
+        .market-total { background: var(--bg-body); padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+        .nota-card { background: var(--bg-body); padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        
         .base-counter { display: flex; gap: 4px; color: var(--border-light); font-size: 1rem; cursor: pointer; align-items: center; justify-content: flex-end;}
-        .base-icon { color: var(--border-light); transition: 0.2s; }
-        .base-icon.active { color: var(--btn-active); }
-        .market-total { background: var(--bg-body); padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); text-align: right; display: flex; flex-direction: column; align-items: flex-end; transition: background-color 0.3s; }
-        .nota-card { background: var(--bg-body); padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; transition: background-color 0.3s;}
+        .base-icon.active { color: var(--info); }
     </style>
 </head>
 <body>
@@ -148,41 +182,44 @@
     <div class="sidebar-overlay" onclick="toggleMenu()"></div>
     <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
 
-    <aside class="sidebar">
-        <div class="brand"><i class="fas fa-terminal"></i> <span>Treinador Pro</span></div>
-        <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
-        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> DNA da Equipe</a>
-        <a href="elenco.html" class="nav-link active"><i class="fas fa-users-gear"></i> Gestão do Elenco</a>
-        <a href="taticas.html" class="nav-link"><i class="fas fa-chess"></i> Táticas e Jogos</a>
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class="fas fa-terminal"></i> <span>Treinador Pro</span>
+            <button class="desktop-toggle" onclick="toggleDesktopSidebar()"><i class="fas fa-chevron-left"></i></button>
+        </div>
+        <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
+        <a href="elenco.html" class="nav-link active"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
+        <a href="taticas.html" class="nav-link"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
     </aside>
 
-    <main class="main-content">
+    <main class="main-content" id="main_content">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-            <div style="margin-left: 45px;"> 
+            <div style="margin-left: 45px;" class="header-title-mobile"> 
                 <h1 style="color: var(--text-main); font-size: 1.3rem;">Gestão de Elenco</h1>
                 <p style="color: var(--text-muted); font-size: 0.75rem;">Controle seu plantel e mercado.</p>
             </div>
-            <div style="display: flex; gap: 6px; width: 100%; justify-content: flex-end;">
-                <button class="btn-touch btn-touch-outline" onclick="toggleTheme()" style="padding: 8px 12px;"><i class="fas fa-moon" id="theme_icon"></i></button>
-
-                <button class="btn-touch btn-touch-outline" onclick="exportarBackupElenco()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
-                <label class="btn-touch btn-touch-outline" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
+            <div style="display: flex; gap: 6px; justify-content: flex-end; flex-grow: 1; flex-wrap: wrap;">
+                <button class="btn-touch-outline" onclick="toggleTheme()"><i class="fas fa-moon" id="theme_icon"></i></button>
+                <button class="btn-touch-outline" onclick="limparElenco()" style="color: var(--danger); border-color: var(--danger);" title="Apagar todo o elenco atual"><i class="fas fa-eraser"></i> <span class="hide-mobile">Limpar</span></button>
+                <button class="btn-touch-outline" onclick="exportarBackupElenco()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
+                <label class="btn-touch-outline" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
                     <input type="file" style="display:none;" accept=".json" onchange="importarBackupElenco(event)">
                 </label>
             </div>
         </div>
 
         <div class="card" style="border-top: 3px solid var(--warning);">
-            <div class="card-header"><h3><i class="fas fa-magnifying-glass-dollar" style="color: var(--warning);"></i> Alvos (Regra 1.5x)</h3></div>
+            <div class="card-header"><i class="fas fa-magnifying-glass-dollar" style="color: var(--warning);"></i><h3>Alvos (Regra 1.5x)</h3></div>
             
-            <div class="market-grid">
-                <div class="market-full"><input type="text" id="m_nome" class="input-mobile" placeholder="Nome do Jogador"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <div style="grid-column: 1 / -1;"><input type="text" id="m_nome" class="input-mobile" placeholder="Nome do Jogador"></div>
                 <div><input type="number" id="m_forca" class="input-mobile" placeholder="Força"></div>
                 <div><input type="number" id="m_valor" class="input-mobile" placeholder="Valor (M)"></div>
-                <button class="btn-touch market-full" onclick="addAlvo()"><i class="fas fa-plus"></i> ADICIONAR ALVO</button>
+                <button class="btn-touch" style="grid-column: 1 / -1; margin-top: 5px;" onclick="addAlvo()"><i class="fas fa-plus"></i> ADICIONAR ALVO</button>
             </div>
 
-            <div class="table-container" style="overflow-x: auto;">
+            <div class="table-container">
                 <table class="table-elenco" style="min-width: 300px;">
                     <thead><tr><th>Nome</th><th style="text-align:center;">F</th><th style="text-align:right;">Custo Máx</th><th style="width:30px;"></th></tr></thead>
                     <tbody id="lista_mercado"></tbody>
@@ -207,23 +244,28 @@
         </div>
 
         <div class="card" style="border-top: 3px solid var(--btn-active);">
-            <div class="card-header"><h3><i class="fas fa-chalkboard-user" style="color: var(--btn-active);"></i> O "11 Ideal" (Guia)</h3></div>
-            <div class="pitch-ideal">
+            <div class="card-header"><i class="fas fa-chalkboard-user" style="color: var(--btn-active);"></i><h3>O "11 Ideal" (Guia)</h3></div>
+            <div class="pitch-container pitch-ideal">
                 <div class="player-box" style="left: 30%; top: 15%;"><span>AE</span><div class="desktop-text">Velocidade + Drible</div><div class="mobile-text">Vel+Dri</div></div>
                 <div class="player-box" style="left: 70%; top: 15%;"><span>AD</span><div class="desktop-text">Finalização + Cabeceio</div><div class="mobile-text">Fin+Cab</div></div>
-                
                 <div class="player-box" style="left: 25%; top: 35%;"><span>ME</span><div class="desktop-text">Armação + Passe</div><div class="mobile-text">Arm+Pas</div></div>
                 <div class="player-box" style="left: 75%; top: 35%;"><span>MD</span><div class="desktop-text">Armação + Finalização</div><div class="mobile-text">Arm+Fin</div></div>
-                
                 <div class="player-box" style="left: 35%; top: 55%;"><span>VE</span><div class="desktop-text">Desarme + Passe</div><div class="mobile-text">Des+Pas</div></div>
                 <div class="player-box" style="left: 65%; top: 55%;"><span>VD</span><div class="desktop-text">Desarme + Marcação</div><div class="mobile-text">Des+Mar</div></div>
-                
                 <div class="player-box" style="left: 18%; top: 75%;"><span>LE</span><div class="desktop-text">Cruzamento + Vel.</div><div class="mobile-text">Cru+Vel</div></div>
                 <div class="player-box" style="left: 40%; top: 75%;"><span>ZE</span><div class="desktop-text">Desarme + Marcação</div><div class="mobile-text">Des+Mar</div></div>
                 <div class="player-box" style="left: 60%; top: 75%;"><span>ZD</span><div class="desktop-text">Desarme + Cabeceio</div><div class="mobile-text">Des+Cab</div></div>
                 <div class="player-box" style="left: 82%; top: 75%;"><span>LD</span><div class="desktop-text">Cruzamento + Marc.</div><div class="mobile-text">Cru+Mar</div></div>
-                
                 <div class="player-box" style="left: 50%; top: 92%; border-left-color: var(--warning);"><span>GL</span><div class="desktop-text">Reflexo + Colocação</div><div class="mobile-text">Ref+Col</div></div>
+            </div>
+        </div>
+
+        <div class="card" style="border-top: 3px solid var(--info);">
+            <div class="card-header"><i class="fas fa-users" style="color: var(--info);"></i><h3>Meu Time em Campo</h3></div>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: -10px; margin-bottom: 10px;">Preencha aqui ou nas tabelas abaixo. Nome e Força estão sincronizados!</p>
+            
+            <div class="pitch-container pitch-interativo">
+                <div id="pitch_interativo_root"></div>
             </div>
         </div>
 
@@ -244,7 +286,7 @@
                     <h3 style="margin:0; font-size: 0.95rem; color: var(--text-main);">Reservas (B)</h3>
                     <div style="display:flex; align-items:center; gap:4px; background:var(--bg-body); padding:4px 8px; border-radius:6px; border: 1px solid var(--border-light);">
                         <span style="font-size:0.6rem; font-weight:800; color:var(--text-muted);">ALVO F:</span>
-                        <input type="number" id="alvo_B" value="50" style="width:35px; text-align:center; border:none; background:transparent; font-weight:800; color:var(--btn-active); outline:none; font-size:0.8rem;" oninput="verificarForcas('B')">
+                        <input type="number" id="alvo_B" value="50" style="width:35px; text-align:center; border:none; background:transparent; font-weight:800; color:var(--warning); outline:none; font-size:0.8rem;" oninput="verificarForcas('B')">
                     </div>
                 </div>
                 <div class="table-container" id="container_B"></div>
@@ -253,21 +295,21 @@
 
         <div class="elenco-container-grid">
             <div class="card" style="border-top: 3px solid var(--text-muted);">
-                <div class="card-header"><h3>Extra (Empréstimos/Vendas)</h3></div>
-                <div class="table-container" style="overflow-x: auto;">
-                    <table class="table-elenco" style="min-width: 350px;">
-                        <thead><tr><th class="col-pos">Pos</th><th>Jogador</th><th class="col-forca">F</th><th>Status</th><th style="width:25px;"></th></tr></thead>
+                <div class="card-header"><i class="fas fa-suitcase-rolling"></i><h3>Extra (Empréstimos/Vendas)</h3></div>
+                <div class="table-container">
+                    <table class="table-elenco">
+                        <thead><tr><th style="width: 45px;">Pos</th><th>Jogador</th><th style="width: 45px; text-align: center;">F</th><th>Status</th><th style="width:25px;"></th></tr></thead>
                         <tbody id="lista_outros"></tbody>
                     </table>
-                    <button class="btn-touch btn-touch-outline" onclick="addOutro()" style="margin-top:10px; width:100%;"><i class="fas fa-plus"></i> Novo Cadastro</button>
+                    <button class="btn-touch btn-touch-outline" onclick="addOutro()" style="margin-top:10px; width:100%;"><i class="fas fa-plus"></i> Novo</button>
                 </div>
             </div>
 
             <div class="card" style="border-top: 3px solid #0284c7;">
-                <div class="card-header"><i class="fas fa-seedling" style="color: #0284c7;"></i><h3>Monitoramento da Base</h3></div>
+                <div class="card-header"><i class="fas fa-seedling" style="color: #0284c7;"></i><h3>Base</h3></div>
                 <div class="table-container">
                     <table class="table-elenco">
-                        <thead><tr><th class="col-pos">Pos</th><th>Requisito (Celular=Abrev)</th><th style="width:80px; text-align: right;">Qtd</th></tr></thead>
+                        <thead><tr><th style="width: 45px;">Pos</th><th>Requisito (Abrev)</th><th style="width:80px; text-align: right;">Qtd</th></tr></thead>
                         <tbody id="lista_base"></tbody>
                     </table>
                 </div>
@@ -276,19 +318,24 @@
     </main>
 
     <script>
-        // --- TEMA LIGHT/DARK ---
-        function applyThemeOnLoad() {
+        // --- TEMA E SIDEBAR STATE ---
+        function applyInitialStates() {
             if(localStorage.getItem('hub_theme') === 'dark') {
                 document.body.classList.add('dark-theme');
                 document.getElementById('theme_icon').classList.replace('fa-moon', 'fa-sun');
             }
+            if(window.innerWidth > 768 && localStorage.getItem('hub_sidebar_state') === 'collapsed') {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('main_content').classList.add('expanded');
+            }
+            const headerTitle = document.querySelector('.header-title-mobile');
+            if(headerTitle) headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0';
         }
 
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('theme_icon');
             body.classList.toggle('dark-theme');
-            
             if (body.classList.contains('dark-theme')) {
                 localStorage.setItem('hub_theme', 'dark');
                 icon.classList.replace('fa-moon', 'fa-sun');
@@ -298,12 +345,20 @@
             }
         }
 
-        // --- CONTROLE DA SIDEBAR MOBILE ---
         function toggleMenu() {
-            document.querySelector('.sidebar').classList.toggle('open');
+            document.getElementById('sidebar').classList.toggle('open');
             document.querySelector('.sidebar-overlay').classList.toggle('open');
         }
 
+        function toggleDesktopSidebar() {
+            const sb = document.getElementById('sidebar');
+            const mc = document.getElementById('main_content');
+            sb.classList.toggle('collapsed');
+            mc.classList.toggle('expanded');
+            localStorage.setItem('hub_sidebar_state', sb.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+        }
+
+        // --- DADOS E INICIALIZAÇÃO ---
         const posicoes = ["GL", "LD", "ZD", "ZE", "LE", "VD", "VE", "MD", "ME", "AD", "AE"];
         let dadosElenco = JSON.parse(localStorage.getItem('hub_elenco_master') || '{}');
         let alvos = JSON.parse(localStorage.getItem('hub_mercado') || '[]');
@@ -311,21 +366,106 @@
         let outros = JSON.parse(localStorage.getItem('hub_outros') || '[]');
 
         function init() {
-            gerarTabela('container_A', 'A'); gerarTabela('container_B', 'B');
-            renderOutros(); renderBase(); renderMercado(); renderNotas();
+            renderPitchInterativo();
+            gerarTabela('container_A', 'A'); 
+            gerarTabela('container_B', 'B');
+            renderOutros(); 
+            renderBase(); 
+            renderMercado(); 
+            renderNotas();
             verificarForcas('A'); verificarForcas('B');
         }
 
-        // --- GESTÃO DE ELENCO ---
-        function gerarTabela(containerId, grupo) {
-            let html = `<table class="table-elenco"><thead><tr><th class="col-pos">Pos</th><th class="col-nome">Nome</th><th class="col-forca">Força</th><th class="col-status"></th></tr></thead><tbody>`;
+        // --- NOVA FUNÇÃO: LIMPAR ELENCO ---
+        function limparElenco() {
+            if(!confirm("Tem certeza que deseja APAGAR TODO O ELENCO (Titulares, Reservas, Extras e Base)?\n\nIsso é ideal para quando muda de clube.\nAs suas Notas do Scout e Alvos de Mercado NÃO serão apagados.")) return;
+            
+            // Limpa o Master do Elenco (A e B)
+            dadosElenco = {};
+            localStorage.setItem('hub_elenco_master', JSON.stringify(dadosElenco));
+            
+            // Limpa os Extras
+            outros = [];
+            localStorage.setItem('hub_outros', JSON.stringify(outros));
+            
+            // Limpa a Base
+            let baseCount = {};
+            localStorage.setItem('hub_base_count', JSON.stringify(baseCount));
+
+            // Refaz a tela com tudo vazio
+            init();
+        }
+
+        // --- LÓGICA DE SINCRONIZAÇÃO (PITCH E TABELA PARA NOME E FORÇA) ---
+        function syncCampo(id, valor) {
+            // Salva no LocalStorage
+            dadosElenco[id] = valor; 
+            localStorage.setItem('hub_elenco_master', JSON.stringify(dadosElenco));
+            
+            // Atualiza Input da Tabela (se existir e for diferente)
+            const inputTabela = document.getElementById(id);
+            if(inputTabela && inputTabela.value !== valor) inputTabela.value = valor;
+            
+            // Atualiza Input do Pitch (se existir e for diferente)
+            const inputPitch = document.getElementById('pitch_' + id);
+            if(inputPitch && inputPitch.value !== valor) inputPitch.value = valor;
+
+            // Se for um campo de força, reavalia a bolinha de status
+            if (id.endsWith('_F')) {
+                const grupo = id.split('_')[0]; // 'A' ou 'B'
+                verificarForcas(grupo);
+            }
+        }
+
+        // --- PITCH INTERATIVO COM FORÇA ---
+        const coordsPitch = {
+            "AE": {l: "30%", t: "12%"}, "AD": {l: "70%", t: "12%"},
+            "ME": {l: "25%", t: "32%"}, "MD": {l: "75%", t: "32%"},
+            "VE": {l: "35%", t: "52%"}, "VD": {l: "65%", t: "52%"},
+            "LE": {l: "15%", t: "72%"}, "ZE": {l: "38%", t: "72%"}, "ZD": {l: "62%", t: "72%"}, "LD": {l: "85%", t: "72%"},
+            "GL": {l: "50%", t: "90%"}
+        };
+
+        function renderPitchInterativo() {
+            const root = document.getElementById('pitch_interativo_root');
+            let html = '';
+            
             posicoes.forEach(pos => {
-                let id = `${grupo}_${pos}`;
+                const coord = coordsPitch[pos];
+                // Busca os valores salvos
+                const valNomeA = dadosElenco[`A_${pos}_N`] || '';
+                const valForcaA = dadosElenco[`A_${pos}_F`] || '';
+                const valNomeB = dadosElenco[`B_${pos}_N`] || '';
+                const valForcaB = dadosElenco[`B_${pos}_F`] || '';
+                
+                html += `
+                <div class="player-box-int" style="left: ${coord.l}; top: ${coord.t};">
+                    <span>${pos}</span>
+                    <div class="pitch-row-input">
+                        <input type="text" id="pitch_A_${pos}_N" class="pitch-input name-input p-titular" placeholder="Titular" value="${valNomeA}" oninput="syncCampo('A_${pos}_N', this.value)">
+                        <input type="number" id="pitch_A_${pos}_F" class="pitch-input force-input" placeholder="F" value="${valForcaA}" oninput="syncCampo('A_${pos}_F', this.value)">
+                    </div>
+                    <div class="pitch-row-input">
+                        <input type="text" id="pitch_B_${pos}_N" class="pitch-input name-input p-reserva" placeholder="Reserva" value="${valNomeB}" oninput="syncCampo('B_${pos}_N', this.value)">
+                        <input type="number" id="pitch_B_${pos}_F" class="pitch-input force-input" placeholder="F" value="${valForcaB}" oninput="syncCampo('B_${pos}_F', this.value)">
+                    </div>
+                </div>`;
+            });
+            
+            root.innerHTML = html;
+        }
+
+        // --- TABELAS A e B ---
+        function gerarTabela(containerId, grupo) {
+            let html = `<table class="table-elenco"><thead><tr><th style="width:45px;">Pos</th><th>Nome</th><th style="width:55px; text-align:center;">F</th><th style="width:30px;"></th></tr></thead><tbody>`;
+            posicoes.forEach(pos => {
+                let idNome = `${grupo}_${pos}_N`;
+                let idForca = `${grupo}_${pos}_F`;
                 html += `<tr>
                     <td><span class="pos-badge">${pos}</span></td>
-                    <td><input type="text" id="${id}_N" value="${dadosElenco[id+'_N']||''}" oninput="salvar('${id}_N', this.value)" placeholder="Nome"></td>
-                    <td><input type="number" id="${id}_F" style="text-align:center; background:var(--bg-body); color:var(--text-main);" value="${dadosElenco[id+'_F']||''}" oninput="salvar('${id}_F', this.value); verificarForcas('${grupo}')"></td>
-                    <td><div class="status-dot status-none" id="dot_${id}"></div></td>
+                    <td><input type="text" id="${idNome}" value="${dadosElenco[idNome]||''}" oninput="syncCampo('${idNome}', this.value)" placeholder="Nome"></td>
+                    <td><input type="number" id="${idForca}" style="text-align:center; background:var(--bg-body); color:var(--text-main);" value="${dadosElenco[idForca]||''}" oninput="syncCampo('${idForca}', this.value)"></td>
+                    <td><div class="status-dot status-none" id="dot_${grupo}_${pos}"></div></td>
                 </tr>`;
             });
             document.getElementById(containerId).innerHTML = html + `</tbody></table>`;
@@ -336,12 +476,11 @@
             posicoes.forEach(pos => {
                 let val = parseFloat(document.getElementById(`${grupo}_${pos}_F`).value);
                 let dot = document.getElementById(`dot_${grupo}_${pos}`);
+                if(!dot) return;
                 if(isNaN(val)) dot.className = 'status-dot status-none';
                 else dot.className = val >= alvo ? 'status-dot status-ok' : 'status-dot status-bad';
             });
         }
-
-        function salvar(id, val) { dadosElenco[id] = val; localStorage.setItem('hub_elenco_master', JSON.stringify(dadosElenco)); }
 
         // --- GRUPO EXTRA ---
         function addOutro() { outros.push({id: Date.now(), pos:'', nome:'', f:'', status:''}); renderOutros(); }
@@ -393,32 +532,20 @@
             `).join('');
         }
 
-        // --- BASE (Texto Responsivo via HTML) ---
+        // --- BASE ---
         const baseSpecs = {
-            "GL": {d: "Reflexo + Colocação", m: "Ref+Col"},
-            "LD": {d: "Cruzamento + Marcação", m: "Cru+Mar"},
-            "ZD": {d: "Desarme + Cabeceio", m: "Des+Cab"},
-            "ZE": {d: "Desarme + Marcação", m: "Des+Mar"},
-            "LE": {d: "Cruzamento + Velocidade", m: "Cru+Vel"},
-            "VD": {d: "Desarme + Marcação", m: "Des+Mar"},
-            "VE": {d: "Desarme + Passe", m: "Des+Pas"},
-            "MD": {d: "Armação + Finalização", m: "Arm+Fin"},
-            "ME": {d: "Armação + Passe", m: "Arm+Pas"},
-            "AD": {d: "Finalização + Cabeceio", m: "Fin+Cab"},
-            "AE": {d: "Velocidade + Drible", m: "Vel+Dri"}
+            "GL": {m: "Ref+Col"}, "LD": {m: "Cru+Mar"}, "ZD": {m: "Des+Cab"}, "ZE": {m: "Des+Mar"}, "LE": {m: "Cru+Vel"},
+            "VD": {m: "Des+Mar"}, "VE": {m: "Des+Pas"}, "MD": {m: "Arm+Fin"}, "ME": {m: "Arm+Pas"}, "AD": {m: "Fin+Cab"}, "AE": {m: "Vel+Dri"}
         };
-        let baseCount = JSON.parse(localStorage.getItem('hub_base_count') || '{}');
         
         function renderBase() {
+            let baseCount = JSON.parse(localStorage.getItem('hub_base_count') || '{}');
             let html = '';
             posicoes.forEach(pos => {
                 let count = baseCount[pos] || 0;
                 html += `<tr>
                     <td><span class="pos-badge">${pos}</span></td>
-                    <td>
-                        <div class="desktop-text" style="color:var(--text-muted); font-size:0.75rem;">${baseSpecs[pos].d}</div>
-                        <div class="mobile-text" style="color:var(--text-muted); font-size:0.65rem;">${baseSpecs[pos].m}</div>
-                    </td>
+                    <td><div style="color:var(--text-muted); font-size:0.65rem;">${baseSpecs[pos].m}</div></td>
                     <td><div class="base-counter">
                         ${[1,2,3].map(n => `<i class="fas fa-user base-icon ${n <= count ? 'active' : ''}" style="padding:4px;" onclick="setBase('${pos}', ${n})"></i>`).join('')}
                         <i class="fas fa-times-circle" style="margin-left:2px; font-size:0.8rem; padding:4px; color:var(--text-muted);" onclick="setBase('${pos}', 0)"></i>
@@ -427,27 +554,26 @@
             });
             document.getElementById('lista_base').innerHTML = html;
         }
-        function setBase(pos, val) { baseCount[pos] = val; localStorage.setItem('hub_base_count', JSON.stringify(baseCount)); renderBase(); }
+        function setBase(pos, val) { 
+            let baseCount = JSON.parse(localStorage.getItem('hub_base_count') || '{}');
+            baseCount[pos] = val; 
+            localStorage.setItem('hub_base_count', JSON.stringify(baseCount)); 
+            renderBase(); 
+        }
 
-        // --- SISTEMA DE BACKUP ---
+        // --- BACKUP ---
         function exportarBackupElenco() {
             const backupData = {
-                elenco: localStorage.getItem('hub_elenco_master'),
-                mercado: localStorage.getItem('hub_mercado'),
-                notas: localStorage.getItem('hub_notas_livres'),
-                outros: localStorage.getItem('hub_outros'),
-                base: localStorage.getItem('hub_base_count')
+                elenco: localStorage.getItem('hub_elenco_master'), mercado: localStorage.getItem('hub_mercado'),
+                notas: localStorage.getItem('hub_notas_livres'), outros: localStorage.getItem('hub_outros'), base: localStorage.getItem('hub_base_count')
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "brasfoot_elenco_backup.json");
-            dlAnchorElem.click();
+            const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "brasfoot_elenco_backup.json"); dlAnchorElem.click();
         }
 
         function importarBackupElenco(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
@@ -457,14 +583,14 @@
                     if (data.notas) localStorage.setItem('hub_notas_livres', data.notas);
                     if (data.outros) localStorage.setItem('hub_outros', data.outros);
                     if (data.base) localStorage.setItem('hub_base_count', data.base);
-                    alert("Backup importado com sucesso! A página será recarregada.");
-                    location.reload();
+                    alert("Backup importado com sucesso! A página será recarregada."); location.reload();
                 } catch (err) { alert("Erro ao importar: Arquivo inválido."); }
             };
             reader.readAsText(file);
         }
 
-        window.onload = () => { applyThemeOnLoad(); init(); };
+        window.onload = () => { applyInitialStates(); init(); };
+        window.addEventListener('resize', () => { const headerTitle = document.querySelector('.header-title-mobile'); if(headerTitle) headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0'; });
     </script>
 </body>
 </html>
