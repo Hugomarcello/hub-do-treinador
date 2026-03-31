@@ -68,6 +68,8 @@
 
         .main-content { padding: 65px 10px 20px 10px; transition: margin-left 0.3s ease, width 0.3s ease; width: 100%; }
 
+        .hide-mobile { display: none; }
+
         /* --- MODO DESKTOP --- */
         @media (min-width: 769px) {
             .sidebar { left: 0; }
@@ -87,6 +89,8 @@
             .sidebar.collapsed .nav-link { justify-content: center; padding: 12px 0; }
             
             .main-content.expanded { margin-left: 80px; width: calc(100% - 80px); }
+            
+            .hide-mobile { display: inline; }
         }
 
         /* --- BOTÕES --- */
@@ -111,7 +115,7 @@
         .stat-card .stat-value { font-size: 1.6rem; font-weight: 900; color: var(--text-main); line-height: 1.1; }
         .stat-card .stat-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
 
-        /* Novos Widgets */
+        /* Widgets */
         .widget-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
         @media (min-width: 768px) { .widget-grid { grid-template-columns: 1fr 1fr; } }
 
@@ -166,6 +170,7 @@
             </div>
             <div style="display: flex; gap: 6px; justify-content: flex-end; flex-grow: 1;">
                 <button class="btn-touch-outline" onclick="toggleTheme()" style="padding: 8px 12px;"><i class="fas fa-moon" id="theme_icon"></i></button>
+                <button class="btn-touch-outline" onclick="resetarHub()" style="color: var(--danger); border-color: var(--danger);" title="Apagar todos os dados do Hub para iniciar um novo save"><i class="fas fa-eraser"></i> <span class="hide-mobile">Reset Total</span></button>
             </div>
         </div>
 
@@ -292,6 +297,23 @@
             }
         }
 
+        // --- NOVA FUNÇÃO: RESET TOTAL ---
+        function resetarHub() {
+            if(!confirm("⚠️ ATENÇÃO: HARD RESET ⚠️\n\nTem a certeza que deseja APAGAR TODOS OS DADOS DO HUB?\nIsso inclui Diretrizes, Elenco, Alvos de Mercado, Táticas e Histórico de Salves.\n\nUse apenas para começar uma carreira completamente do zero.")) return;
+            
+            // Lista com todas as chaves do Hub para deletar, preservando o Tema e o estado da Sidebar
+            const chavesParaApagar = [
+                'hub_diretrizes_v1', 'hub_okrs_v1', 
+                'hub_elenco_master', 'hub_mercado', 'hub_notas_livres', 'hub_outros', 'hub_base_count', 
+                'hub_jogos_taticas_v1', 'hub_mem_taticas_v1'
+            ];
+            
+            chavesParaApagar.forEach(chave => localStorage.removeItem(chave));
+            
+            alert("Hub limpo com sucesso! Boa sorte no seu novo save.");
+            location.reload();
+        }
+
         // --- CARREGAMENTO DE DADOS DO DASHBOARD ---
         function carregarResumo() {
             // 1. Diretrizes (Treinador, Clube e Resumo)
@@ -337,7 +359,7 @@
             // Puxar os últimos 5 jogos da temporada atual (forma)
             const jogosAtuais = JSON.parse(localStorage.getItem('hub_jogos_taticas_v1') || '{}');
             let ultimosResultados = [];
-            // Itera pelas chaves para pegar os jogos preenchidos na ordem (gambiarra simples pegando as chaves)
+            // Itera pelas chaves para pegar os jogos preenchidos na ordem
             Object.values(jogosAtuais).forEach(val => {
                 if(val === 'v' || val === 'e' || val === 'd') {
                     ultimosResultados.push(val);
