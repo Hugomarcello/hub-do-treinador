@@ -3,144 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DNA da Equipe - Hub do Treinador</title>
+    <title>Diretoria e DNA - Hub do Treinador</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+
     <style>
-        /* --- VARIÁVEIS DE CORES (LIGHT/DARK) --- */
-        :root {
-            --bg-body: #fafafa;
-            --card-bg: #ffffff;
-            --dark-panel: #27272a;
-            --text-main: #3f3f46;
-            --text-muted: #71717a;
-            --btn-bg: #ffffff;
-            --btn-active: #059669; 
-            --border-light: #e4e4e7;
-            --danger: #dc2626;
-            --warning: #f59e0b;
-            --info: #0284c7;
-            --okr-bg: #f8fafc;
+        /* --- ESTILOS ESPECÍFICOS DESTA PÁGINA (DIRETRIZES & METAS) --- */
+        
+        .textarea-dna { 
+            width: 100%; height: 180px; padding: 15px; border: 1px solid var(--border-light); 
+            border-radius: 8px; font-size: 0.85rem; color: var(--text-main); 
+            background: var(--bg-body); transition: 0.3s; outline: none; resize: vertical; line-height: 1.5;
         }
+        .textarea-dna:focus { border-color: var(--btn-active); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
+        body.dark-theme .textarea-dna:focus { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
 
-        body.dark-theme {
-            --bg-body: #09090b; 
-            --card-bg: #18181b; 
-            --dark-panel: #202024; 
-            --text-main: #f4f4f5; 
-            --text-muted: #a1a1aa; 
-            --btn-bg: #27272a; 
-            --btn-active: #10b981; 
-            --border-light: #3f3f46; 
-            --okr-bg: #27272a;
+        .fin-box { background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px solid var(--border-light); text-align: center; }
+        .fin-val { font-size: 1.4rem; font-weight: 900; color: var(--text-main); margin-top: 5px; }
+
+        /* --- O NOVO SISTEMA DE METAS --- */
+        .meta-card { 
+            background: var(--bg-body); border: 1px solid var(--border-light); border-radius: 12px; 
+            padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden; transition: 0.3s;
         }
-
-        /* --- ZERANDO MARGENS --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { overflow-x: hidden; width: 100%; max-width: 100vw; transition: background-color 0.3s ease, color 0.3s ease; }
-        body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Inter', sans-serif; }
-
-        /* --- BARRA LATERAL MOBILE & DESKTOP --- */
-        .sidebar {
-            position: fixed; top: 0; bottom: 0; background: var(--card-bg); z-index: 1000; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1); overflow-y: auto; border-right: 1px solid var(--border-light);
-            transition: left 0.3s ease, width 0.3s ease, background-color 0.3s;
+        .meta-card:hover { border-color: var(--btn-active); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        .meta-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .meta-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+        
+        /* Categoria agora com cor unificada */
+        .meta-cat { 
+            font-size: 0.65rem; font-weight: 800; text-transform: uppercase; padding: 4px 8px; 
+            border-radius: 4px; background: var(--dark-panel); color: var(--text-muted); 
+            display: inline-block; margin-bottom: 8px; border: 1px solid var(--border-light);
         }
         
-        .sidebar { left: -260px; width: 260px; padding: 20px; }
-        .sidebar.open { left: 0; }
+        /* Detalhes SMART na Meta */
+        .smart-details { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 15px; display: flex; gap: 15px; flex-wrap: wrap;}
+        .smart-details span { display: flex; align-items: center; gap: 4px; background: var(--card-bg); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-light);}
+
+        /* Barra de Progresso */
+        .progress-wrapper { width: 100%; background: var(--border-light); border-radius: 10px; height: 12px; overflow: hidden; margin-bottom: 10px; }
+        .progress-bar { height: 100%; background: var(--btn-active); border-radius: 10px; transition: width 0.5s ease; }
+        .progress-text { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); }
+
+        /* Checklist de Sub-tarefas */
+        .subtasks-list { margin-top: 15px; border-top: 1px dashed var(--border-light); padding-top: 15px; display: flex; flex-direction: column; gap: 8px;}
+        .task-item { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text-main); cursor: pointer; transition: 0.2s; padding: 6px; border-radius: 6px;}
+        .task-item:hover { background: var(--card-bg); }
+        .task-checkbox { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border-light); display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .task-item.checked .task-checkbox { background: var(--btn-active); border-color: var(--btn-active); }
+        .task-item.checked .task-checkbox::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #fff; font-size: 0.65rem; }
+        .task-item.checked span { text-decoration: line-through; color: var(--text-muted); }
+
+        /* --- MODAL DE NOVA META (S.M.A.R.T) --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px);}
+        .modal-overlay.open { display: flex; }
+        .modal-content { background: var(--card-bg); width: 90%; max-width: 550px; border-radius: 16px; padding: 25px; border: 1px solid var(--border-light); box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto;}
         
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; }
-        .sidebar-overlay.open { display: block; }
+        .smart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
+        .subtask-input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        #modal_subtasks_container { margin-bottom: 15px; max-height: 150px; overflow-y: auto; padding-right: 5px;}
+        .temp-subtask { font-size: 0.8rem; background: var(--bg-body); padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; display: flex; justify-content: space-between; border: 1px solid var(--border-light);}
 
-        .brand { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 30px; margin-top: 40px; display: flex; align-items: center; gap: 10px; position: relative;}
-        .nav-link { display: flex; align-items: center; gap: 10px; padding: 12px; margin-bottom: 5px; color: var(--text-main); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; overflow: hidden;}
-        .nav-link:hover { background: var(--bg-body); }
-        .nav-link.active { background: var(--border-light); color: var(--btn-active); }
-        .nav-link i { min-width: 20px; text-align: center; }
-
-        .menu-toggle {
-            position: fixed; top: 12px; left: 12px; z-index: 1001;
-            background: var(--dark-panel); color: #fff; border: none;
-            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
-        }
-        .desktop-toggle { display: none; }
-
-        .main-content { padding: 65px 10px 20px 10px; transition: margin-left 0.3s ease, width 0.3s ease; width: 100%; }
-
-        @media (min-width: 769px) {
-            .sidebar { left: 0; }
-            .menu-toggle, .sidebar-overlay { display: none; }
-            .brand { margin-top: 0; justify-content: space-between; }
-            .desktop-toggle { display: block; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; transition: 0.2s; padding: 5px; }
-            .desktop-toggle:hover { color: var(--btn-active); }
-            
-            .main-content { margin-left: 260px; padding: 20px 20px 20px 30px; width: calc(100% - 260px); }
-
-            /* Classe para Sidebar Recolhida */
-            .sidebar.collapsed { width: 80px; padding: 20px 10px; }
-            .sidebar.collapsed .brand span { display: none; }
-            .sidebar.collapsed .brand { justify-content: center; }
-            .sidebar.collapsed .desktop-toggle { transform: rotate(180deg); margin: 0 auto; }
-            .sidebar.collapsed .nav-link span { display: none; }
-            .sidebar.collapsed .nav-link { justify-content: center; padding: 12px 0; }
-            
-            .main-content.expanded { margin-left: 80px; width: calc(100% - 80px); }
-        }
-
-        /* --- CARDS E GRIDS --- */
-        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: background-color 0.3s, border-color 0.3s; }
-        .card-header h3 { font-size: 1.05rem; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px; }
-        
-        .grid-container { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
-        .grid-2-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
-
-        @media (min-width: 768px) { 
-            .grid-container { grid-template-columns: 1fr 1fr; gap: 20px;} 
-            .grid-2-col { grid-template-columns: 1fr 1fr; }
-            .card { padding: 20px; margin-bottom: 20px; }
-        }
-
-        /* --- BOTÕES E INPUTS --- */
-        .btn-touch-outline { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-light); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s;}
-        .btn-touch-outline:hover { border-color: var(--btn-active); color: var(--btn-active); }
-        .btn-action { background: var(--dark-panel); color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; transition: 0.2s; width: 100%; margin-top: 10px;}
-
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group label { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-        
-        .input-global { 
-            width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; 
-            font-size: 0.85rem; color: var(--text-main); background: var(--bg-body); 
-            transition: background-color 0.3s, border-color 0.3s; outline: none;
-        }
-        .input-global:focus { border-color: var(--btn-active); background: var(--card-bg); }
-        textarea.input-global { resize: vertical; min-height: 100px; font-family: 'Inter', sans-serif; line-height: 1.5; }
-
-        /* --- QUADRO OKR E METAS SMART --- */
-        .okr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-        .okr-card { background: var(--okr-bg); border: 1px solid var(--border-light); border-radius: 10px; padding: 15px; display: flex; flex-direction: column; transition: 0.3s; }
-        
-        .okr-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .okr-category { font-size: 0.65rem; font-weight: 800; background: var(--dark-panel); color: #fff; padding: 3px 8px; border-radius: 12px; text-transform: uppercase; }
-        .okr-delete { color: var(--danger); cursor: pointer; font-size: 0.8rem; opacity: 0.7; transition: 0.2s; }
-        .okr-delete:hover { opacity: 1; }
-        
-        .okr-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; line-height: 1.2;}
-        
-        .progress-container { width: 100%; background: var(--border-light); border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 12px; position: relative;}
-        .progress-fill { height: 100%; background: var(--btn-active); transition: width 0.4s ease; }
-        
-        .kr-list { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
-        .kr-item { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--text-main); cursor: pointer; }
-        .kr-checkbox { 
-            appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 2px solid var(--text-muted); 
-            border-radius: 4px; cursor: pointer; display: grid; place-content: center; margin-top: 2px; flex-shrink: 0;
-        }
-        .kr-checkbox::before { content: ""; width: 8px; height: 8px; box-shadow: inset 1em 1em var(--btn-active); transform-origin: bottom left; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); transform: scale(0); transition: 120ms transform ease-in-out; }
-        .kr-checkbox:checked { border-color: var(--btn-active); }
-        .kr-checkbox:checked::before { transform: scale(1); }
-        .kr-text.completed { text-decoration: line-through; color: var(--text-muted); }
-
+        /* --- SAVE SELECTOR --- */
+        .save-manager { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-light); }
+        .save-select { background: transparent; border: none; color: var(--text-main); font-weight: 800; font-size: 0.9rem; outline: none; cursor: pointer; max-width: 150px; text-overflow: ellipsis;}
     </style>
 </head>
 <body>
@@ -154,385 +83,460 @@
             <button class="desktop-toggle" onclick="toggleDesktopSidebar()"><i class="fas fa-chevron-left"></i></button>
         </div>
         <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
-        <a href="diretrizes.html" class="nav-link active"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
+        <a href="diretrizes.html" class="nav-link active"><i class="fas fa-dna"></i> <span>Diretoria & Clube</span></a>
         <a href="elenco.html" class="nav-link"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
         <a href="taticas.html" class="nav-link"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
     </aside>
 
     <main class="main-content" id="main_content">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-            <div style="margin-left: 45px;" class="header-title-mobile"> 
-                <h1 style="color: var(--text-main); font-size: 1.3rem;">DNA da Equipe</h1>
-                <p style="color: var(--text-muted); font-size: 0.75rem;">Filosofia, regras e OKRs do clube.</p>
+        
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <div class="save-manager">
+                <i class="fas fa-floppy-disk" style="color: var(--text-main);"></i>
+                <select id="save_selector" class="save-select" onchange="mudarSave(this.value)">
+                    </select>
+                <button class="btn-action" style="padding: 4px 8px; font-size: 0.7rem;" onclick="criarNovoSave()" title="Criar Novo Save"><i class="fas fa-plus"></i> Novo</button>
+                <button class="btn-action danger" style="padding: 4px 8px; font-size: 0.7rem;" onclick="deletarSaveAtual()" title="Apagar Save Atual"><i class="fas fa-trash"></i></button>
             </div>
-            <div style="display: flex; gap: 6px; justify-content: flex-end; flex-grow: 1; flex-wrap: wrap;">
-                <button class="btn-touch-outline" onclick="toggleTheme()" style="padding: 8px 12px;"><i class="fas fa-moon" id="theme_icon"></i></button>
-                <button class="btn-touch-outline" onclick="limparDiretrizes()" style="color: var(--danger); border-color: var(--danger);" title="Apagar todas as diretrizes e metas"><i class="fas fa-eraser"></i> <span class="hide-mobile">Limpar</span></button>
-                <button class="btn-touch-outline" onclick="exportarBackupDiretrizes()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
-                <label class="btn-touch-outline" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
-                    <input type="file" style="display:none;" accept=".json" onchange="importarBackupDiretrizes(event)">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+            <div style="margin-left: 45px;" class="header-title-mobile">
+                <h1 style="color: var(--text-main); font-size: 1.7rem; font-weight: 900; letter-spacing: -0.5px;">Diretoria e Planejamento</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">O coração do clube: regras, finanças e objetivos S.M.A.R.T.</p>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; flex-grow: 1; flex-wrap: wrap;">
+                <button class="btn-action" onclick="toggleTheme()" title="Alternar Tema"><i class="fas fa-moon" id="theme_icon"></i></button>
+                <button class="btn-action" onclick="exportarDados()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
+                <label class="btn-action" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
+                    <input type="file" style="display:none;" accept=".json" onchange="importarDados(event)">
                 </label>
             </div>
         </div>
 
-        <div class="grid-container">
-            <div class="card" style="border-top: 3px solid var(--btn-active);">
-                <div class="card-header"><h3><i class="fas fa-shield-halved" style="color: var(--btn-active);"></i> Identidade do Clube</h3></div>
-                
-                <div class="grid-2-col">
-                    <div class="form-group">
-                        <label>Clube Atual</label>
-                        <input type="text" id="dna_clube" class="input-global" placeholder="Ex: Atlético Mineiro" oninput="salvarDiretrizes()">
-                    </div>
-                    <div class="form-group">
-                        <label>Treinador</label>
-                        <input type="text" id="dna_treinador" class="input-global" placeholder="Seu Nome" oninput="salvarDiretrizes()">
-                    </div>
-                    <div class="form-group">
-                        <label>Formação Base Principal</label>
-                        <input type="text" id="dna_formacao" class="input-global" placeholder="Ex: 4-2-3-1" oninput="salvarDiretrizes()">
-                    </div>
-                    <div class="form-group">
-                        <label>Estilo de Jogo</label>
-                        <input type="text" id="dna_estilo" class="input-global" placeholder="Ex: Posse de bola ofensiva" oninput="salvarDiretrizes()">
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="border-top: 3px solid var(--warning);">
-                <div class="card-header"><h3><i class="fas fa-gavel" style="color: var(--warning);"></i> Regras de Mercado</h3></div>
-                
-                <div class="grid-2-col">
-                    <div class="form-group">
-                        <label>Teto Salarial Estimado</label>
-                        <input type="text" id="dna_teto" class="input-global" placeholder="Ex: R$ 500k / mês" oninput="salvarDiretrizes()">
-                    </div>
-                    <div class="form-group">
-                        <label>Idade Máxima para Contratação</label>
-                        <input type="number" id="dna_idade" class="input-global" placeholder="Ex: 28 anos" oninput="salvarDiretrizes()">
-                    </div>
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label>Política da Categoria de Base</label>
-                        <input type="text" id="dna_base" class="input-global" placeholder="Ex: Promover 2 jovens por ano" oninput="salvarDiretrizes()">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="border-top: 3px solid var(--info); border-left: 3px solid var(--info);">
-            <div class="card-header" style="justify-content: space-between; flex-wrap: wrap;">
-                <h3><i class="fas fa-bullseye" style="color: var(--info);"></i> Planejamento Estratégico (OKRs)</h3>
-                <span style="font-size: 0.65rem; color: var(--text-muted); background: var(--bg-body); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-light);">Objetivo Maior + Resultados Chave</span>
-            </div>
+        <div class="grid-2-col">
             
-            <div style="background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 20px;">
-                <div class="grid-2-col" style="margin-bottom: 10px;">
-                    <div class="form-group">
-                        <label>Objetivo SMART (O que vamos alcançar?)</label>
-                        <input type="text" id="okr_objetivo" class="input-global" placeholder="Ex: Dominar o Continente Europeu">
-                    </div>
-                    <div class="form-group">
-                        <label>Categoria</label>
-                        <select id="okr_categoria" class="input-global">
-                            <option value="Títulos">Títulos</option>
-                            <option value="Desempenho">Desempenho da Equipe</option>
-                            <option value="Financeiro">Mercado & Finanças</option>
-                            <option value="Base">Desenvolvimento / Base</option>
-                        </select>
-                    </div>
-                </div>
-
-                <label style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; display: block;">Key Results (Como medir o sucesso?)</label>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 8px;">
-                    <input type="text" id="kr_1" class="input-global" style="font-size: 0.75rem;" placeholder="KR 1 (Ex: Chegar à Final da Champions League)">
-                    <input type="text" id="kr_2" class="input-global" style="font-size: 0.75rem;" placeholder="KR 2 (Ex: Manter 75% de aproveitamento na fase de grupos)">
-                    <input type="text" id="kr_3" class="input-global" style="font-size: 0.75rem;" placeholder="KR 3 (Opcional)">
-                </div>
+            <div style="display: flex; flex-direction: column; gap: 25px;">
                 
-                <button class="btn-action" onclick="adicionarOKR()"><i class="fas fa-plus"></i> Adicionar ao Quadro</button>
-            </div>
-
-            <label style="font-size: 0.85rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; display: block; border-bottom: 1px dashed var(--border-light); padding-bottom: 5px;">Quadro de Visualização</label>
-            <div id="okr_board" class="okr-grid">
+                <div class="card" style="margin-bottom: 0;">
+                    <div class="card-header">
+                        <h3 style="color: var(--text-main);"><i class="fas fa-book-open" style="color: var(--text-main);"></i> Constituição do Clube</h3>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Escreva as regras imutáveis deste save.</p>
+                    <textarea id="dna_regras" class="textarea-dna" placeholder="Ex: Só contratar base, teto salarial..." oninput="salvarDiretrizes()"></textarea>
                 </div>
-        </div>
 
-        <div class="card" style="border-top: 3px solid var(--text-muted);">
-            <div class="card-header"><h3><i class="fas fa-book-open"></i> Caderno de Notas do Treinador</h3></div>
-            <div class="form-group">
-                <textarea id="dna_anotacoes" class="input-global" placeholder="Anotações gerais, rodízio de elenco, punições internas, jogadores na lista negra..." oninput="salvarDiretrizes()"></textarea>
+                <div class="card" style="margin-bottom: 0;">
+                    <div class="card-header">
+                        <h3 style="color: var(--text-main);"><i class="fas fa-user-shield" style="color: var(--text-main);"></i> Política de Elenco</h3>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted);">IDADE MÁXIMA (VENDA)</label>
+                            <input type="number" id="dna_idade" class="input-global" placeholder="Ex: 28" style="font-size: 1.1rem; font-weight: 800;" oninput="salvarDiretrizes()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted);">TAMANHO DO PLANTEL</label>
+                            <input type="number" id="dna_elenco" class="input-global" placeholder="Ex: 25" style="font-size: 1.1rem; font-weight: 800;" oninput="salvarDiretrizes()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 0;">
+                    <div class="card-header">
+                        <h3 style="color: var(--text-main);"><i class="fas fa-building-columns" style="color: var(--text-main);"></i> Tesouraria do Clube</h3>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted);">CAIXA TOTAL (R$)</label>
+                            <input type="number" id="fin_caixa" class="input-global" placeholder="Ex: 2000000" style="font-size: 1.1rem; font-weight: 800;" oninput="calcularFinancas()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted);">RESERVA INTOCÁVEL (R$)</label>
+                            <input type="number" id="fin_reserva" class="input-global" placeholder="Ex: 500000" style="font-size: 1.1rem; font-weight: 800;" oninput="calcularFinancas()">
+                        </div>
+                    </div>
+
+                    <div class="fin-box">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted);">ORÇAMENTO LIVRE PARA GASTAR</span>
+                        <div class="fin-val" id="fin_livre">R$ 0</div>
+                    </div>
+                </div>
             </div>
-        </div>
 
+            <div class="card" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="card-header" style="justify-content: space-between;">
+                    <h3 style="color: var(--text-main); margin:0;"><i class="fas fa-trophy" style="color: var(--text-main);"></i> Objetivos da Temporada</h3>
+                    <button class="btn-action primary" onclick="abrirModalMeta()"><i class="fas fa-plus"></i> Nova Meta</button>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Acompanhe o progresso das suas OKRs (Objectives and Key Results).</p>
+
+                <div id="metas_container" style="flex-grow: 1;">
+                    </div>
+            </div>
+
+        </div>
     </main>
 
+    <div class="modal-overlay" id="modal_meta">
+        <div class="modal-content">
+            <h3 id="modal_title_text" style="font-size: 1.2rem; font-weight: 900; margin-bottom: 15px; color: var(--text-main); border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">Planejamento S.M.A.R.T.</h3>
+            
+            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; display: block;">S - ESPECÍFICO (OBJETIVO PRINCIPAL)</label>
+            <input type="text" id="nova_meta_titulo" class="input-global" placeholder="Ex: Garantir o Acesso à Série A" style="margin-bottom: 15px; font-weight: 800;">
+
+            <div class="smart-grid">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; display: block;">CATEGORIA</label>
+                    <select id="nova_meta_cat" class="input-global" style="appearance: auto;">
+                        <option value="Titulos">Títulos & Ligas</option>
+                        <option value="Elenco">Evolução do Elenco</option>
+                        <option value="Financas">Finanças & Clube</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; display: block;">T - TEMPORAL (PRAZO)</label>
+                    <input type="text" id="nova_meta_prazo" class="input-global" placeholder="Ex: Fim do 1º Turno">
+                </div>
+            </div>
+
+            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; display: block; margin-top: 15px;">R - RELEVANTE (POR QUE IMPORTA?)</label>
+            <input type="text" id="nova_meta_motivo" class="input-global" placeholder="Ex: Precisamos do prêmio para não falir." style="margin-bottom: 20px;">
+
+            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; display: block;">M e A - MENSURÁVEL E ATINGÍVEL (O.K.R.s / RESULTADOS-CHAVE)</label>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 10px;">Liste os O.K.R.s (Key Results) para medir o avanço deste objetivo.</p>
+            
+            <div class="subtask-input-row">
+                <input type="text" id="nova_subtask_input" class="input-global" placeholder="Ex: Fazer 40 pontos no campeonato" onkeypress="if(event.key === 'Enter') addSubtaskTemp()">
+                <button class="btn-action" style="padding: 0 15px;" onclick="addSubtaskTemp()"><i class="fas fa-plus"></i></button>
+            </div>
+            <div id="modal_subtasks_container"></div>
+
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button class="btn-action" style="flex: 1; justify-content: center;" onclick="fecharModalMeta()">Cancelar</button>
+                <button class="btn-action primary" style="flex: 1; justify-content: center;" onclick="salvarNovaMeta()"><i class="fas fa-save"></i> Salvar Objetivo</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
     <script>
-        const STORAGE_KEY = 'hub_diretrizes_v1';
-        const OKR_KEY = 'hub_okrs_v1';
+        // --- 0. SISTEMA DE SAVES GLOBAIS ---
+        let savesList = JSON.parse(localStorage.getItem('hub_saves_list') || '["Geral"]');
+        let currentSave = localStorage.getItem('hub_active_save') || 'Geral';
+        
+        // Chaves Dinâmicas baseadas no Save Atual
+        let DIR_KEY = `hub_diretrizes_v1_${currentSave}`;
+        let METAS_KEY = `hub_metas_v1_${currentSave}`;
 
-        // --- TEMA E SIDEBAR STATE ---
-        function applyInitialStates() {
-            if(localStorage.getItem('hub_theme') === 'dark') {
-                document.body.classList.add('dark-theme');
-                document.getElementById('theme_icon').classList.replace('fa-moon', 'fa-sun');
-            }
-            if(window.innerWidth > 768 && localStorage.getItem('hub_sidebar_state') === 'collapsed') {
-                document.getElementById('sidebar').classList.add('collapsed');
-                document.getElementById('main_content').classList.add('expanded');
-            }
-            const headerTitle = document.querySelector('.header-title-mobile');
-            if(headerTitle) headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0';
+        // Dados
+        let diretrizes = {};
+        let metas = [];
+        
+        // Controle de Edição
+        let editandoIndex = -1; 
+        let subtasksTemp = [];
+
+        function initSaveSystem() {
+            const selector = document.getElementById('save_selector');
+            selector.innerHTML = savesList.map(s => `<option value="${s}" ${s === currentSave ? 'selected' : ''}>${s}</option>`).join('');
+            carregarDadosDoSave();
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('theme_icon');
-            body.classList.toggle('dark-theme');
-            
-            if (body.classList.contains('dark-theme')) {
-                localStorage.setItem('hub_theme', 'dark');
-                icon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                localStorage.setItem('hub_theme', 'light');
-                icon.classList.replace('fa-sun', 'fa-moon');
-            }
+        function mudarSave(saveName) {
+            currentSave = saveName;
+            localStorage.setItem('hub_active_save', currentSave);
+            // Atualiza as chaves e recarrega
+            DIR_KEY = `hub_diretrizes_v1_${currentSave}`;
+            METAS_KEY = `hub_metas_v1_${currentSave}`;
+            carregarDadosDoSave();
         }
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.querySelector('.sidebar-overlay').classList.toggle('open');
-        }
-
-        function toggleDesktopSidebar() {
-            const sb = document.getElementById('sidebar');
-            const mc = document.getElementById('main_content');
-            sb.classList.toggle('collapsed');
-            mc.classList.toggle('expanded');
-            
-            if(sb.classList.contains('collapsed')) {
-                localStorage.setItem('hub_sidebar_state', 'collapsed');
-            } else {
-                localStorage.setItem('hub_sidebar_state', 'expanded');
-            }
-        }
-
-        // --- NOVA FUNÇÃO: LIMPAR DIRETRIZES ---
-        function limparDiretrizes() {
-            if(!confirm("Tem a certeza que deseja APAGAR TODAS AS DIRETRIZES, REGRAS E OKRs?\n\nEsta ação não pode ser desfeita.")) return;
-            
-            // Limpa o localStorage correspondente a esta página
-            localStorage.removeItem(STORAGE_KEY);
-            localStorage.removeItem(OKR_KEY);
-            
-            // Limpa as variáveis do JavaScript
-            okrs = [];
-            
-            // Limpa visualmente todos os inputs globais na tela
-            const inputs = document.querySelectorAll('.input-global');
-            inputs.forEach(input => {
-                // Preserva o valor padrão do 'select' do OKR, mas limpa textos/números
-                if (input.tagName !== 'SELECT') {
-                    input.value = '';
+        function criarNovoSave() {
+            let novoNome = prompt("Digite o nome do novo Save ou Clube (Ex: Galo 2026):");
+            if(novoNome && novoNome.trim() !== '') {
+                novoNome = novoNome.trim();
+                if(!savesList.includes(novoNome)) {
+                    savesList.push(novoNome);
+                    localStorage.setItem('hub_saves_list', JSON.stringify(savesList));
+                    initSaveSystem();
+                    mudarSave(novoNome); // Já seleciona o novo
+                    document.getElementById('save_selector').value = novoNome;
                 } else {
-                    input.selectedIndex = 0;
+                    alert("Já existe um save com este nome!");
                 }
-            });
+            }
+        }
+
+        function deletarSaveAtual() {
+            if(confirm(`Tem certeza que deseja APAGAR DEFINITIVAMENTE o save "${currentSave}" e todos os seus objetivos e configurações?`)) {
+                // Remove as chaves de dados do localStorage
+                localStorage.removeItem(`hub_diretrizes_v1_${currentSave}`);
+                localStorage.removeItem(`hub_metas_v1_${currentSave}`);
+                
+                // Remove o save da lista
+                savesList = savesList.filter(s => s !== currentSave);
+                
+                // Se a lista ficar vazia, recria um save "Geral" para não bugar o sistema
+                if(savesList.length === 0) {
+                    savesList.push("Geral");
+                }
+                
+                localStorage.setItem('hub_saves_list', JSON.stringify(savesList));
+                
+                // Muda para o primeiro save disponível
+                mudarSave(savesList[0]);
+                initSaveSystem(); // Atualiza a caixinha de seleção na tela
+            }
+        }
+
+        function carregarDadosDoSave() {
+            diretrizes = JSON.parse(localStorage.getItem(DIR_KEY) || '{}');
+            metas = JSON.parse(localStorage.getItem(METAS_KEY) || '[]');
             
-            // Re-renderiza o quadro vazio
-            renderizarOKRs();
-            salvarDiretrizes();
+            document.getElementById('dna_regras').value = diretrizes.dna_regras || '';
+            document.getElementById('dna_idade').value = diretrizes.dna_idade || '';
+            document.getElementById('dna_elenco').value = diretrizes.dna_elenco || '';
+            document.getElementById('fin_caixa').value = diretrizes.fin_caixa || '';
+            document.getElementById('fin_reserva').value = diretrizes.fin_reserva || '';
+            
+            calcularFinancas();
+            renderMetas();
         }
 
-        // --- SISTEMA DE DIRETRIZES GERAIS ---
-        function carregarDiretrizes() {
-            const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-            const campos = [
-                'dna_clube', 'dna_treinador', 'dna_formacao', 'dna_estilo', 
-                'dna_teto', 'dna_idade', 'dna_base', 'dna_anotacoes'
-            ];
-            campos.forEach(campo => {
-                if(data[campo] && document.getElementById(campo)) {
-                    document.getElementById(campo).value = data[campo];
-                }
-            });
-        }
-
+        // --- 1. FINANÇAS E DIRETRIZES ---
         function salvarDiretrizes() {
-            const data = {
-                dna_clube: document.getElementById('dna_clube').value,
-                dna_treinador: document.getElementById('dna_treinador').value,
-                dna_formacao: document.getElementById('dna_formacao').value,
-                dna_estilo: document.getElementById('dna_estilo').value,
-                dna_teto: document.getElementById('dna_teto').value,
-                dna_idade: document.getElementById('dna_idade').value,
-                dna_base: document.getElementById('dna_base').value,
-                dna_anotacoes: document.getElementById('dna_anotacoes').value
-            };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            diretrizes.dna_regras = document.getElementById('dna_regras').value;
+            diretrizes.dna_idade = document.getElementById('dna_idade').value;
+            diretrizes.dna_elenco = document.getElementById('dna_elenco').value;
+            localStorage.setItem(DIR_KEY, JSON.stringify(diretrizes));
         }
 
-        // --- SISTEMA DE OKRs E METAS SMART ---
-        let okrs = JSON.parse(localStorage.getItem(OKR_KEY) || '[]');
+        function calcularFinancas() {
+            let caixa = parseFloat(document.getElementById('fin_caixa').value) || 0;
+            let reserva = parseFloat(document.getElementById('fin_reserva').value) || 0;
+            let livre = caixa - reserva;
 
-        function adicionarOKR() {
-            const objetivo = document.getElementById('okr_objetivo').value.trim();
-            const categoria = document.getElementById('okr_categoria').value;
-            const kr1 = document.getElementById('kr_1').value.trim();
-            const kr2 = document.getElementById('kr_2').value.trim();
-            const kr3 = document.getElementById('kr_3').value.trim();
+            diretrizes.fin_caixa = document.getElementById('fin_caixa').value;
+            diretrizes.fin_reserva = document.getElementById('fin_reserva').value;
+            localStorage.setItem(DIR_KEY, JSON.stringify(diretrizes));
 
-            if (!objetivo || (!kr1 && !kr2 && !kr3)) {
-                alert("Preencha o Objetivo SMART e pelo menos 1 Key Result (KR)!");
-                return;
-            }
-
-            const novoOKR = {
-                id: Date.now(),
-                objetivo: objetivo,
-                categoria: categoria,
-                krs: []
-            };
-
-            if (kr1) novoOKR.krs.push({ id: Date.now() + 1, texto: kr1, done: false });
-            if (kr2) novoOKR.krs.push({ id: Date.now() + 2, texto: kr2, done: false });
-            if (kr3) novoOKR.krs.push({ id: Date.now() + 3, texto: kr3, done: false });
-
-            okrs.unshift(novoOKR);
-            salvarOKRs();
-            limparFormularioOKR();
-            renderizarOKRs();
-        }
-
-        function alternarKR(okrId, krId) {
-            const okr = okrs.find(o => o.id === okrId);
-            if (okr) {
-                const kr = okr.krs.find(k => k.id === krId);
-                if (kr) {
-                    kr.done = !kr.done;
-                    salvarOKRs();
-                    renderizarOKRs();
-                }
+            let elLivre = document.getElementById('fin_livre');
+            // Formata o número completo com os pontos de milhares
+            elLivre.innerText = `R$ ${livre.toLocaleString('pt-BR')}`;
+            
+            // Avisa de risco apenas se negativo, senão usa a cor principal
+            if(livre < 0) {
+                elLivre.style.color = 'var(--danger)';
+                elLivre.innerText += " (RISCO!)";
+            } else {
+                elLivre.style.color = 'var(--text-main)';
             }
         }
 
-        function excluirOKR(id) {
-            if (confirm("Tem certeza que deseja apagar este Objetivo?")) {
-                okrs = okrs.filter(o => o.id !== id);
-                salvarOKRs();
-                renderizarOKRs();
-            }
-        }
-
-        function salvarOKRs() {
-            localStorage.setItem(OKR_KEY, JSON.stringify(okrs));
-        }
-
-        function limparFormularioOKR() {
-            document.getElementById('okr_objetivo').value = '';
-            document.getElementById('kr_1').value = '';
-            document.getElementById('kr_2').value = '';
-            document.getElementById('kr_3').value = '';
-        }
-
-        function getCategoriaCor(cat) {
-            switch(cat) {
-                case 'Títulos': return 'var(--warning)'; 
-                case 'Financeiro': return 'var(--btn-active)'; 
-                case 'Base': return '#0284c7'; 
-                default: return 'var(--dark-panel)'; 
-            }
-        }
-
-        function renderizarOKRs() {
-            const board = document.getElementById('okr_board');
-            if (okrs.length === 0) {
-                board.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border: 1px dashed var(--border-light); border-radius: 8px;">Nenhum Planejamento Estratégico registado ainda.</div>`;
+        // --- 2. O NOVO SISTEMA DE METAS E OKRs ---
+        function renderMetas() {
+            const container = document.getElementById('metas_container');
+            if(metas.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-body); border-radius: 12px; border: 1px dashed var(--border-light);">
+                    <i class="fas fa-bullseye" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><br>
+                    Nenhum objetivo S.M.A.R.T. definido para este save.<br>Clique em "Nova Meta" para começar.
+                </div>`;
                 return;
             }
 
             let html = '';
-            okrs.forEach(okr => {
-                const concluidos = okr.krs.filter(k => k.done).length;
-                const total = okr.krs.length;
-                const porcentagem = total > 0 ? Math.round((concluidos / total) * 100) : 0;
+            metas.forEach((meta, index) => {
+                let totalSub = meta.subtasks ? meta.subtasks.length : 0;
+                let completas = meta.subtasks ? meta.subtasks.filter(s => s.concluida).length : 0;
+                let percentagem = totalSub === 0 ? 0 : Math.round((completas / totalSub) * 100);
                 
-                let krsHtml = '';
-                okr.krs.forEach(kr => {
-                    krsHtml += `
-                        <label class="kr-item">
-                            <input type="checkbox" class="kr-checkbox" ${kr.done ? 'checked' : ''} onchange="alternarKR(${okr.id}, ${kr.id})">
-                            <span class="kr-text ${kr.done ? 'completed' : ''}">${kr.texto}</span>
-                        </label>
-                    `;
-                });
+                let catNome = meta.categoria === 'Titulos' ? 'Títulos' : (meta.categoria === 'Elenco' ? 'Elenco' : 'Finanças');
+
+                let subtasksHtml = '';
+                if(totalSub > 0) {
+                    subtasksHtml = `<div class="subtasks-list">`;
+                    meta.subtasks.forEach((sub, subIndex) => {
+                        let checkedClass = sub.concluida ? 'checked' : '';
+                        subtasksHtml += `
+                            <div class="task-item ${checkedClass}" onclick="toggleSubtask(${index}, ${subIndex})">
+                                <div class="task-checkbox"></div>
+                                <span>${sub.texto}</span>
+                            </div>
+                        `;
+                    });
+                    subtasksHtml += `</div>`;
+                }
 
                 html += `
-                    <div class="okr-card">
-                        <div class="okr-header">
-                            <span class="okr-category" style="background: ${getCategoriaCor(okr.categoria)};">${okr.categoria}</span>
-                            <i class="fas fa-trash okr-delete" onclick="excluirOKR(${okr.id})" title="Apagar Meta"></i>
+                    <div class="meta-card">
+                        <div class="meta-header">
+                            <div>
+                                <span class="meta-cat">${catNome}</span>
+                                <h4 class="meta-title">${meta.titulo}</h4>
+                            </div>
+                            <div style="display:flex; gap: 8px;">
+                                <i class="fas fa-pencil" style="color: var(--text-muted); cursor: pointer; padding: 5px;" onclick="editarMeta(${index})" title="Editar Meta"></i>
+                                <i class="fas fa-trash" style="color: var(--danger); opacity: 0.5; cursor: pointer; padding: 5px;" onclick="deletarMeta(${index})" title="Apagar Meta"></i>
+                            </div>
                         </div>
-                        <div class="okr-title">${okr.objetivo}</div>
                         
-                        <div style="display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin-bottom: 4px;">
-                            <span>PROGRESSO</span>
-                            <span style="color: ${porcentagem === 100 ? 'var(--btn-active)' : 'inherit'}">${porcentagem}%</span>
+                        <div class="smart-details">
+                            ${meta.prazo ? `<span title="Prazo"><i class="fas fa-clock" style="color:var(--text-muted);"></i> ${meta.prazo}</span>` : ''}
+                            ${meta.motivo ? `<span title="Motivo"><i class="fas fa-bolt" style="color:var(--text-muted);"></i> ${meta.motivo}</span>` : ''}
                         </div>
-                        <div class="progress-container">
-                            <div class="progress-fill" style="width: ${porcentagem}%;"></div>
+                        
+                        <div class="progress-text">
+                            <span>Progresso dos O.K.R.s</span>
+                            <span>${percentagem}%</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress-bar" style="width: ${percentagem}%; ${percentagem === 100 ? 'background: var(--info);' : ''}"></div>
                         </div>
 
-                        <div class="kr-list">
-                            ${krsHtml}
-                        </div>
+                        ${subtasksHtml}
                     </div>
                 `;
             });
 
-            board.innerHTML = html;
+            container.innerHTML = html;
         }
 
-        // --- SISTEMA DE BACKUP ---
-        function exportarBackupDiretrizes() {
-            const backupData = {
-                diretrizes: localStorage.getItem(STORAGE_KEY),
-                okrs: localStorage.getItem(OKR_KEY)
+        // --- LÓGICA DO MODAL S.M.A.R.T ---
+        function abrirModalMeta() {
+            editandoIndex = -1; // Modo Criação
+            document.getElementById('modal_title_text').innerText = "Planejamento S.M.A.R.T.";
+            document.getElementById('nova_meta_titulo').value = '';
+            document.getElementById('nova_meta_prazo').value = '';
+            document.getElementById('nova_meta_motivo').value = '';
+            document.getElementById('nova_subtask_input').value = '';
+            subtasksTemp = [];
+            
+            document.getElementById('modal_meta').classList.add('open');
+            renderSubtasksTemp();
+        }
+
+        function editarMeta(index) {
+            editandoIndex = index; // Modo Edição
+            const meta = metas[index];
+            
+            document.getElementById('modal_title_text').innerText = "Editar Objetivo S.M.A.R.T.";
+            document.getElementById('nova_meta_titulo').value = meta.titulo;
+            document.getElementById('nova_meta_cat').value = meta.categoria;
+            document.getElementById('nova_meta_prazo').value = meta.prazo || '';
+            document.getElementById('nova_meta_motivo').value = meta.motivo || '';
+            document.getElementById('nova_subtask_input').value = '';
+            
+            // Clona o array de subtasks (OKRs) para não afetar o original até salvar
+            subtasksTemp = JSON.parse(JSON.stringify(meta.subtasks || []));
+            
+            document.getElementById('modal_meta').classList.add('open');
+            renderSubtasksTemp();
+        }
+
+        function fecharModalMeta() { document.getElementById('modal_meta').classList.remove('open'); }
+
+        function addSubtaskTemp() {
+            const input = document.getElementById('nova_subtask_input');
+            const texto = input.value.trim();
+            if(texto) {
+                subtasksTemp.push({ texto: texto, concluida: false });
+                input.value = '';
+                renderSubtasksTemp();
+            }
+        }
+
+        function removerSubtaskTemp(index) {
+            subtasksTemp.splice(index, 1);
+            renderSubtasksTemp();
+        }
+
+        function renderSubtasksTemp() {
+            const container = document.getElementById('modal_subtasks_container');
+            container.innerHTML = subtasksTemp.map((sub, i) => `
+                <div class="temp-subtask">
+                    <span style="color: var(--text-main); font-weight:600;">- ${sub.texto}</span>
+                    <i class="fas fa-times" style="color: var(--danger); cursor:pointer;" onclick="removerSubtaskTemp(${i})"></i>
+                </div>
+            `).join('');
+        }
+
+        function salvarNovaMeta() {
+            const titulo = document.getElementById('nova_meta_titulo').value.trim();
+            const categoria = document.getElementById('nova_meta_cat').value;
+            const prazo = document.getElementById('nova_meta_prazo').value.trim();
+            const motivo = document.getElementById('nova_meta_motivo').value.trim();
+            
+            if(!titulo) { alert('S - O objetivo precisa de um título Específico!'); return; }
+            if(subtasksTemp.length === 0) {
+                subtasksTemp.push({ texto: "Concluir objetivo principal", concluida: false });
+            }
+
+            const metaPronta = {
+                id: Date.now(),
+                titulo: titulo,
+                categoria: categoria,
+                prazo: prazo,
+                motivo: motivo,
+                subtasks: [...subtasksTemp]
             };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "brasfoot_planejamento_backup.json");
-            dlAnchorElem.click();
+
+            if (editandoIndex === -1) {
+                // Nova Meta
+                metas.push(metaPronta);
+            } else {
+                // Atualizando Meta Existente (mantém o ID original)
+                metaPronta.id = metas[editandoIndex].id;
+                metas[editandoIndex] = metaPronta;
+            }
+
+            localStorage.setItem(METAS_KEY, JSON.stringify(metas));
+            fecharModalMeta();
+            renderMetas();
         }
 
-        function importarBackupDiretrizes(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        function toggleSubtask(metaIndex, subtaskIndex) {
+            metas[metaIndex].subtasks[subtaskIndex].concluida = !metas[metaIndex].subtasks[subtaskIndex].concluida;
+            localStorage.setItem(METAS_KEY, JSON.stringify(metas));
+            renderMetas();
+        }
+
+        function deletarMeta(index) {
+            if(confirm("Deseja apagar este objetivo definitivamente?")) {
+                metas.splice(index, 1);
+                localStorage.setItem(METAS_KEY, JSON.stringify(metas));
+                renderMetas();
+            }
+        }
+
+        // --- BACKUP ---
+        function exportarDados() {
+            const backupData = { diretrizes: localStorage.getItem(DIR_KEY), metas: localStorage.getItem(METAS_KEY) };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
+            const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `brasfoot_diretoria_${currentSave}.json`); dlAnchorElem.click();
+        }
+
+        function importarDados(event) {
+            const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(data.diretrizes) localStorage.setItem(STORAGE_KEY, data.diretrizes);
-                    if(data.okrs) localStorage.setItem(OKR_KEY, data.okrs);
-                    alert("Backup importado com sucesso! A página será recarregada.");
-                    location.reload();
-                } catch (err) { alert("Erro ao importar: O ficheiro parece inválido."); }
+                    if(data.diretrizes) localStorage.setItem(DIR_KEY, data.diretrizes);
+                    if(data.metas) localStorage.setItem(METAS_KEY, data.metas);
+                    alert("Backup importado com sucesso!"); location.reload();
+                } catch (err) { alert("Erro ao importar."); }
             };
             reader.readAsText(file);
         }
 
-        // --- INICIALIZAÇÃO E RESIZE ---
-        window.onload = () => { 
-            applyInitialStates(); 
-            carregarDiretrizes(); 
-            renderizarOKRs();
-        };
-
-        window.addEventListener('resize', () => {
-            const headerTitle = document.querySelector('.header-title-mobile');
-            if(headerTitle) {
-                headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0';
-            }
+        // START
+        window.addEventListener('DOMContentLoaded', () => {
+            initSaveSystem();
         });
     </script>
 </body>

@@ -6,65 +6,70 @@
     <title>Auxiliar Técnico - Hub do Treinador</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- VARIÁVEIS DE CORES (LIGHT/DARK) --- */
+        /* --- VARIÁVEIS DE CORES (LIGHT MODE PADRÃO - VERDE ESMERALDA) --- */
         :root {
-            --bg-body: #fafafa;
-            --card-bg: #ffffff;
-            --dark-panel: #27272a;
-            --text-main: #3f3f46;
-            --text-muted: #71717a;
-            --btn-bg: #ffffff;
-            --btn-active: #059669; 
-            --border-light: #e4e4e7;
-            --pitch-grass: #16a34a; 
-            --pitch-lines: rgba(255, 255, 255, 0.7);
-            --dot-rival: #dc2626; 
-            --danger: #dc2626;
+            --bg-body: #f1f5f9; 
+            --card-bg: #ffffff; 
+            --dark-panel: #f8fafc; 
+            --text-main: #1e293b; 
+            --text-muted: #64748b; 
+            --btn-bg: #e2e8f0; 
+            --btn-active: #059669; /* Verde Esmeralda Confortável */
+            --border-light: #cbd5e1; 
+            --danger: #ef4444; 
+            --warning: #f59e0b;
+            --info: #0284c7; 
+            
+            --pitch-grass: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+            --pitch-lines: rgba(255, 255, 255, 0.8);
+            --dot-ours: #059669;
+            --dot-rival: #ef4444;
+            --badge-bg: #f1f5f9;
+            --badge-border: #cbd5e1;
+            --badge-text: #475569;
         }
 
+        /* --- MODO ESCURO (DARK MODE) --- */
         body.dark-theme {
-            --bg-body: #09090b; 
-            --card-bg: #18181b; 
-            --dark-panel: #202024; 
-            --text-main: #f4f4f5; 
-            --text-muted: #a1a1aa; 
-            --btn-bg: #27272a; 
-            --btn-active: #10b981; 
-            --border-light: #3f3f46; 
+            --bg-body: #0f1115; 
+            --card-bg: #1a1d24; 
+            --dark-panel: #13151a; 
+            --text-main: #e2e8f0; 
+            --text-muted: #94a3b8; 
+            --btn-bg: #2dd4bf; 
+            --btn-active: #10b981; /* Verde Iluminado no Dark Mode */
+            --border-light: #334155; 
+            
+            --pitch-grass: linear-gradient(180deg, #166534 0%, #14532d 100%);
+            --pitch-lines: rgba(255, 255, 255, 0.4);
+            --dot-ours: #10b981;
+            --badge-bg: rgba(255,255,255,0.05);
+            --badge-border: rgba(255,255,255,0.1);
+            --badge-text: #f8fafc;
         }
 
-        /* --- ZERANDO MARGENS --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { overflow-x: hidden; width: 100%; max-width: 100vw; transition: background-color 0.3s ease, color 0.3s ease; }
-        body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Inter', sans-serif; }
+        /* --- ZERANDO MARGENS E BASE (FONTE VERDANA) --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Verdana', sans-serif; }
+        html, body { overflow-x: hidden; width: 100%; max-width: 100vw; background-color: var(--bg-body); color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
 
-        /* --- BARRA LATERAL MOBILE & DESKTOP --- */
-        .sidebar {
-            position: fixed; top: 0; bottom: 0; background: var(--card-bg); z-index: 1000; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1); overflow-y: auto; border-right: 1px solid var(--border-light);
-            transition: left 0.3s ease, width 0.3s ease, background-color 0.3s;
-        }
-        
-        .sidebar { left: -260px; width: 260px; padding: 20px; }
+        /* --- BARRA LATERAL --- */
+        .sidebar { position: fixed; top: 0; bottom: 0; background: var(--card-bg); z-index: 1000; box-shadow: 2px 0 10px rgba(0,0,0,0.1); overflow-y: auto; border-right: 1px solid var(--border-light); transition: left 0.3s ease, width 0.3s ease, background-color 0.3s; left: -260px; width: 260px; padding: 20px; }
+        body.dark-theme .sidebar { box-shadow: 2px 0 10px rgba(0,0,0,0.5); }
         .sidebar.open { left: 0; }
-        
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; }
+        body.dark-theme .sidebar-overlay { background: rgba(0,0,0,0.8); }
         .sidebar-overlay.open { display: block; }
 
-        .brand { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 30px; margin-top: 40px; display: flex; align-items: center; gap: 10px; position: relative;}
-        .nav-link { display: flex; align-items: center; gap: 10px; padding: 12px; margin-bottom: 5px; color: var(--text-main); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; overflow: hidden;}
-        .nav-link:hover { background: var(--bg-body); }
-        .nav-link.active { background: var(--border-light); color: var(--btn-active); }
+        .brand { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 30px; margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--btn-active); }
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 14px 12px; margin-bottom: 5px; color: var(--text-muted); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: 0.2s; white-space: nowrap; overflow: hidden; }
+        .nav-link:hover { background: var(--dark-panel); color: var(--text-main); }
+        .nav-link.active { background: var(--btn-active); color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .nav-link i { min-width: 20px; text-align: center; }
 
-        .menu-toggle {
-            position: fixed; top: 12px; left: 12px; z-index: 1001;
-            background: var(--dark-panel); color: #fff; border: none;
-            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
-        }
+        .menu-toggle { position: fixed; top: 12px; left: 12px; z-index: 1001; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-light); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         .desktop-toggle { display: none; }
-
-        .main-content { padding: 65px 10px 20px 10px; transition: margin-left 0.3s ease, width 0.3s ease; width: 100%; }
+        .main-content { padding: 65px 15px 30px 15px; transition: margin-left 0.3s ease, width 0.3s ease; width: 100%; }
 
         @media (min-width: 769px) {
             .sidebar { left: 0; }
@@ -72,83 +77,104 @@
             .brand { margin-top: 0; justify-content: space-between; }
             .desktop-toggle { display: block; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; transition: 0.2s; padding: 5px; }
             .desktop-toggle:hover { color: var(--btn-active); }
-            
-            .main-content { margin-left: 260px; padding: 20px 20px 20px 30px; width: calc(100% - 260px); }
-
+            .main-content { margin-left: 260px; padding: 30px 40px; width: calc(100% - 260px); }
             .sidebar.collapsed { width: 80px; padding: 20px 10px; }
             .sidebar.collapsed .brand span { display: none; }
             .sidebar.collapsed .brand { justify-content: center; }
             .sidebar.collapsed .desktop-toggle { transform: rotate(180deg); margin: 0 auto; }
             .sidebar.collapsed .nav-link span { display: none; }
-            .sidebar.collapsed .nav-link { justify-content: center; padding: 12px 0; }
-            
+            .sidebar.collapsed .nav-link { justify-content: center; padding: 14px 0; }
             .main-content.expanded { margin-left: 80px; width: calc(100% - 80px); }
         }
 
-        /* --- CARDS RESPONSIVOS --- */
-        .card { background: var(--card-bg); border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: background-color 0.3s, border-color 0.3s; }
-        .card-header h3 { font-size: 1rem; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        /* --- CARDS E LAYOUT "A4" (MAIS RESPIRO) --- */
+        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 25px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: background-color 0.3s, border-color 0.3s; }
+        @media (min-width: 768px) { .card { padding: 30px; } }
+        .card-header h3 { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;}
+        .card-header h3 i { font-size: 1.4rem; }
 
-        /* --- BOTÕES TOUCH --- */
-        .touch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); gap: 6px; margin-bottom: 12px; }
-        .touch-grid-3 { grid-template-columns: repeat(3, 1fr); }
-        .touch-grid-4 { grid-template-columns: repeat(4, 1fr); }
+        /* --- BOTÕES PREMIUM E MAIORES --- */
+        .btn-touch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .btn-touch { background: var(--dark-panel); border: 1px solid var(--border-light); border-radius: 8px; padding: 14px 8px; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-align: center; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+        .btn-touch:hover { border-color: var(--btn-active); color: var(--text-main); }
         
-        .btn-touch { 
-            background: var(--btn-bg); border: 1.5px solid var(--border-light); border-radius: 6px; 
-            padding: 8px 2px; font-size: 0.65rem; font-weight: 800; color: var(--text-main); 
-            text-align: center; cursor: pointer; text-transform: uppercase; transition: 0.2s;
-        }
-        .btn-touch.active { background: var(--btn-active); color: #fff; border-color: var(--btn-active); }
-        .btn-outline { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-light); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s;}
-        .btn-outline:hover { border-color: var(--btn-active); color: var(--btn-active); }
+        .btn-touch.active { background: rgba(5, 150, 105, 0.1); color: var(--btn-active); border-color: var(--btn-active); box-shadow: inset 0 0 10px rgba(5, 150, 105, 0.05); }
+        body.dark-theme .btn-touch.active { background: rgba(16, 185, 129, 0.1); box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.1); }
+        
+        .btn-action { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-light); padding: 10px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .btn-action:hover { border-color: var(--btn-active); color: var(--btn-active); }
+        .btn-action.primary { background: var(--btn-active); border-color: var(--btn-active); color: #fff; }
+        .btn-action.primary:hover { opacity: 0.9; color: #fff; }
+        .btn-action.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+        .btn-action.danger:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
 
-        /* --- CAMPOS DE FUTEBOL E PAINEL TÁTICO --- */
-        .tactical-board { background: var(--dark-panel); padding: 12px; border-radius: 12px; margin-bottom: 10px; transition: background-color 0.3s; }
+        /* --- RELATÓRIOS TÁTICOS --- */
+        .tactical-report { background: var(--dark-panel); border: 1px solid var(--border-light); border-radius: 12px; padding: 25px 15px; margin-bottom: 25px; text-align: center; }
+        .report-title { font-size: 0.8rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
+        .report-main-action { font-size: 1.5rem; font-weight: 900; color: var(--text-main); margin-bottom: 15px; line-height: 1.2; }
+        .report-badges { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 15px; }
         
-        .pitch-container { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+        .badge { background: var(--badge-bg); border: 1px solid var(--badge-border); padding: 8px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: var(--badge-text); display: inline-flex; align-items: center; gap: 6px;}
+        .badge.alert { border-color: var(--danger); color: var(--danger); background: rgba(239, 68, 68, 0.1); }
         
-        .pitch {
-            position: relative; width: 100%; max-width: 160px; aspect-ratio: 2 / 3; 
-            background: var(--pitch-grass); border: 2px solid #fff; border-radius: 4px; overflow: hidden; 
-        }
+        .badge.success { border-color: var(--btn-active); color: var(--btn-active); background: rgba(5, 150, 105, 0.1); }
+        body.dark-theme .badge.success { background: rgba(16, 185, 129, 0.1); }
         
-        .p-line { position: absolute; border: 1px solid var(--pitch-lines); }
-        .p-center { top: 50%; left: 0; right: 0; }
-        .p-circle { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 35px; height: 35px; border-radius: 50%; }
-        .p-area-top { top: 0; left: 20%; right: 20%; height: 18%; border-top: none; }
-        .p-area-bot { bottom: 0; left: 20%; right: 20%; height: 18%; border-bottom: none; }
-        
-        .player-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); border: 1px solid rgba(0,0,0,0.8); z-index: 10; transition: 0.3s; }
-        .dot-ours { background: #fff; box-shadow: 0 0 5px rgba(255,255,255,0.8); }
-        .dot-rival { background: var(--dot-rival); box-shadow: 0 0 5px rgba(220,38,38,0.8); }
+        .report-insight { font-size: 0.8rem; color: var(--text-main); font-style: italic; background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px; border-left: 4px solid var(--btn-active); margin-top: 10px;}
+        body.dark-theme .report-insight { background: rgba(0,0,0,0.3); }
 
-        .pitch-label { position: absolute; top: 3px; left: 3px; background: rgba(0,0,0,0.8); color: #fff; padding: 2px 4px; font-size: 0.45rem; font-weight: bold; border-radius: 3px; z-index: 20; }
-
-        /* --- DISPLAY DA IA --- */
-        .ai-display { text-align: center; color: #fff; margin-bottom: 5px; }
-        .ai-title { font-family: 'Kanit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #fff; display: block; line-height: 1.1; margin-bottom: 5px;}
-        .ai-subtitle { font-size: 0.6rem; color: #a1a1aa; font-weight: 700; text-transform: uppercase; margin-bottom: 3px; display: block; }
-        .badge { background: rgba(0,0,0,0.3); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 0.55rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.1);}
-        .badge-alert { background: #b91c1c; border-color: #991b1b; } 
-
-        /* --- RASTREADOR 5x5 --- */
-        .tracker-card { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 10px; margin-bottom: 10px; transition: background-color 0.3s; }
-        .comp-title { font-size: 0.75rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; margin:0;}
-        .row-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px dashed var(--border-light); }
-        .row-5:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        /* --- PRANCHETAS (FORMATO A4 / RETRATO) --- */
+        .pitch-arena { display: flex; flex-direction: column; gap: 30px; align-items: center; margin-top: 20px;}
+        @media (min-width: 650px) { .pitch-arena { flex-direction: row; justify-content: center; align-items: stretch; gap: 40px;} }
         
-        .sq { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 4px; border: 1px solid var(--border-light); cursor: pointer; color: var(--text-muted); font-size: 0.65rem; background: var(--bg-body);}
-        .v { background: var(--btn-active); color: #fff; border-color: var(--btn-active); }
-        .e { background: #f59e0b; color: #fff; border-color: #f59e0b; }
-        .d { background: #dc2626; color: #fff; border-color: #dc2626; }
-
-        .mem-card { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s;}
-        .btn-del { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+        .pitch-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 280px; margin: 0 auto; flex: 1;}
+        .pitch-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .title-rival { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
         
-        /* Inputs globais */
-        .input-global { background: var(--bg-body); color: var(--text-main); font-size: 0.75rem; padding: 8px; border-radius: 6px; border: 1px solid var(--border-light); outline: none;}
-        .input-global:focus { border-color: var(--btn-active); }
+        .title-ours { background: rgba(5, 150, 105, 0.1); color: var(--btn-active); border: 1px solid rgba(5, 150, 105, 0.3); }
+        body.dark-theme .title-ours { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); }
+
+        /* Formato A4: aspect-ratio alterado para 1/1.45 (mais alto) */
+        .pitch { position: relative; width: 100%; aspect-ratio: 1 / 1.45; background: var(--pitch-grass); border: 3px solid rgba(255,255,255,0.8); border-radius: 8px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        body.dark-theme .pitch { border-color: rgba(255,255,255,0.6); box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        
+        .p-line { position: absolute; border: 2px solid var(--pitch-lines); }
+        .p-center { top: 50%; left: 0; right: 0; border-top: 2px solid var(--pitch-lines); }
+        .p-circle { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; border-radius: 50%; }
+        .p-area-top { top: 0; left: 20%; right: 20%; height: 16%; border-top: none; }
+        .p-area-bot { bottom: 0; left: 20%; right: 20%; height: 16%; border-bottom: none; }
+        .p-goal-top { top: 0; left: 36%; right: 36%; height: 6%; border-top: none; }
+        .p-goal-bot { bottom: 0; left: 36%; right: 36%; height: 6%; border-bottom: none; }
+
+        .player-dot { position: absolute; width: 16px; height: 16px; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid #fff; z-index: 10; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 3px 6px rgba(0,0,0,0.4); }
+        .dot-ours { background: var(--dot-ours); }
+        .dot-rival { background: var(--dot-rival); }
+
+        /* --- GERENCIADOR DE CAMPEONATOS (GRELHA COMPLETA) --- */
+        .comp-manager { display: flex; flex-direction: column; gap: 20px; }
+        .comp-card { background: var(--dark-panel); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; transition: 0.3s; }
+        .comp-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; border-bottom: 1px dashed var(--border-light); padding-bottom: 15px; margin-bottom: 15px; }
+        
+        .input-title { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; font-weight: 800; outline: none; width: 100%; max-width: 250px; padding: 4px; border-bottom: 2px solid transparent; transition: 0.2s;}
+        .input-title:focus { border-bottom-color: var(--btn-active); }
+        .input-num { background: var(--card-bg); border: 1px solid var(--border-light); color: var(--text-main); font-size: 0.9rem; font-weight: 700; padding: 6px 10px; border-radius: 6px; width: 70px; text-align: center; outline: none;}
+        .input-num:focus { border-color: var(--btn-active); }
+        .comp-actions { display: flex; align-items: center; gap: 12px; }
+
+        .match-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        
+        .sq { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem; border-radius: 8px; border: 1px solid var(--border-light); cursor: pointer; color: var(--text-muted); background: var(--card-bg); transition: all 0.2s; user-select: none; position: relative; flex-shrink: 0;}
+        
+        .sq::before { content: attr(data-rd); position: absolute; top: -20px; font-size: 0.6rem; color: var(--text-muted); font-weight: 800; opacity: 0; transition: 0.2s;}
+        .sq:hover::before { opacity: 1; }
+
+        .sq.v { background: var(--btn-active); color: #fff; border-color: var(--btn-active); box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3); }
+        body.dark-theme .sq.v { box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+        .sq.e { background: var(--warning); color: #fff; border-color: var(--warning); box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+        .sq.d { background: var(--danger); color: #fff; border-color: var(--danger); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+
+        .comp-stats { font-size: 0.85rem; color: var(--text-main); margin-top: 15px; font-weight: 800; display: flex; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--border-light); padding: 12px 16px; border-radius: 8px;}
+
     </style>
 </head>
 <body>
@@ -168,151 +194,169 @@
     </aside>
 
     <main class="main-content" id="main_content">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 25px;">
             <div style="margin-left: 45px;" class="header-title-mobile">
-                <h1 style="color: var(--text-main); font-size: 1.3rem;">Auxiliar Técnico</h1>
-                <p style="color: var(--text-muted); font-size: 0.75rem;">Análise Tática e Rendimento.</p>
+                <h1 style="color: var(--text-main); font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px;">Inteligência Tática</h1>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Sala de espionagem e rastreamento.</p>
             </div>
-            <div style="display: flex; gap: 6px; justify-content: flex-end; flex-grow: 1;">
-                <button class="btn-outline" onclick="toggleTheme()" style="padding: 8px 12px;"><i class="fas fa-moon" id="theme_icon"></i></button>
-                <button class="btn-outline" onclick="exportarBackup()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
-                <label class="btn-outline" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
+            <div style="display: flex; gap: 8px; justify-content: flex-end; flex-grow: 1;">
+                <button class="btn-action" onclick="toggleTheme()" title="Alternar Tema"><i class="fas fa-moon" id="theme_icon"></i></button>
+                <button class="btn-action" onclick="exportarBackup()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
+                <label class="btn-action" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
                     <input type="file" style="display:none;" accept=".json" onchange="importarBackup(event)">
                 </label>
             </div>
         </div>
 
-        <div class="card" style="border-top: 3px solid var(--text-muted);">
-            <div class="card-header"><h3><i class="fas fa-clipboard-check"></i> 1. Pré-Jogo</h3></div>
-            <label style="font-size: 0.7rem; font-weight: 700;">Força do Adversário:</label>
-            <div class="touch-grid touch-grid-3">
-                <button class="btn-touch" onclick="setPre('fraco', this)">FRACO</button>
-                <button class="btn-touch active" onclick="setPre('igual', this)">IGUAL</button>
-                <button class="btn-touch" onclick="setPre('forte', this)">FORTE</button>
+        <div class="card" style="border-top: 4px solid var(--text-muted);">
+            <div class="card-header">
+                <h3 style="color: var(--text-main);"><i class="fas fa-clipboard-list" style="color: var(--text-muted);"></i> 1. Relatório Pré-Jogo</h3>
             </div>
             
-            <div class="tactical-board" style="display: flex; flex-direction: column; align-items: center; padding: 12px;">
-                <div class="ai-display">
-                    <span class="ai-title" id="pre_title" style="font-size: 1.1rem;">JOGO EQUILIBRADO<br>4-4-2</span>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Defina as condições do próximo jogo para gerar a estratégia inicial recomendada.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Força do Adversário</label>
+                    <div class="btn-touch-grid">
+                        <button class="btn-touch" onclick="setPre('forca', 'fraco', this)">Mais Fraco</button>
+                        <button class="btn-touch active" onclick="setPre('forca', 'igual', this)">Equilibrado</button>
+                        <button class="btn-touch" onclick="setPre('forca', 'forte', this)">Mais Forte</button>
+                    </div>
                 </div>
-                <div class="pitch" style="max-width: 180px;">
-                    <div class="pitch-label">NOSSA BASE</div>
-                    <div class="p-line p-center"></div><div class="p-line p-circle"></div>
-                    <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
-                    <div id="pitch_pre"></div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Qualidade do Gramado</label>
+                    <div class="btn-touch-grid">
+                        <button class="btn-touch active" onclick="setPre('gramado', 'bom', this)">Bom / Razoável</button>
+                        <button class="btn-touch" onclick="setPre('gramado', 'ruim', this)">Ruim / Péssimo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tactical-report">
+                <span class="report-title">Formação Sugerida</span>
+                <div class="report-main-action" id="pre_title" style="color: var(--btn-active); font-size: 1.8rem;">CARREGANDO...</div>
+                
+                <div class="report-badges">
+                    <span class="badge" id="pre_estilo"><i class="fas fa-bolt"></i> Estilo: --</span>
+                    <span class="badge" id="pre_marc"><i class="fas fa-shield-halved"></i> Marcação: --</span>
+                    <span class="badge" id="pre_foco"><i class="fas fa-arrows-left-right"></i> Foco: --</span>
+                </div>
+                
+                <div class="pitch-wrapper" style="margin-top: 20px;">
+                    <div class="pitch" style="max-width: 220px;">
+                        <div class="p-line p-center"></div><div class="p-line p-circle"></div>
+                        <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                        <div id="pitch_pre"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card" style="border-top: 3px solid var(--btn-active);">
-            <div class="card-header" style="justify-content: space-between; display: flex; align-items: center;">
-                <h3 style="margin:0;"><i class="fas fa-bolt"></i> 2. Ao Vivo (Adaptação)</h3>
-                <button class="btn-touch-outline" onclick="location.reload()" style="padding: 4px 8px; font-size: 0.65rem; border-color: var(--text-muted); color: var(--text-muted);"><i class="fas fa-undo"></i> Reset</button>
+        <div class="card" style="border-top: 4px solid var(--info);">
+            <div class="card-header">
+                <h3 style="color: var(--text-main);"><i class="fas fa-satellite-dish" style="color: var(--info);"></i> 2. Espionagem do Rival (Ao Vivo)</h3>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Use durante a partida. Identifique o esquema do adversário para descobrir as brechas na defesa dele.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px;">
                 <div>
-                    <label style="font-size: 0.6rem; font-weight: bold;">Postura do Rival</label>
-                    <div class="touch-grid" style="grid-template-columns: 1fr;">
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Postura Deles</label>
+                    <div class="btn-touch-grid">
                         <button class="btn-touch active" onclick="setLive('pos', 'equ', this)">Equilibrado</button>
                         <button class="btn-touch" onclick="setLive('pos', 'ata', this)">Atacando</button>
                         <button class="btn-touch" onclick="setLive('pos', 'ret', this)">Retranca</button>
                     </div>
                 </div>
                 <div>
-                    <label style="font-size: 0.6rem; font-weight: bold;">Por Onde Atacam?</label>
-                    <div class="touch-grid touch-grid-2">
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Foco do Ataque (Deles)</label>
+                    <div class="btn-touch-grid">
                         <button class="btn-touch active" onclick="setLive('atkRival', 'meio', this)">Pelo Meio</button>
                         <button class="btn-touch" onclick="setLive('atkRival', 'alas', this)">Pelas Laterais</button>
                     </div>
                 </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px;">
                 <div>
-                    <label style="font-size: 0.6rem; font-weight: bold;">Marcação Rival</label>
-                    <div class="touch-grid" style="grid-template-columns: 1fr;">
+                    <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Marcação (Deles)</label>
+                    <div class="btn-touch-grid">
                         <button class="btn-touch" onclick="setLive('marcRival', 'leve', this)">Leve</button>
                         <button class="btn-touch active" onclick="setLive('marcRival', 'pesada', this)">Pesada</button>
                         <button class="btn-touch" onclick="setLive('marcRival', 'muito', this)">M. Pesada</button>
                     </div>
                 </div>
-                <div>
-                    <label style="font-size: 0.6rem; font-weight: bold;">Gramado</label>
-                    <div class="touch-grid" style="grid-template-columns: 1fr;">
-                        <button class="btn-touch active" onclick="setLive('gramado', 'bom', this)">Excelente / Bom</button>
-                        <button class="btn-touch" onclick="setLive('gramado', 'ruim', this)">Ruim / Péssimo</button>
-                    </div>
-                </div>
             </div>
 
-            <label style="font-size: 0.6rem; font-weight: bold; margin-top: 5px; display:block;">Formação do Rival</label>
-            <div class="touch-grid touch-grid-3">
+            <label style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block;">Esquema Tático (Deles)</label>
+            <div class="btn-touch-grid" style="grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); margin-bottom: 30px;">
                 <button class="btn-touch" onclick="setLive('form', '541', this)">5-4-1</button>
                 <button class="btn-touch" onclick="setLive('form', '532', this)">5-3-2</button>
                 <button class="btn-touch" onclick="setLive('form', '451', this)">4-5-1</button>
-                
                 <button class="btn-touch active" onclick="setLive('form', '442', this)">4-4-2</button>
                 <button class="btn-touch" onclick="setLive('form', '442def', this)">4-4-2 Def</button>
-                <button class="btn-touch" onclick="setLive('form', '442of', this)">4-4-2 Ofen</button>
-                
+                <button class="btn-touch" onclick="setLive('form', '442of', this)">4-4-2 Of</button>
                 <button class="btn-touch" onclick="setLive('form', '433', this)">4-3-3</button>
                 <button class="btn-touch" onclick="setLive('form', '433def', this)">4-3-3 Def</button>
                 <button class="btn-touch" onclick="setLive('form', '352', this)">3-5-2</button>
-                
                 <button class="btn-touch" onclick="setLive('form', '343', this)">3-4-3</button>
                 <button class="btn-touch" onclick="setLive('form', '4231', this)">4-2-3-1</button>
                 <button class="btn-touch" onclick="setLive('form', '4231alas', this)">4231 Ala</button>
             </div>
 
-            <div class="tactical-board">
-                <div class="ai-display">
-                    <span class="ai-subtitle">Ação Recomendada</span>
-                    <span class="ai-title" id="live_title">CARREGANDO...</span>
-                    <div style="display:flex; justify-content:center; gap:5px; margin-top: 5px;">
-                        <span class="badge" id="live_foco">Foco: --</span>
-                        <span class="badge" id="live_marc">Marcação: --</span>
-                    </div>
-                    <div id="motivo_foco" style="color: #a1a1aa; font-size: 0.6rem; margin-top: 6px; font-weight: 600; line-height: 1.2;"></div>
-                    <div id="aviso_falta" style="display:none; color: #fca5a5; font-size: 0.6rem; margin-top: 4px; font-weight: 700;">⚠️ Risco de Faltas/Expulsões.</div>
+            <div class="tactical-report">
+                <span class="report-title">Adaptação Sugerida (Nossa Tática)</span>
+                <div class="report-main-action" id="live_title">CARREGANDO...</div>
+                
+                <div class="report-badges">
+                    <span class="badge" id="live_foco"><i class="fas fa-arrows-left-right"></i> Foco: --</span>
+                    <span class="badge" id="live_marc"><i class="fas fa-shield"></i> Marcação: --</span>
+                    <span class="badge alert" id="aviso_falta" style="display:none;"><i class="fas fa-triangle-exclamation"></i> Risco de Cartão</span>
                 </div>
                 
-                <div class="pitch-container">
+                <div class="report-insight" id="motivo_foco">Analizando brechas na defesa adversária...</div>
+            </div>
+            
+            <div class="pitch-arena">
+                <div class="pitch-wrapper">
+                    <div class="pitch-title title-rival"><i class="fas fa-user-ninja"></i> Como eles jogam</div>
                     <div class="pitch">
-                        <div class="pitch-label" style="background: #991b1b;">RIVAL</div>
                         <div class="p-line p-center"></div><div class="p-line p-circle"></div>
                         <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                        <div class="p-line p-goal-top"></div><div class="p-line p-goal-bot"></div>
                         <div id="pitch_rival"></div>
                     </div>
+                </div>
+
+                <div class="pitch-wrapper">
+                    <div class="pitch-title title-ours"><i class="fas fa-chess-knight"></i> Adaptação Sugerida</div>
                     <div class="pitch">
-                        <div class="pitch-label" style="background: var(--btn-active);">NÓS</div>
                         <div class="p-line p-center"></div><div class="p-line p-circle"></div>
                         <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                        <div class="p-line p-goal-top"></div><div class="p-line p-goal-bot"></div>
                         <div id="pitch_ours"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card" style="border-top: 3px solid var(--dark-panel);">
-            <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <h3 style="margin-bottom:0;"><i class="fas fa-chart-line"></i> Rendimento da Temporada</h3>
-            </div>
-            
-            <div style="display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap;">
-                <input type="text" id="archive_name" class="input-global" placeholder="Ex: Galo 2026" style="flex:1; min-width: 150px;">
-                <button class="btn-touch" onclick="arquivarTemporada()" style="background: var(--dark-panel); color: #fff; border-color: var(--dark-panel); margin:0; padding: 8px 15px; border-radius: 6px;"><i class="fas fa-save"></i> SALVAR</button>
-                <button class="btn-touch" onclick="limparTracker()" style="background: transparent; color: var(--danger); border-color: var(--danger); margin:0; padding: 8px 15px; border-radius: 6px;" title="Limpar marcações atuais"><i class="fas fa-eraser"></i> LIMPAR JOGOS</button>
+        <div class="card" style="border-top: 4px solid var(--btn-active);">
+            <div class="card-header" style="justify-content: space-between; border-bottom: none; padding-bottom: 0;">
+                <h3 style="color: var(--text-main); margin:0;"><i class="fas fa-calendar-days" style="color: var(--btn-active);"></i> Rastreador de Temporada</h3>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-action primary" onclick="addCompeticao()"><i class="fas fa-plus"></i> Novo</button>
+                    <button class="btn-action danger" onclick="limparTudo()"><i class="fas fa-trash"></i> Limpar Ano</button>
+                </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;" id="tracker_root"></div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px;">Acompanhe todas as rodadas em tempo real. Clique nos quadrados para alternar entre V (Vitória), E (Empate) e D (Derrota).</p>
+
+            <div class="comp-manager" id="manager_root">
+                </div>
         </div>
 
-        <div id="memorial_list" style="margin-top: 15px;"></div>
     </main>
 
     <script>
-        // --- TEMA E SIDEBAR STATE ---
+        // --- INICIALIZAÇÃO E TEMA ---
         function applyInitialStates() {
             if(localStorage.getItem('hub_theme') === 'dark') {
                 document.body.classList.add('dark-theme');
@@ -322,15 +366,12 @@
                 document.getElementById('sidebar').classList.add('collapsed');
                 document.getElementById('main_content').classList.add('expanded');
             }
-            const headerTitle = document.querySelector('.header-title-mobile');
-            if(headerTitle) headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0';
         }
 
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('theme_icon');
             body.classList.toggle('dark-theme');
-            
             if (body.classList.contains('dark-theme')) {
                 localStorage.setItem('hub_theme', 'dark');
                 icon.classList.replace('fa-moon', 'fa-sun');
@@ -340,20 +381,10 @@
             }
         }
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.querySelector('.sidebar-overlay').classList.toggle('open');
-        }
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('open'); }
+        function toggleDesktopSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); document.getElementById('main_content').classList.toggle('expanded'); localStorage.setItem('hub_sidebar_state', document.getElementById('sidebar').classList.contains('collapsed') ? 'collapsed' : 'expanded');}
 
-        function toggleDesktopSidebar() {
-            const sb = document.getElementById('sidebar');
-            const mc = document.getElementById('main_content');
-            sb.classList.toggle('collapsed');
-            mc.classList.toggle('expanded');
-            localStorage.setItem('hub_sidebar_state', sb.classList.contains('collapsed') ? 'collapsed' : 'expanded');
-        }
-
-        // --- LÓGICA TÁTICA (BRASFOOT) ---
+        // --- DADOS TÁTICOS (BRASFOOT) ---
         const coords = {
             "541": [[50,90], [10,75], [30,80], [50,82], [70,80], [90,75], [20,55], [40,55], [60,55], [80,55], [50,20]],
             "532": [[50,90], [10,75], [30,80], [50,82], [70,80], [90,75], [25,55], [50,55], [75,55], [35,25], [65,25]],
@@ -374,68 +405,105 @@
             "433": "451", "433def": "442", "352": "4231alas", "343": "442def", "4231": "433def", "4231alas": "352"
         };
 
-        let state = { pos: 'equ', gramado: 'bom', form: '442', marcRival: 'pesada', atkRival: 'meio' };
+        // --- ESTADOS ---
+        let statePre = { forca: 'igual', gramado: 'bom' };
+        let stateLive = { pos: 'equ', form: '442', atkRival: 'meio', marcRival: 'pesada' };
 
-        function setPre(v, btn) {
+        // --- 1. LÓGICA DO PRÉ-JOGO ---
+        function setPre(tipo, valor, btn) {
             btn.parentElement.querySelectorAll('.btn-touch').forEach(x => x.classList.remove('active'));
             btn.classList.add('active');
-            let f = '442', txt = 'JOGO EQUILIBRADO<br>4-4-2';
-            if(v === 'fraco') { f = '433'; txt = 'ATAQUE TOTAL<br>4-3-3'; } 
-            else if (v === 'forte') { f = '451'; txt = 'CONTRA-ATAQUE<br>4-5-1'; }
-            document.getElementById('pre_title').innerHTML = txt;
-            renderDots(f, 'pitch_pre', 'dot-ours');
+            statePre[tipo] = valor;
+            updatePreJogo();
         }
 
+        function updatePreJogo() {
+            let form = '442', post = 'JOGO EQUILIBRADO', marc = 'PESADA', foco = 'PELAS LATERAIS';
+            
+            // Regra da Força Base
+            if (statePre.forca === 'fraco') { form = '433'; post = 'ATAQUE TOTAL'; marc = 'LEVE'; foco = 'PELO MEIO'; }
+            else if (statePre.forca === 'forte') { form = '451'; post = 'CONTRA-ATAQUE'; marc = 'MUITO PESADA'; foco = 'PELAS LATERAIS'; }
+
+            // A Regra do Gramado (Sobrescreve lógicas anteriores)
+            if (statePre.gramado === 'ruim') {
+                marc = 'MUITO PESADA'; 
+                foco = 'PELAS LATERAIS'; // Gramado ruim = bola aérea, evitar o meio
+                if (form === '433') form = '442'; 
+            } else if (statePre.gramado === 'bom' && statePre.forca === 'igual') {
+                marc = 'PESADA'; foco = 'PELO MEIO';
+            }
+
+            let nomeFormatado = form.replace(/(\d)(?=\d)/g, "$1-");
+            
+            document.getElementById('pre_title').innerHTML = `${nomeFormatado}`;
+            document.getElementById('pre_estilo').innerHTML = `<i class="fas fa-bolt"></i> Estilo: ${post}`;
+            document.getElementById('pre_foco').innerHTML = `<i class="fas fa-arrows-left-right"></i> Foco: ${foco}`;
+            
+            let marcBadge = document.getElementById('pre_marc');
+            marcBadge.innerHTML = `<i class="fas fa-shield-halved"></i> Defesa: ${marc}`;
+            marcBadge.className = marc === 'MUITO PESADA' ? 'badge alert' : 'badge success';
+
+            renderDots(form, 'pitch_pre', 'dot-ours');
+        }
+
+        // --- 2. LÓGICA DO AO VIVO (ADAPTAÇÃO) ---
         function setLive(tipo, valor, btn) {
             btn.parentElement.querySelectorAll('.btn-touch').forEach(x => x.classList.remove('active'));
             btn.classList.add('active');
-            state[tipo] = valor;
-            updateAI();
+            stateLive[tipo] = valor;
+            updateLive();
         }
 
-        function updateAI() {
+        function updateLive() {
             let p = "JOGO EQUILIBRADO";
-            if(state.pos === 'ata') p = "CONTRA-ATAQUE"; 
-            else if(state.pos === 'equ') p = "ATAQUE TOTAL";
-            else if(state.pos === 'ret') p = "JOGO EQUILIBRADO";
+            if(stateLive.pos === 'ata') p = "CONTRA-ATAQUE"; 
+            else if(stateLive.pos === 'equ') p = "ATAQUE TOTAL";
+            else if(stateLive.pos === 'ret') p = "JOGO EQUILIBRADO";
 
-            let f = regrasFormacao[state.form] || "433";
+            let f = regrasFormacao[stateLive.form] || "433";
 
-            if(state.atkRival === 'meio') {
-                if(['433', '343', '442of'].includes(f)) f = '4231';
-            } else if (state.atkRival === 'alas') {
-                if(['451', '4321'].includes(f)) f = '433';
-            }
+            // Adaptação de Foco do Rival
+            if(stateLive.atkRival === 'meio') { if(['433', '343', '442of'].includes(f)) f = '4231'; } 
+            else if (stateLive.atkRival === 'alas') { if(['451', '4321'].includes(f)) f = '433'; }
 
+            // Foco de Ataque Nosso
             let foco = "PELAS LATERAIS", motivoFoco = "";
-            if(['442', '442of', '433', '343', '4231alas'].includes(state.form)) {
+            if(['442', '442of', '433', '343', '4231alas'].includes(stateLive.form)) {
                 foco = "PELO MEIO"; 
-                motivoFoco = "O adversário tem menos proteção à frente da zaga. Ataque pelo centro.";
-            } else if(['541', '532', '451', '442def', '433def', '352', '4231'].includes(state.form)) {
+                motivoFoco = "O rival tem buracos no centro. Concentre a criação de jogadas por ali.";
+            } else {
                 foco = "PELAS LATERAIS";
-                motivoFoco = "O rival congestionou o centro do campo (parede no meio). Explore as pontas.";
+                motivoFoco = "O rival fechou a porta pelo meio (parede defensiva). Explore cruzamentos nas pontas.";
             }
 
-            let marc = "PESADA";
-            let alertFalta = document.getElementById('aviso_falta'), badgeMarc = document.getElementById('live_marc');
+            // A Lógica da Marcação do Rival
+            let nossaMarc = "PESADA";
+            let alertFalta = document.getElementById('aviso_falta');
             alertFalta.style.display = 'none';
 
-            if(state.marcRival === 'leve') { marc = "PESADA"; badgeMarc.className = 'badge'; } 
-            else if(state.marcRival === 'pesada') { marc = "MUITO PESADA"; badgeMarc.className = 'badge badge-alert'; alertFalta.style.display = 'block'; } 
-            else if(state.marcRival === 'muito') { marc = "LEVE"; badgeMarc.className = 'badge'; }
-
-            if(state.gramado === 'ruim') { marc = "MUITO PESADA"; badgeMarc.className = 'badge badge-alert'; alertFalta.style.display = 'block'; }
+            if(stateLive.marcRival === 'leve') { 
+                nossaMarc = "PESADA"; 
+            } else if(stateLive.marcRival === 'pesada') { 
+                nossaMarc = "MUITO PESADA"; 
+                alertFalta.style.display = 'inline-flex'; 
+            } else if(stateLive.marcRival === 'muito') { 
+                nossaMarc = "LEVE"; // Rival vai bater muito. Marcação leve preserva nossa energia e posse.
+            }
 
             let nomeFormatado = f.replace(/def/i, ' DEF').replace(/of/i, ' OFEN').replace(/alas/i, ' ALAS').replace(/(\d)(?=\d)/g, "$1-");
             if (f === "4231alas") nomeFormatado = "4-2-3-1 ALAS";
             if (f === "4231") nomeFormatado = "4-2-3-1";
 
-            document.getElementById('live_title').innerHTML = `${p}<br>${nomeFormatado}`;
-            document.getElementById('live_foco').innerText = `Foco: ${foco}`;
-            document.getElementById('motivo_foco').innerText = `💡 Dica: ${motivoFoco}`;
-            document.getElementById('live_marc').innerText = `Marcação: ${marc}`;
+            document.getElementById('live_title').innerHTML = `${p} <span style="color:var(--btn-active);">•</span> ${nomeFormatado}`;
+            document.getElementById('live_foco').innerHTML = `<i class="fas fa-arrows-left-right"></i> Foco: ${foco}`;
             
-            renderDots(state.form, 'pitch_rival', 'dot-rival');
+            let marcBadgeLive = document.getElementById('live_marc');
+            marcBadgeLive.innerHTML = `<i class="fas fa-shield"></i> Defesa: ${nossaMarc}`;
+            marcBadgeLive.className = nossaMarc === 'MUITO PESADA' ? 'badge alert' : 'badge success';
+
+            document.getElementById('motivo_foco').innerHTML = `💡 <strong>Análise:</strong> ${motivoFoco} Como o adversário está usando marcação ${stateLive.marcRival.toUpperCase()}, o ideal é responder com marcação ${nossaMarc}.`;
+            
+            renderDots(stateLive.form, 'pitch_rival', 'dot-rival');
             renderDots(f, 'pitch_ours', 'dot-ours');
         }
 
@@ -450,125 +518,108 @@
             });
         }
 
-        // --- RASTREADOR 5x5 E STATUS DAS COMPETIÇÕES ---
-        const configTracker = [
-            {n:'Estadual', j:15}, 
-            {n:'Brasileirão', j:38}, 
-            {n:'Libertadores', j:13, labels: ['G1','G2','G3','G4','G5','G6','OF','OF','QF','QF','SF','SF','FN']}, 
-            {n:'Copa do Brasil', j:12, labels: ['F1','F2','F3','F3','OF','OF','QF','QF','SF','SF','FN','FN']}
-        ];
-        
-        const STORAGE_KEY = 'hub_jogos_taticas_v1';
-        const MEM_KEY = 'hub_mem_taticas_v1';
+        // --- 3. GERENCIADOR DE CAMPEONATOS (GRELHA COMPLETA) ---
+        const TRACKER_KEY = 'hub_campeonatos_v4';
+        let competicoes = JSON.parse(localStorage.getItem(TRACKER_KEY) || '[]');
 
-        function salvarStatus(comp, val) {
-            let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-            data['status_'+comp] = val;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        if(competicoes.length === 0) {
+            competicoes = [
+                { id: 1, nome: "Campeonato Nacional", total: 38, resultados: {} },
+                { id: 2, nome: "Estadual", total: 16, resultados: {} },
+                { id: 3, nome: "Copa Nacional", total: 12, resultados: {} },
+                { id: 4, nome: "Continental", total: 13, resultados: {} }
+            ];
+            salvarTracker();
+        }
+
+        function salvarTracker() { localStorage.setItem(TRACKER_KEY, JSON.stringify(competicoes)); }
+
+        function addCompeticao() {
+            competicoes.push({ id: Date.now(), nome: "Novo Torneio", total: 10, resultados: {} });
+            salvarTracker(); renderTracker();
+        }
+
+        function deletarCompeticao(id) {
+            if(!confirm("Remover este campeonato definitivamente?")) return;
+            competicoes = competicoes.filter(c => c.id !== id);
+            salvarTracker(); renderTracker();
+        }
+
+        function limparTudo() {
+            if(!confirm("Zerar todos os resultados (V/E/D) de todas as competições? (Os nomes e quantidade de jogos serão mantidos)")) return;
+            competicoes.forEach(c => { c.resultados = {}; });
+            salvarTracker(); renderTracker();
+        }
+
+        function updateComp(id, campo, valor) {
+            let comp = competicoes.find(c => c.id === id);
+            if(comp) {
+                comp[campo] = campo === 'total' ? (parseInt(valor) || 1) : valor;
+                salvarTracker();
+            }
+        }
+
+        function toggleResultado(compId, rodada) {
+            let comp = competicoes.find(c => c.id === compId);
+            if(!comp) return;
+            const statusSeq = ['', 'v', 'e', 'd'];
+            let atual = comp.resultados[rodada] || '';
+            let proximo = statusSeq[(statusSeq.indexOf(atual) + 1) % 4];
+            
+            if(proximo === '') delete comp.resultados[rodada];
+            else comp.resultados[rodada] = proximo;
+            
+            salvarTracker(); renderTracker();
         }
 
         function renderTracker() {
-            const root = document.getElementById('tracker_root'); root.innerHTML = "";
-            let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-            
-            configTracker.forEach(conf => {
-                const card = document.createElement('div'); card.className = 'tracker-card';
-                card.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid var(--bg-body); padding-bottom: 6px;">
-                        <div class="comp-title">${conf.n}</div>
-                        <input type="text" class="input-global" value="${data['status_'+conf.n] || ''}" onchange="salvarStatus('${conf.n}', this.value)" placeholder="Colocação / Fim" style="max-width: 110px; text-align: right; padding: 4px;">
+            const root = document.getElementById('manager_root');
+            root.innerHTML = '';
+
+            competicoes.forEach(comp => {
+                const card = document.createElement('div');
+                card.className = 'comp-card';
+
+                let v=0, e=0, d=0;
+                Object.values(comp.resultados).forEach(r => { if(r==='v') v++; if(r==='e') e++; if(r==='d') d++; });
+                let apr = (v+e+d) > 0 ? ((v*3 + e) / ((v+e+d)*3) * 100).toFixed(1) : 0;
+
+                let headerHtml = `
+                    <div class="comp-header">
+                        <input type="text" class="input-title" value="${comp.nome}" onchange="updateComp(${comp.id}, 'nome', this.value)" placeholder="Nome do Campeonato">
+                        <div class="comp-actions">
+                            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:800;">JOGOS:</label>
+                            <input type="number" class="input-num" value="${comp.total}" min="1" max="100" onchange="updateComp(${comp.id}, 'total', this.value); renderTracker();">
+                            <i class="fas fa-trash" style="color:var(--danger); cursor:pointer; padding:6px; opacity:0.8;" onclick="deletarCompeticao(${comp.id})" title="Apagar Campeonato"></i>
+                        </div>
                     </div>
                 `;
-                
-                let row;
-                for(let i=1; i<=conf.j; i++) {
-                    if((i-1)%5 === 0) { row = document.createElement('div'); row.className = 'row-5'; card.appendChild(row); }
-                    const id = `${conf.n}_${i}`;
-                    const sq = document.createElement('div'); sq.className = `sq ${data[id]||''}`;
-                    sq.innerText = conf.labels ? conf.labels[i-1] : i;
-                    
-                    sq.onclick = () => {
-                        const st = ['', 'v', 'e', 'd'];
-                        data[id] = st[(st.indexOf(data[id]||'')+1)%4];
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-                        sq.className = `sq ${data[id]}`;
-                    };
-                    row.appendChild(sq);
+
+                // Renderiza TODOS os quadrados da competição num grid contínuo
+                let matchesHtml = `<div class="match-grid">`;
+                for(let i = 1; i <= comp.total; i++) {
+                    let res = comp.resultados[i] || '';
+                    let label = res === '' ? i : res.toUpperCase();
+                    matchesHtml += `<div class="sq ${res}" data-rd="Rodada ${i}" onclick="toggleResultado(${comp.id}, ${i})">${label}</div>`;
                 }
+                matchesHtml += `</div>`;
+
+                let statsHtml = `<div class="comp-stats">
+                    <span>${v}V • ${e}E • ${d}D</span>
+                    <span style="color:var(--btn-active);">APR: ${apr}%</span>
+                </div>`;
+
+                card.innerHTML = headerHtml + matchesHtml + statsHtml;
                 root.appendChild(card);
             });
         }
 
-        // --- NOVA FUNÇÃO: LIMPAR JOGOS ---
-        function limparTracker() {
-            if(!confirm("Tem a certeza que deseja limpar todas as marcações (V/E/D) e classificações da temporada atual?\n\nO histórico guardado em baixo não será afetado.")) return;
-            localStorage.removeItem(STORAGE_KEY);
-            renderTracker();
-        }
-
-        function arquivarTemporada() {
-            const nome = document.getElementById('archive_name').value.trim();
-            if(!nome) return alert("Digite um nome para o save!");
-            let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-            
-            let v=0, e=0, d=0; 
-            Object.keys(data).forEach(k => { 
-                if(k.startsWith('status_')) return; 
-                if(data[k]==='v') v++; if(data[k]==='e') e++; if(data[k]==='d') d++; 
-            });
-            
-            if(v+e+d === 0) return alert("Nenhum jogo para salvar!");
-
-            let stats = configTracker.map(c => data['status_'+c.n] ? `<strong>${c.n}:</strong> ${data['status_'+c.n]}` : null).filter(Boolean).join(' | ');
-
-            let mem = JSON.parse(localStorage.getItem(MEM_KEY) || '[]');
-            mem.unshift({ nome, v, e, d, total: v+e+d, stats: stats, data: new Date().toLocaleDateString() });
-            localStorage.setItem(MEM_KEY, JSON.stringify(mem));
-            localStorage.removeItem(STORAGE_KEY);
-            document.getElementById('archive_name').value = "";
-            renderTracker(); renderMemorial();
-        }
-
-        function renderMemorial() {
-            const list = document.getElementById('memorial_list');
-            let mem = JSON.parse(localStorage.getItem(MEM_KEY) || '[]');
-            list.innerHTML = mem.map((m, idx) => `
-                <div class="mem-card" style="flex-direction: column; align-items: stretch; gap: 8px;">
-                    <div style="display:flex; justify-content: space-between; align-items: center;">
-                        <div><strong style="font-size:0.8rem; color:var(--text-main);">${m.nome}</strong><br><small style="color:var(--text-muted);">${m.data}</small></div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <div style="text-align:right; font-size:0.7rem; color:var(--text-main);">
-                                ${m.v}V | ${m.e}E | ${m.d}D<br>
-                                <span style="font-weight:800; font-size:0.75rem; color:var(--btn-active);">APR: ${((m.v*3+m.e)/(m.total*3)*100).toFixed(1)}%</span>
-                            </div>
-                            <button class="btn-del" onclick="excluirMemoria(${idx})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.65rem; color: var(--text-muted); background: var(--bg-body); padding: 6px; border-radius: 4px; border: 1px dashed var(--border-light);">
-                        ${m.stats || 'Sem registros de colocação'}
-                    </div>
-                </div>
-            `).join('') || '';
-        }
-
-        function excluirMemoria(idx) {
-            if(!confirm("Apagar este registro permanentemente?")) return;
-            let mem = JSON.parse(localStorage.getItem(MEM_KEY) || '[]');
-            mem.splice(idx, 1);
-            localStorage.setItem(MEM_KEY, JSON.stringify(mem));
-            renderMemorial();
-        }
-
-        // --- SISTEMA DE BACKUP ---
+        // --- BACKUP ---
         function exportarBackup() {
-            const backupData = {
-                jogos: localStorage.getItem(STORAGE_KEY),
-                memoria: localStorage.getItem(MEM_KEY)
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(localStorage.getItem(TRACKER_KEY) || '[]');
             const dlAnchorElem = document.createElement('a');
             dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "brasfoot_taticas_backup.json");
+            dlAnchorElem.setAttribute("download", "brasfoot_taticas_v4.json");
             dlAnchorElem.click();
         }
 
@@ -579,27 +630,19 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data.jogos) localStorage.setItem(STORAGE_KEY, data.jogos);
-                    if (data.memoria) localStorage.setItem(MEM_KEY, data.memoria);
-                    alert("Backup importado com sucesso! A página será recarregada.");
-                    location.reload();
-                } catch (err) { alert("Erro ao importar: Arquivo inválido."); }
+                    localStorage.setItem(TRACKER_KEY, JSON.stringify(data));
+                    alert("Dados táticos importados com sucesso!"); location.reload();
+                } catch (err) { alert("Erro ao importar."); }
             };
             reader.readAsText(file);
         }
 
         window.onload = () => { 
-            applyInitialStates(); 
-            renderTracker(); 
-            renderMemorial(); 
-            setPre('igual', document.querySelector('.btn-touch.active')); 
-            updateAI(); 
+            applyInitialStates();
+            updatePreJogo();
+            updateLive();
+            renderTracker();
         };
-        
-        window.addEventListener('resize', () => { 
-            const headerTitle = document.querySelector('.header-title-mobile'); 
-            if(headerTitle) headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0'; 
-        });
     </script>
 </body>
 </html>

@@ -5,176 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gestão do Elenco - Hub do Treinador</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+
     <style>
-        /* --- VARIÁVEIS DE CORES (LIGHT/DARK) --- */
-        :root {
-            --bg-body: #fafafa;
-            --card-bg: #ffffff;
-            --dark-panel: #27272a;
-            --text-main: #3f3f46;
-            --text-muted: #71717a;
-            --btn-bg: #ffffff;
-            --btn-active: #059669; 
-            --border-light: #e4e4e7;
-            --pitch-grass: #16a34a; 
-            --danger: #dc2626;
-            --warning: #f59e0b;
-            --info: #0284c7;
+        /* ==========================================
+           1. RESET GLOBAL E DE NÚMEROS
+           ========================================== */
+        * { box-sizing: border-box; } /* Garante que os paddings não quebrem as larguras */
+        
+        /* Remove setinhas de todos os inputs de número para sobrar espaço */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
         }
 
-        body.dark-theme {
-            --bg-body: #09090b; 
-            --card-bg: #18181b; 
-            --dark-panel: #202024; 
-            --text-main: #f4f4f5; 
-            --text-muted: #a1a1aa; 
-            --btn-bg: #27272a; 
-            --btn-active: #10b981; 
-            --border-light: #3f3f46; 
+        /* ==========================================
+           2. SISTEMA DE SAVES & MERCADO (2 COLUNAS)
+           ========================================== */
+        .save-manager { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-light); }
+        .save-select { background: transparent; border: none; color: var(--text-main); font-weight: 800; font-size: 0.9rem; outline: none; cursor: pointer; max-width: 150px; text-overflow: ellipsis;}
+        
+        /* GRID DO MERCADO RESTAURADO */
+        .grid-mercado { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; /* Força 2 colunas iguais */
+            gap: 25px; 
+            align-items: start;
         }
+        @media (max-width: 768px) { .grid-mercado { grid-template-columns: 1fr; } }
+        
+        .market-total { background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px solid var(--border-light); text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+        .nota-card { background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 
-        /* --- ZERANDO MARGENS --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { overflow-x: hidden; width: 100%; max-width: 100vw; transition: background-color 0.3s ease, color 0.3s ease; }
-        body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Inter', sans-serif; }
+        /* ==========================================
+           3. O CAMPO DE JOGO (PRANCHETAS E TORREZINHA)
+           ========================================== */
+        .pitch-arena { display: grid; grid-template-columns: 1fr; gap: 30px; align-items: start; margin-top: 20px;}
+        @media (min-width: 1024px) { .pitch-arena { grid-template-columns: 1fr 1fr; gap: 40px;} }
+        
+        .pitch-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 500px; margin: 0 auto;}
+        .pitch-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; width: 100%; gap: 8px; padding: 10px 16px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .title-ideal { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .title-ours { background: rgba(5, 150, 105, 0.1); color: var(--btn-active); border: 1px solid rgba(5, 150, 105, 0.3); }
 
-        /* --- BARRA LATERAL MOBILE & DESKTOP --- */
-        .sidebar {
-            position: fixed; top: 0; bottom: 0; background: var(--card-bg); z-index: 1000; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1); overflow-y: auto; border-right: 1px solid var(--border-light);
-            transition: left 0.3s ease, width 0.3s ease, background-color 0.3s;
+        .player-box { position: absolute; transform: translate(-50%, -50%); z-index: 2; text-align: center; }
+        
+        /* Guia */
+        .box-ideal { background: var(--card-bg); padding: 8px 10px; border-radius: 8px; border-left: 4px solid var(--warning); width: max-content; box-shadow: 0 4px 12px rgba(0,0,0,0.25);}
+        .box-ideal span { display: block; font-size: 0.75rem; font-weight: 800; margin-bottom: 4px; color: var(--warning); }
+        .box-desc { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); }
+
+        /* Meu Time (Torrezinha Interativa) */
+        .box-int { background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 !important; width: 25%; max-width: 85px; }
+        .box-int > span { color: #ffffff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); font-size: 0.75rem; font-weight: 900; margin-bottom: 3px; display: block; }
+        
+        .pitch-col { display: flex; flex-direction: column; gap: 3px; width: 100%; }
+
+        .box-int .pitch-input { 
+            width: 100%; padding: 4px 0px; text-align: center; 
+            background: rgba(255, 255, 255, 0.95); border: 1px solid var(--border-light);
+            border-radius: 4px; outline: none; box-shadow: 0 2px 4px rgba(0,0,0,0.15); transition: 0.2s;
+        }
+        .box-int .pitch-input:focus { border-color: var(--btn-active); }
+        
+        .box-int .input-nome-campo { font-size: 0.65rem; font-weight: 800; color: var(--text-main); text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+        .box-int .input-caract-campo { font-size: 0.55rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .box-int .input-forca-campo { font-weight: 900; font-size: 0.8rem; color: var(--text-main); letter-spacing: -0.5px; }
+
+        /* ==========================================
+           4. TABELAS (LARGURAS FIXADAS E PERFEITAS)
+           ========================================== */
+        .table-elenco { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        
+        /* O segredo para o texto não sumir: padding menor na horizontal e box-sizing */
+        .table-elenco .table-input { 
+            border: none; background: transparent; 
+            padding: 8px 4px; font-weight: 600; width: 100%; 
+            color: var(--text-main); font-size: 0.85rem; outline: none;
+            text-overflow: ellipsis; 
         }
         
-        .sidebar { left: -260px; width: 260px; padding: 20px; }
-        .sidebar.open { left: 0; }
+        .table-elenco .table-input:focus { background: var(--bg-body); border-radius: 6px; }
         
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; }
-        .sidebar-overlay.open { display: block; }
+        .table-elenco .table-input.center { text-align: center; }
+        .table-elenco .table-input.caract { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;}
+        .table-elenco .table-input.force { font-weight: 800; font-size: 0.9rem; }
 
-        .brand { font-size: 1.2rem; font-weight: 900; color: var(--text-main); margin-bottom: 30px; margin-top: 40px; display: flex; align-items: center; gap: 10px; position: relative;}
-        .nav-link { display: flex; align-items: center; gap: 10px; padding: 12px; margin-bottom: 5px; color: var(--text-main); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; overflow: hidden;}
-        .nav-link:hover { background: var(--bg-body); }
-        .nav-link.active { background: var(--border-light); color: var(--btn-active); }
-        .nav-link i { min-width: 20px; text-align: center; }
-
-        .menu-toggle {
-            position: fixed; top: 12px; left: 12px; z-index: 1001;
-            background: var(--dark-panel); color: #fff; border: none;
-            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
-        }
-        .desktop-toggle { display: none; }
-
-        .main-content { padding: 65px 10px 20px 10px; transition: margin-left 0.3s ease, width 0.3s ease; width: 100%; }
-
-        @media (min-width: 769px) {
-            .sidebar { left: 0; }
-            .menu-toggle, .sidebar-overlay { display: none; }
-            .brand { margin-top: 0; justify-content: space-between; }
-            .desktop-toggle { display: block; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; transition: 0.2s; padding: 5px; }
-            .desktop-toggle:hover { color: var(--btn-active); }
-            
-            .main-content { margin-left: 260px; padding: 20px 20px 20px 30px; width: calc(100% - 260px); }
-
-            .sidebar.collapsed { width: 80px; padding: 20px 10px; }
-            .sidebar.collapsed .brand span { display: none; }
-            .sidebar.collapsed .brand { justify-content: center; }
-            .sidebar.collapsed .desktop-toggle { transform: rotate(180deg); margin: 0 auto; }
-            .sidebar.collapsed .nav-link span { display: none; }
-            .sidebar.collapsed .nav-link { justify-content: center; padding: 12px 0; }
-            
-            .main-content.expanded { margin-left: 80px; width: calc(100% - 80px); }
-        }
-
-        /* --- CARDS E GRIDS --- */
-        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: background-color 0.3s, border-color 0.3s; }
-        .card-header { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px; margin-bottom: 15px;}
-        .card-header h3 { font-size: 1.05rem; color: var(--text-main); margin: 0; }
-        
-        .elenco-container-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
-        @media (min-width: 768px) { 
-            .elenco-container-grid { grid-template-columns: 1fr 1fr; gap: 20px;} 
-        }
-
-        /* --- BOTÕES E INPUTS --- */
-        .btn-touch { background: var(--dark-panel); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; font-size: 0.75rem;}
-        .btn-touch-outline { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-light); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s;}
-        .btn-touch-outline:hover { border-color: var(--btn-active); color: var(--btn-active); }
-        
-        .input-mobile { width: 100%; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 6px; font-size: 0.8rem; color: var(--text-main); background: var(--bg-body); transition: background-color 0.3s; outline: none;}
-        .input-mobile:focus { border-color: var(--btn-active); background: var(--card-bg); }
-
-        /* --- CAMPOS DE FUTEBOL --- */
-        .pitch-container { 
-            position: relative; width: 100%; background: var(--pitch-grass); 
-            border: 2px solid #fff; border-radius: 8px; overflow: hidden; margin-top: 10px;
-        }
-        .pitch-ideal { height: 350px; }
-        .pitch-interativo { height: 420px; } 
-        
-        .pitch-container::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.4); }
-        .pitch-container::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; }
-        
-        .player-box {
-            position: absolute; transform: translate(-50%, -50%); background: var(--card-bg);
-            padding: 4px; border-radius: 4px; border-left: 4px solid var(--btn-active);
-            text-align: center; color: var(--text-main); box-shadow: 0 4px 6px rgba(0,0,0,0.2); 
-            line-height: 1.1; z-index: 2; width: max-content; transition: background-color 0.3s;
-        }
-        .player-box span { display: block; color: var(--btn-active); font-size: 0.7rem; font-weight: 800; margin-bottom: 2px; }
-        
-        .desktop-text { display: none; }
-        .mobile-text { display: block; font-size: 0.55rem; font-weight: 700; }
-        @media (min-width: 480px) {
-            .desktop-text { display: block; font-size: 0.65rem; font-weight: 700; }
-            .mobile-text { display: none; }
-            .player-box { padding: 6px 10px; border-radius: 6px; }
-        }
-
-        /* ESTILOS ESPECÍFICOS DO PITCH INTERATIVO COM FORÇA */
-        .player-box-int {
-            position: absolute; transform: translate(-50%, -50%); background: var(--card-bg);
-            padding: 5px; border-radius: 6px; border-left: 4px solid var(--info);
-            text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.4); 
-            width: 120px; 
-            z-index: 2;
-        }
-        .player-box-int span { display: block; color: var(--text-main); font-size: 0.65rem; font-weight: 800; margin-bottom: 3px; }
-        
-        .pitch-row-input { display: flex; gap: 4px; margin-bottom: 3px; } 
-        .pitch-row-input:last-child { margin-bottom: 0; }
-        
-        .pitch-input { 
-            border: 1px solid var(--border-light); background: var(--bg-body); 
-            color: var(--text-main); font-size: 0.65rem; padding: 4px; text-align: center; 
-            border-radius: 4px; outline: none; font-weight: 600;
-        }
-        .pitch-input:focus { border-color: var(--info); }
-        .pitch-input.name-input { flex: 1; text-align: left; padding-left: 6px; width: 100%;}
-        .pitch-input.force-input { width: 42px; padding: 4px; font-weight: 800;} 
-        
-        .p-titular { border-left: 2px solid var(--btn-active); } 
-        .p-reserva { border-left: 2px solid var(--warning); } 
-
-        /* --- TABELAS --- */
-        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; }
-        .table-elenco { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 320px; }
-        .table-elenco th { text-align: left; padding: 10px 4px; border-bottom: 2px solid var(--border-light); color: var(--text-muted); text-transform: uppercase; font-size: 0.65rem; }
-        .table-elenco td { padding: 6px 4px; border-bottom: 1px dashed var(--border-light); vertical-align: middle; }
-        .table-elenco input { border: 1px solid transparent; background: transparent; padding: 8px 4px; font-weight: 600; width: 100%; color: var(--text-main); border-radius: 6px; font-size: 0.8rem; }
-        .table-elenco input:focus { background: var(--bg-body); border-color: var(--border-light); outline: none; }
-        
-        .pos-badge { background: var(--dark-panel); color: white; padding: 4px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; display: inline-block; width: 100%; text-align: center; min-width: 35px;}
-        
-        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin: 0 auto; }
-        .status-ok { background: var(--btn-active); }
-        .status-bad { background: var(--danger); }
-        .status-none { background: var(--border-light); }
-
-        .market-total { background: var(--bg-body); padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
-        .nota-card { background: var(--bg-body); padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-        
-        .base-counter { display: flex; gap: 4px; color: var(--border-light); font-size: 1rem; cursor: pointer; align-items: center; justify-content: flex-end;}
-        .base-icon.active { color: var(--info); }
+        .base-counter { display: flex; gap: 6px; color: var(--border-light); font-size: 1.2rem; cursor: pointer; align-items: center; justify-content: flex-end;}
+        .base-icon.active { color: var(--btn-active); }
     </style>
 </head>
 <body>
@@ -188,128 +112,165 @@
             <button class="desktop-toggle" onclick="toggleDesktopSidebar()"><i class="fas fa-chevron-left"></i></button>
         </div>
         <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
-        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>DNA da Equipe</span></a>
+        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>Diretoria & Clube</span></a>
         <a href="elenco.html" class="nav-link active"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
         <a href="taticas.html" class="nav-link"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
     </aside>
 
     <main class="main-content" id="main_content">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-            <div style="margin-left: 45px;" class="header-title-mobile"> 
-                <h1 style="color: var(--text-main); font-size: 1.3rem;">Gestão de Elenco</h1>
-                <p style="color: var(--text-muted); font-size: 0.75rem;">Controle seu plantel e mercado.</p>
+        
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <div class="save-manager">
+                <i class="fas fa-floppy-disk" style="color: var(--text-main);"></i>
+                <select id="save_selector" class="save-select" onchange="mudarSave(this.value)"></select>
+                <button class="btn-action" style="padding: 4px 8px; font-size: 0.7rem;" onclick="criarNovoSave()" title="Criar Novo Save"><i class="fas fa-plus"></i> Novo</button>
+                <button class="btn-action danger" style="padding: 4px 8px; font-size: 0.7rem;" onclick="deletarSaveAtual()" title="Apagar Save Atual"><i class="fas fa-trash"></i></button>
             </div>
-            <div style="display: flex; gap: 6px; justify-content: flex-end; flex-grow: 1; flex-wrap: wrap;">
-                <button class="btn-touch-outline" onclick="toggleTheme()"><i class="fas fa-moon" id="theme_icon"></i></button>
-                <button class="btn-touch-outline" onclick="limparElenco()" style="color: var(--danger); border-color: var(--danger);" title="Apagar todo o elenco atual"><i class="fas fa-eraser"></i> <span class="hide-mobile">Limpar</span></button>
-                <button class="btn-touch-outline" onclick="exportarBackupElenco()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
-                <label class="btn-touch-outline" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+            <div style="margin-left: 45px;" class="header-title-mobile">
+                <h1 style="color: var(--text-main); font-size: 1.7rem; font-weight: 900; letter-spacing: -0.5px;">Gestão de Elenco</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Plantel, base e radar de contratações.</p>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; flex-grow: 1; flex-wrap: wrap;">
+                <button class="btn-action" onclick="toggleTheme()" title="Alternar Tema"><i class="fas fa-moon" id="theme_icon"></i></button>
+                <button class="btn-action danger" onclick="limparElenco()"><i class="fas fa-eraser"></i> <span class="hide-mobile">Limpar Elenco</span></button>
+                <button class="btn-action" onclick="exportarBackupElenco()"><i class="fas fa-download"></i> <span class="hide-mobile">Exportar</span></button>
+                <label class="btn-action" style="margin:0;"><i class="fas fa-upload"></i> <span class="hide-mobile">Importar</span>
                     <input type="file" style="display:none;" accept=".json" onchange="importarBackupElenco(event)">
                 </label>
             </div>
         </div>
 
-        <div class="card" style="border-top: 3px solid var(--warning);">
-            <div class="card-header"><i class="fas fa-magnifying-glass-dollar" style="color: var(--warning);"></i><h3>Alvos (Regra 1.5x)</h3></div>
+        <div class="card" style="border-top: 4px solid var(--warning);">
+            <div class="card-header">
+                <h3 style="color: var(--text-main);"><i class="fas fa-magnifying-glass-dollar" style="color: var(--text-main);"></i> Inteligência de Mercado</h3>
+            </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-                <div style="grid-column: 1 / -1;"><input type="text" id="m_nome" class="input-mobile" placeholder="Nome do Jogador"></div>
-                <div><input type="number" id="m_forca" class="input-mobile" placeholder="Força"></div>
-                <div><input type="number" id="m_valor" class="input-mobile" placeholder="Valor (M)"></div>
-                <button class="btn-touch" style="grid-column: 1 / -1; margin-top: 5px;" onclick="addAlvo()"><i class="fas fa-plus"></i> ADICIONAR ALVO</button>
-            </div>
+            <div class="grid-mercado">
+                <div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 600;">Calculadora de Alvos (Regra 1.5x)</p>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                        <div style="grid-column: 1 / -1;"><input type="text" id="m_nome" class="input-global" placeholder="Nome do Jogador Monitorado"></div>
+                        <div><input type="number" id="m_forca" class="input-global" placeholder="F"></div>
+                        <div><input type="number" id="m_valor" class="input-global" placeholder="Valor (Ex: 2000000)"></div>
+                        <button class="btn-action primary" style="grid-column: 1 / -1; justify-content: center; padding: 12px;" onclick="addAlvo()"><i class="fas fa-plus"></i> ADICIONAR ALVO</button>
+                    </div>
+                    <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table-elenco">
+                            <thead><tr><th>Nome</th><th style="width:50px; text-align:center;">Força</th><th style="width:120px; text-align:right;">Custo Máx</th><th style="width:30px;"></th></tr></thead>
+                            <tbody id="lista_mercado"></tbody>
+                        </table>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                        <div class="market-total">
+                            <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted);">ORÇAMENTO TOTAL ESTIMADO</span>
+                            <div style="font-size: 1.5rem; font-weight: 900; color: var(--text-main);" id="total_mercado">R$ 0</div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="table-container">
-                <table class="table-elenco" style="min-width: 300px;">
-                    <thead><tr><th>Nome</th><th style="text-align:center;">F</th><th style="text-align:right;">Custo Máx</th><th style="width:30px;"></th></tr></thead>
-                    <tbody id="lista_mercado"></tbody>
-                </table>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-                <div class="market-total">
-                    <span style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted);">ORÇAMENTO ESTIMADO</span>
-                    <div style="font-size: 1.2rem; font-weight: 900; color: var(--text-main);" id="total_mercado">R$ 0.0 M</div>
+                <div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; font-weight: 600;">Bloco do Scout (Notas Rápidas)</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="nova_nota" class="input-global" placeholder="Ex: Precisamos de um LE urgente..." onkeypress="if(event.key === 'Enter') salvarNota()">
+                        <button class="btn-action primary" style="padding: 0 20px;" onclick="salvarNota()"><i class="fas fa-save"></i></button>
+                    </div>
+                    <div id="lista_notas" style="max-height: 400px; overflow-y: auto; padding-right: 5px;"></div>
                 </div>
             </div>
+        </div>
 
-            <div style="margin-top: 15px; border-top: 1px solid var(--border-light); padding-top: 15px;">
-                <label style="font-size: 0.75rem; font-weight: 800; margin-bottom: 8px; display:block; color: var(--text-main);">Notas do Scout</label>
-                <div style="display: flex; gap: 6px; margin-bottom: 12px;">
-                    <input type="text" id="nova_nota" class="input-mobile" placeholder="Ex: Volante urgente...">
-                    <button class="btn-touch" onclick="salvarNota()"><i class="fas fa-save"></i></button>
+        <div class="card" style="border-top: 4px solid var(--info);">
+            <div class="card-header">
+                <h3 style="color: var(--text-main);"><i class="fas fa-chalkboard-user" style="color: var(--text-main);"></i> Visão Tática do Plantel</h3>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Preencha os nomes, características e forças. Tudo será sincronizado com as tabelas de Titulares e Reservas abaixo.</p>
+
+            <div class="pitch-arena">
+                <div class="pitch-wrapper">
+                    <div class="pitch-title title-ideal"><i class="fas fa-lightbulb"></i> O "11 Ideal" (Guia)</div>
+                    <div class="pitch">
+                        <div class="p-line p-center"></div><div class="p-line p-circle"></div>
+                        <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                        
+                        <div class="player-box box-ideal" style="left: 20%; top: 15%;"><span>AE</span><div class="box-desc">Vel+Dri</div></div>
+                        <div class="player-box box-ideal" style="left: 80%; top: 15%;"><span>AD</span><div class="box-desc">Fin+Cab</div></div>
+                        <div class="player-box box-ideal" style="left: 20%; top: 38%;"><span>ME</span><div class="box-desc">Arm+Pas</div></div>
+                        <div class="player-box box-ideal" style="left: 80%; top: 38%;"><span>MD</span><div class="box-desc">Arm+Fin</div></div>
+                        <div class="player-box box-ideal" style="left: 35%; top: 55%;"><span>VE</span><div class="box-desc">Des+Pas</div></div>
+                        <div class="player-box box-ideal" style="left: 65%; top: 55%;"><span>VD</span><div class="box-desc">Des+Mar</div></div>
+                        <div class="player-box box-ideal" style="left: 15%; top: 78%;"><span>LE</span><div class="box-desc">Cru+Vel</div></div>
+                        <div class="player-box box-ideal" style="left: 38%; top: 78%;"><span>ZE</span><div class="box-desc">Des+Mar</div></div>
+                        <div class="player-box box-ideal" style="left: 62%; top: 78%;"><span>ZD</span><div class="box-desc">Des+Cab</div></div>
+                        <div class="player-box box-ideal" style="left: 85%; top: 78%;"><span>LD</span><div class="box-desc">Cru+Mar</div></div>
+                        <div class="player-box box-ideal" style="left: 50%; top: 92%;"><span>GL</span><div class="box-desc">Ref+Col</div></div>
+                    </div>
                 </div>
-                <div id="lista_notas"></div>
+
+                <div class="pitch-wrapper">
+                    <div class="pitch-title title-ours"><i class="fas fa-users"></i> Meu Time em Campo</div>
+                    <div class="pitch">
+                        <div class="p-line p-center"></div><div class="p-line p-circle"></div>
+                        <div class="p-line p-area-top"></div><div class="p-line p-area-bot"></div>
+                        <div id="pitch_interativo_root"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card" style="border-top: 3px solid var(--btn-active);">
-            <div class="card-header"><i class="fas fa-chalkboard-user" style="color: var(--btn-active);"></i><h3>O "11 Ideal" (Guia)</h3></div>
-            <div class="pitch-container pitch-ideal">
-                <div class="player-box" style="left: 30%; top: 15%;"><span>AE</span><div class="desktop-text">Velocidade + Drible</div><div class="mobile-text">Vel+Dri</div></div>
-                <div class="player-box" style="left: 70%; top: 15%;"><span>AD</span><div class="desktop-text">Finalização + Cabeceio</div><div class="mobile-text">Fin+Cab</div></div>
-                <div class="player-box" style="left: 25%; top: 35%;"><span>ME</span><div class="desktop-text">Armação + Passe</div><div class="mobile-text">Arm+Pas</div></div>
-                <div class="player-box" style="left: 75%; top: 35%;"><span>MD</span><div class="desktop-text">Armação + Finalização</div><div class="mobile-text">Arm+Fin</div></div>
-                <div class="player-box" style="left: 35%; top: 55%;"><span>VE</span><div class="desktop-text">Desarme + Passe</div><div class="mobile-text">Des+Pas</div></div>
-                <div class="player-box" style="left: 65%; top: 55%;"><span>VD</span><div class="desktop-text">Desarme + Marcação</div><div class="mobile-text">Des+Mar</div></div>
-                <div class="player-box" style="left: 18%; top: 75%;"><span>LE</span><div class="desktop-text">Cruzamento + Vel.</div><div class="mobile-text">Cru+Vel</div></div>
-                <div class="player-box" style="left: 40%; top: 75%;"><span>ZE</span><div class="desktop-text">Desarme + Marcação</div><div class="mobile-text">Des+Mar</div></div>
-                <div class="player-box" style="left: 60%; top: 75%;"><span>ZD</span><div class="desktop-text">Desarme + Cabeceio</div><div class="mobile-text">Des+Cab</div></div>
-                <div class="player-box" style="left: 82%; top: 75%;"><span>LD</span><div class="desktop-text">Cruzamento + Marc.</div><div class="mobile-text">Cru+Mar</div></div>
-                <div class="player-box" style="left: 50%; top: 92%; border-left-color: var(--warning);"><span>GL</span><div class="desktop-text">Reflexo + Colocação</div><div class="mobile-text">Ref+Col</div></div>
-            </div>
-        </div>
-
-        <div class="card" style="border-top: 3px solid var(--info);">
-            <div class="card-header"><i class="fas fa-users" style="color: var(--info);"></i><h3>Meu Time em Campo</h3></div>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: -10px; margin-bottom: 10px;">Preencha aqui ou nas tabelas abaixo. Nome e Força estão sincronizados!</p>
-            
-            <div class="pitch-container pitch-interativo">
-                <div id="pitch_interativo_root"></div>
-            </div>
-        </div>
-
-        <div class="elenco-container-grid">
+        <div class="grid-2-col">
             <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="margin:0; font-size: 0.95rem; color: var(--text-main);">Titulares (A)</h3>
-                    <div style="display:flex; align-items:center; gap:4px; background:var(--bg-body); padding:4px 8px; border-radius:6px; border: 1px solid var(--border-light);">
-                        <span style="font-size:0.6rem; font-weight:800; color:var(--text-muted);">ALVO F:</span>
-                        <input type="number" id="alvo_A" value="60" style="width:35px; text-align:center; border:none; background:transparent; font-weight:800; color:var(--btn-active); outline:none; font-size:0.8rem;" oninput="verificarForcas('A')">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="margin:0; font-size: 1.1rem; color: var(--text-main); font-weight: 800;">Titulares (A)</h3>
+                    <div style="display:flex; align-items:center; gap:8px; background:var(--bg-body); padding:8px 14px; border-radius:8px; border: 1px solid var(--border-light);">
+                        <span style="font-size:0.7rem; font-weight:800; color:var(--text-muted);">ALVO F:</span>
+                        <input type="number" id="alvo_A" value="60" style="width:40px; text-align:center; border:none; background:transparent; font-weight:900; color:var(--btn-active); outline:none; font-size:1rem;" oninput="verificarForcas('A')">
                     </div>
                 </div>
                 <div class="table-container" id="container_A"></div>
             </div>
 
             <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="margin:0; font-size: 0.95rem; color: var(--text-main);">Reservas (B)</h3>
-                    <div style="display:flex; align-items:center; gap:4px; background:var(--bg-body); padding:4px 8px; border-radius:6px; border: 1px solid var(--border-light);">
-                        <span style="font-size:0.6rem; font-weight:800; color:var(--text-muted);">ALVO F:</span>
-                        <input type="number" id="alvo_B" value="50" style="width:35px; text-align:center; border:none; background:transparent; font-weight:800; color:var(--warning); outline:none; font-size:0.8rem;" oninput="verificarForcas('B')">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="margin:0; font-size: 1.1rem; color: var(--text-main); font-weight: 800;">Reservas (B)</h3>
+                    <div style="display:flex; align-items:center; gap:8px; background:var(--bg-body); padding:8px 14px; border-radius:8px; border: 1px solid var(--border-light);">
+                        <span style="font-size:0.7rem; font-weight:800; color:var(--text-muted);">ALVO F:</span>
+                        <input type="number" id="alvo_B" value="50" style="width:40px; text-align:center; border:none; background:transparent; font-weight:900; color:var(--warning); outline:none; font-size:1rem;" oninput="verificarForcas('B')">
                     </div>
                 </div>
                 <div class="table-container" id="container_B"></div>
             </div>
         </div>
 
-        <div class="elenco-container-grid">
-            <div class="card" style="border-top: 3px solid var(--text-muted);">
-                <div class="card-header"><i class="fas fa-suitcase-rolling"></i><h3>Extra (Empréstimos/Vendas)</h3></div>
+        <div class="grid-2-col">
+            <div class="card" style="border-top: 4px solid var(--text-muted);">
+                <div class="card-header"><i class="fas fa-suitcase-rolling" style="color: var(--text-main);"></i><h3 style="color: var(--text-main);">Extra (Vendas/Empréstimo)</h3></div>
                 <div class="table-container">
                     <table class="table-elenco">
-                        <thead><tr><th style="width: 45px;">Pos</th><th>Jogador</th><th style="width: 45px; text-align: center;">F</th><th>Status</th><th style="width:25px;"></th></tr></thead>
+                        <thead><tr>
+                            <th style="width: 45px;">Pos</th>
+                            <th>Jogador</th>
+                            <th style="width: 55px; text-align: center;">F</th>
+                            <th style="width: 140px; text-align: center;">Status</th>
+                            <th style="width: 30px;"></th>
+                        </tr></thead>
                         <tbody id="lista_outros"></tbody>
                     </table>
-                    <button class="btn-touch btn-touch-outline" onclick="addOutro()" style="margin-top:10px; width:100%;"><i class="fas fa-plus"></i> Novo</button>
+                    <button class="btn-action" onclick="addOutro()" style="margin-top:20px; width:100%; justify-content: center; padding: 12px;"><i class="fas fa-plus"></i> Adicionar Jogador</button>
                 </div>
             </div>
 
-            <div class="card" style="border-top: 3px solid #0284c7;">
-                <div class="card-header"><i class="fas fa-seedling" style="color: #0284c7;"></i><h3>Base</h3></div>
+            <div class="card" style="border-top: 4px solid #0284c7;">
+                <div class="card-header"><i class="fas fa-seedling" style="color: var(--text-main);"></i><h3 style="color: var(--text-main);">Base (Promessas)</h3></div>
                 <div class="table-container">
                     <table class="table-elenco">
-                        <thead><tr><th style="width: 45px;">Pos</th><th>Requisito (Abrev)</th><th style="width:80px; text-align: right;">Qtd</th></tr></thead>
+                        <thead><tr>
+                            <th style="width: 50px;">Pos</th>
+                            <th style="padding-left: 15px;">Foco e Requisito Ideal</th>
+                            <th style="width: 120px; text-align: right;">Qtd Necessária</th>
+                        </tr></thead>
                         <tbody id="lista_base"></tbody>
                     </table>
                 </div>
@@ -317,55 +278,85 @@
         </div>
     </main>
 
+    <script src="script.js"></script>
+
     <script>
-        // --- TEMA E SIDEBAR STATE ---
-        function applyInitialStates() {
-            if(localStorage.getItem('hub_theme') === 'dark') {
-                document.body.classList.add('dark-theme');
-                document.getElementById('theme_icon').classList.replace('fa-moon', 'fa-sun');
+        // --- 0. SISTEMA DE SAVES GLOBAIS ---
+        let savesList = JSON.parse(localStorage.getItem('hub_saves_list') || '["Geral"]');
+        let currentSave = localStorage.getItem('hub_active_save') || 'Geral';
+        
+        // Chaves Dinâmicas de Elenco
+        let ELENCO_KEY, MERCADO_KEY, NOTAS_KEY, OUTROS_KEY, BASE_KEY;
+        let dadosElenco = {}, alvos = [], notas = [], outros = [], baseCount = {};
+
+        function atualizarChaves() {
+            ELENCO_KEY = `hub_elenco_master_${currentSave}`;
+            MERCADO_KEY = `hub_mercado_${currentSave}`;
+            NOTAS_KEY = `hub_notas_livres_${currentSave}`;
+            OUTROS_KEY = `hub_outros_${currentSave}`;
+            BASE_KEY = `hub_base_count_${currentSave}`;
+        }
+
+        function initSaveSystem() {
+            atualizarChaves();
+            const selector = document.getElementById('save_selector');
+            selector.innerHTML = savesList.map(s => `<option value="${s}" ${s === currentSave ? 'selected' : ''}>${s}</option>`).join('');
+            carregarDadosDoSave();
+        }
+
+        function mudarSave(saveName) {
+            currentSave = saveName;
+            localStorage.setItem('hub_active_save', currentSave);
+            atualizarChaves();
+            
+            // Limpeza visual rápida
+            document.querySelectorAll('.table-input, .pitch-input').forEach(input => { input.value = ''; });
+            document.querySelectorAll('.status-dot').forEach(dot => dot.className = 'status-dot status-none');
+            
+            carregarDadosDoSave();
+        }
+
+        function criarNovoSave() {
+            let novoNome = prompt("Digite o nome do novo Save (Ex: Galo 2026):");
+            if(novoNome && novoNome.trim() !== '') {
+                novoNome = novoNome.trim();
+                if(!savesList.includes(novoNome)) {
+                    savesList.push(novoNome);
+                    localStorage.setItem('hub_saves_list', JSON.stringify(savesList));
+                    initSaveSystem();
+                    mudarSave(novoNome); 
+                    document.getElementById('save_selector').value = novoNome;
+                } else { alert("Já existe um save com este nome!"); }
             }
-            if(window.innerWidth > 768 && localStorage.getItem('hub_sidebar_state') === 'collapsed') {
-                document.getElementById('sidebar').classList.add('collapsed');
-                document.getElementById('main_content').classList.add('expanded');
-            }
-            const headerTitle = document.querySelector('.header-title-mobile');
-            if(headerTitle) headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0';
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('theme_icon');
-            body.classList.toggle('dark-theme');
-            if (body.classList.contains('dark-theme')) {
-                localStorage.setItem('hub_theme', 'dark');
-                icon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                localStorage.setItem('hub_theme', 'light');
-                icon.classList.replace('fa-sun', 'fa-moon');
+        function deletarSaveAtual() {
+            if(confirm(`Tem certeza que deseja APAGAR DEFINITIVAMENTE o save "${currentSave}" e todos os elencos?`)) {
+                localStorage.removeItem(ELENCO_KEY); localStorage.removeItem(MERCADO_KEY);
+                localStorage.removeItem(NOTAS_KEY); localStorage.removeItem(OUTROS_KEY); localStorage.removeItem(BASE_KEY);
+                
+                savesList = savesList.filter(s => s !== currentSave);
+                if(savesList.length === 0) savesList.push("Geral");
+                localStorage.setItem('hub_saves_list', JSON.stringify(savesList));
+                
+                mudarSave(savesList[0]);
+                initSaveSystem();
             }
         }
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.querySelector('.sidebar-overlay').classList.toggle('open');
-        }
-
-        function toggleDesktopSidebar() {
-            const sb = document.getElementById('sidebar');
-            const mc = document.getElementById('main_content');
-            sb.classList.toggle('collapsed');
-            mc.classList.toggle('expanded');
-            localStorage.setItem('hub_sidebar_state', sb.classList.contains('collapsed') ? 'collapsed' : 'expanded');
-        }
-
-        // --- DADOS E INICIALIZAÇÃO ---
+        // --- 1. LÓGICA DO ELENCO E DADOS ---
         const posicoes = ["GL", "LD", "ZD", "ZE", "LE", "VD", "VE", "MD", "ME", "AD", "AE"];
-        let dadosElenco = JSON.parse(localStorage.getItem('hub_elenco_master') || '{}');
-        let alvos = JSON.parse(localStorage.getItem('hub_mercado') || '[]');
-        let notas = JSON.parse(localStorage.getItem('hub_notas_livres') || '[]');
-        let outros = JSON.parse(localStorage.getItem('hub_outros') || '[]');
 
-        function init() {
+        function carregarDadosDoSave() {
+            dadosElenco = JSON.parse(localStorage.getItem(ELENCO_KEY) || '{}');
+            alvos = JSON.parse(localStorage.getItem(MERCADO_KEY) || '[]');
+            notas = JSON.parse(localStorage.getItem(NOTAS_KEY) || '[]');
+            outros = JSON.parse(localStorage.getItem(OUTROS_KEY) || '[]');
+            baseCount = JSON.parse(localStorage.getItem(BASE_KEY) || '{}');
+
+            document.getElementById('alvo_A').value = dadosElenco['alvo_A'] || 60;
+            document.getElementById('alvo_B').value = dadosElenco['alvo_B'] || 50;
+
             renderPitchInterativo();
             gerarTabela('container_A', 'A'); 
             gerarTabela('container_B', 'B');
@@ -373,57 +364,39 @@
             renderBase(); 
             renderMercado(); 
             renderNotas();
+            
             verificarForcas('A'); verificarForcas('B');
         }
 
-        // --- NOVA FUNÇÃO: LIMPAR ELENCO ---
         function limparElenco() {
-            if(!confirm("Tem certeza que deseja APAGAR TODO O ELENCO (Titulares, Reservas, Extras e Base)?\n\nIsso é ideal para quando muda de clube.\nAs suas Notas do Scout e Alvos de Mercado NÃO serão apagados.")) return;
-            
-            // Limpa o Master do Elenco (A e B)
-            dadosElenco = {};
-            localStorage.setItem('hub_elenco_master', JSON.stringify(dadosElenco));
-            
-            // Limpa os Extras
-            outros = [];
-            localStorage.setItem('hub_outros', JSON.stringify(outros));
-            
-            // Limpa a Base
-            let baseCount = {};
-            localStorage.setItem('hub_base_count', JSON.stringify(baseCount));
-
-            // Refaz a tela com tudo vazio
-            init();
+            if(!confirm(`Tem certeza que deseja APAGAR APENAS O ELENCO do save "${currentSave}"?`)) return;
+            dadosElenco = { alvo_A: document.getElementById('alvo_A').value, alvo_B: document.getElementById('alvo_B').value };
+            localStorage.setItem(ELENCO_KEY, JSON.stringify(dadosElenco));
+            outros = []; localStorage.setItem(OUTROS_KEY, JSON.stringify(outros));
+            baseCount = {}; localStorage.setItem(BASE_KEY, JSON.stringify(baseCount));
+            carregarDadosDoSave();
         }
 
-        // --- LÓGICA DE SINCRONIZAÇÃO (PITCH E TABELA PARA NOME E FORÇA) ---
         function syncCampo(id, valor) {
-            // Salva no LocalStorage
             dadosElenco[id] = valor; 
-            localStorage.setItem('hub_elenco_master', JSON.stringify(dadosElenco));
+            localStorage.setItem(ELENCO_KEY, JSON.stringify(dadosElenco));
             
-            // Atualiza Input da Tabela (se existir e for diferente)
             const inputTabela = document.getElementById(id);
             if(inputTabela && inputTabela.value !== valor) inputTabela.value = valor;
             
-            // Atualiza Input do Pitch (se existir e for diferente)
             const inputPitch = document.getElementById('pitch_' + id);
             if(inputPitch && inputPitch.value !== valor) inputPitch.value = valor;
 
-            // Se for um campo de força, reavalia a bolinha de status
-            if (id.endsWith('_F')) {
-                const grupo = id.split('_')[0]; // 'A' ou 'B'
-                verificarForcas(grupo);
-            }
+            if (id.endsWith('_F')) verificarForcas(id.split('_')[0]);
         }
 
-        // --- PITCH INTERATIVO COM FORÇA ---
-        const coordsPitch = {
-            "AE": {l: "30%", t: "12%"}, "AD": {l: "70%", t: "12%"},
-            "ME": {l: "25%", t: "32%"}, "MD": {l: "75%", t: "32%"},
-            "VE": {l: "35%", t: "52%"}, "VD": {l: "65%", t: "52%"},
-            "LE": {l: "15%", t: "72%"}, "ZE": {l: "38%", t: "72%"}, "ZD": {l: "62%", t: "72%"}, "LD": {l: "85%", t: "72%"},
-            "GL": {l: "50%", t: "90%"}
+        // --- PITCH INTERATIVO ---
+        const coordsPitchA4 = {
+            "AE": {l: "25%", t: "15%"}, "AD": {l: "75%", t: "15%"},
+            "ME": {l: "25%", t: "38%"}, "MD": {l: "75%", t: "38%"},
+            "VE": {l: "35%", t: "55%"}, "VD": {l: "65%", t: "55%"},
+            "LE": {l: "15%", t: "78%"}, "ZE": {l: "38%", t: "78%"}, "ZD": {l: "62%", t: "78%"}, "LD": {l: "85%", t: "78%"},
+            "GL": {l: "50%", t: "92%"}
         };
 
         function renderPitchInterativo() {
@@ -431,40 +404,42 @@
             let html = '';
             
             posicoes.forEach(pos => {
-                const coord = coordsPitch[pos];
-                // Busca os valores salvos
+                const coord = coordsPitchA4[pos];
                 const valNomeA = dadosElenco[`A_${pos}_N`] || '';
+                const valCaractA = dadosElenco[`A_${pos}_C`] || '';
                 const valForcaA = dadosElenco[`A_${pos}_F`] || '';
-                const valNomeB = dadosElenco[`B_${pos}_N`] || '';
-                const valForcaB = dadosElenco[`B_${pos}_F`] || '';
                 
                 html += `
-                <div class="player-box-int" style="left: ${coord.l}; top: ${coord.t};">
+                <div class="player-box box-int" style="left: ${coord.l}; top: ${coord.t};">
                     <span>${pos}</span>
-                    <div class="pitch-row-input">
-                        <input type="text" id="pitch_A_${pos}_N" class="pitch-input name-input p-titular" placeholder="Titular" value="${valNomeA}" oninput="syncCampo('A_${pos}_N', this.value)">
-                        <input type="number" id="pitch_A_${pos}_F" class="pitch-input force-input" placeholder="F" value="${valForcaA}" oninput="syncCampo('A_${pos}_F', this.value)">
-                    </div>
-                    <div class="pitch-row-input">
-                        <input type="text" id="pitch_B_${pos}_N" class="pitch-input name-input p-reserva" placeholder="Reserva" value="${valNomeB}" oninput="syncCampo('B_${pos}_N', this.value)">
-                        <input type="number" id="pitch_B_${pos}_F" class="pitch-input force-input" placeholder="F" value="${valForcaB}" oninput="syncCampo('B_${pos}_F', this.value)">
+                    <div class="pitch-col">
+                        <input type="text" id="pitch_A_${pos}_N" class="pitch-input input-nome-campo" placeholder="Nome" value="${valNomeA}" oninput="syncCampo('A_${pos}_N', this.value)">
+                        <input type="text" id="pitch_A_${pos}_C" class="pitch-input input-caract-campo" placeholder="Carc." value="${valCaractA}" oninput="syncCampo('A_${pos}_C', this.value)">
+                        <input type="number" id="pitch_A_${pos}_F" class="pitch-input input-forca-campo" placeholder="F" value="${valForcaA}" oninput="syncCampo('A_${pos}_F', this.value)">
                     </div>
                 </div>`;
             });
-            
             root.innerHTML = html;
         }
 
-        // --- TABELAS A e B ---
+        // --- TABELAS TITULARES E RESERVAS ---
         function gerarTabela(containerId, grupo) {
-            let html = `<table class="table-elenco"><thead><tr><th style="width:45px;">Pos</th><th>Nome</th><th style="width:55px; text-align:center;">F</th><th style="width:30px;"></th></tr></thead><tbody>`;
+            // AQUI ESTÁ O EQUILÍBRIO DE ESPAÇOS: Pos Pequeno, Nome Livre, Carc 85px e Força 55px.
+            let html = `<table class="table-elenco"><thead><tr>
+                <th style="width: 45px;">Pos</th>
+                <th>Nome</th>
+                <th style="width: 85px; text-align:center;">Carc.</th>
+                <th style="width: 55px; text-align:center;">Força</th>
+                <th style="width: 30px;"></th>
+            </tr></thead><tbody>`;
+            
             posicoes.forEach(pos => {
-                let idNome = `${grupo}_${pos}_N`;
-                let idForca = `${grupo}_${pos}_F`;
+                let idNome = `${grupo}_${pos}_N`, idCaract = `${grupo}_${pos}_C`, idForca = `${grupo}_${pos}_F`;
                 html += `<tr>
                     <td><span class="pos-badge">${pos}</span></td>
-                    <td><input type="text" id="${idNome}" value="${dadosElenco[idNome]||''}" oninput="syncCampo('${idNome}', this.value)" placeholder="Nome"></td>
-                    <td><input type="number" id="${idForca}" style="text-align:center; background:var(--bg-body); color:var(--text-main);" value="${dadosElenco[idForca]||''}" oninput="syncCampo('${idForca}', this.value)"></td>
+                    <td><input type="text" class="table-input" id="${idNome}" value="${dadosElenco[idNome]||''}" oninput="syncCampo('${idNome}', this.value)" placeholder="Nome"></td>
+                    <td><input type="text" class="table-input center caract" id="${idCaract}" value="${dadosElenco[idCaract]||''}" oninput="syncCampo('${idCaract}', this.value)" placeholder=""></td>
+                    <td><input type="number" class="table-input center force" id="${idForca}" value="${dadosElenco[idForca]||''}" oninput="syncCampo('${idForca}', this.value)" placeholder="F"></td>
                     <td><div class="status-dot status-none" id="dot_${grupo}_${pos}"></div></td>
                 </tr>`;
             });
@@ -472,7 +447,11 @@
         }
 
         function verificarForcas(grupo) {
-            let alvo = parseFloat(document.getElementById('alvo_'+grupo).value) || 0;
+            let inputAlvo = document.getElementById('alvo_'+grupo);
+            let alvo = parseFloat(inputAlvo.value) || 0;
+            dadosElenco['alvo_'+grupo] = alvo;
+            localStorage.setItem(ELENCO_KEY, JSON.stringify(dadosElenco));
+
             posicoes.forEach(pos => {
                 let val = parseFloat(document.getElementById(`${grupo}_${pos}_F`).value);
                 let dot = document.getElementById(`dot_${grupo}_${pos}`);
@@ -482,29 +461,29 @@
             });
         }
 
-        // --- GRUPO EXTRA ---
+        // --- EXTRAS ---
         function addOutro() { outros.push({id: Date.now(), pos:'', nome:'', f:'', status:''}); renderOutros(); }
         function renderOutros() {
             let html = '';
             outros.forEach((o, i) => {
                 html += `<tr>
-                    <td><input type="text" value="${o.pos}" oninput="outros[${i}].pos=this.value; saveOutros()" placeholder="Pos"></td>
-                    <td><input type="text" value="${o.nome}" oninput="outros[${i}].nome=this.value; saveOutros()" placeholder="Nome"></td>
-                    <td><input type="number" value="${o.f}" oninput="outros[${i}].f=this.value; saveOutros()" style="text-align:center; background:var(--bg-body); color:var(--text-main);"></td>
-                    <td><input type="text" value="${o.status}" oninput="outros[${i}].status=this.value; saveOutros()" placeholder="Emp/Venda"></td>
-                    <td><i class="fas fa-times" style="color:var(--danger); padding:8px 0; cursor:pointer;" onclick="outros.splice(${i},1); saveOutros(); renderOutros()"></i></td>
+                    <td><input type="text" class="table-input" value="${o.pos}" oninput="outros[${i}].pos=this.value; saveOutros()" placeholder="Pos"></td>
+                    <td><input type="text" class="table-input" value="${o.nome}" oninput="outros[${i}].nome=this.value; saveOutros()" placeholder="Nome"></td>
+                    <td><input type="number" class="table-input center force" value="${o.f}" oninput="outros[${i}].f=this.value; saveOutros()" placeholder="F"></td>
+                    <td><input type="text" class="table-input center" value="${o.status}" oninput="outros[${i}].status=this.value; saveOutros()" placeholder="Ex: Emp. Santos"></td>
+                    <td><i class="fas fa-times" style="color:var(--danger); padding:10px; cursor:pointer;" onclick="outros.splice(${i},1); saveOutros(); renderOutros()"></i></td>
                 </tr>`;
             });
             document.getElementById('lista_outros').innerHTML = html;
         }
-        function saveOutros() { localStorage.setItem('hub_outros', JSON.stringify(outros)); }
+        function saveOutros() { localStorage.setItem(OUTROS_KEY, JSON.stringify(outros)); }
 
         // --- MERCADO E NOTAS ---
         function addAlvo() {
             const n = document.getElementById('m_nome').value, f = document.getElementById('m_forca').value, v = parseFloat(document.getElementById('m_valor').value);
             if(!n || !v) return;
-            alvos.push({id: Date.now(), n, f, v, vr: v * 1.5});
-            localStorage.setItem('hub_mercado', JSON.stringify(alvos));
+            alvos.push({id: Date.now(), n, f, v, vr: v * 1.5}); 
+            localStorage.setItem(MERCADO_KEY, JSON.stringify(alvos));
             document.getElementById('m_nome').value = ''; document.getElementById('m_forca').value = ''; document.getElementById('m_valor').value = '';
             renderMercado();
         }
@@ -512,64 +491,59 @@
             let html = '', tot = 0;
             alvos.forEach((a, i) => {
                 tot += a.vr;
-                html += `<tr><td style="color:var(--text-main);"><strong>${a.n}</strong></td><td style="text-align:center; color:var(--text-main);">${a.f}</td><td style="text-align:right; font-weight:800; color:var(--text-main)">R$ ${a.vr.toFixed(1)}M</td>
-                <td style="text-align:right;"><i class="fas fa-trash" style="color:var(--danger); padding:8px; cursor:pointer;" onclick="alvos.splice(${i},1); localStorage.setItem('hub_mercado', JSON.stringify(alvos)); renderMercado()"></i></td></tr>`;
+                html += `<tr><td style="color:var(--text-main); padding: 14px 8px;"><strong>${a.n}</strong></td><td style="text-align:center; color:var(--text-main); font-weight: 800;">${a.f}</td><td style="text-align:right; font-weight:800; color:var(--btn-active)">R$ ${a.vr.toLocaleString('pt-BR')}</td>
+                <td style="text-align:right;"><i class="fas fa-trash" style="color:var(--text-muted); padding:10px; cursor:pointer; transition: 0.2s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-muted)'" onclick="alvos.splice(${i},1); localStorage.setItem(MERCADO_KEY, JSON.stringify(alvos)); renderMercado()"></i></td></tr>`;
             });
-            document.getElementById('lista_mercado').innerHTML = html || '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted)">Nenhum jogador monitorado.</td></tr>';
-            document.getElementById('total_mercado').innerText = `R$ ${tot.toFixed(1)} M`;
+            document.getElementById('lista_mercado').innerHTML = html || '<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted)">Nenhum jogador monitorado no radar.</td></tr>';
+            document.getElementById('total_mercado').innerText = `R$ ${tot.toLocaleString('pt-BR')}`;
         }
 
         function salvarNota() {
             const t = document.getElementById('nova_nota').value; if(!t) return;
             notas.unshift({id: Date.now(), t, d: new Date().toLocaleDateString()});
-            localStorage.setItem('hub_notas_livres', JSON.stringify(notas));
+            localStorage.setItem(NOTAS_KEY, JSON.stringify(notas));
             document.getElementById('nova_nota').value = ''; renderNotas();
         }
         function renderNotas() {
             document.getElementById('lista_notas').innerHTML = notas.map((n, i) => `
-                <div class="nota-card"><div><small style="font-weight:800; color:var(--btn-active)">${n.d}</small><div style="margin-top:2px; font-size:0.75rem; color:var(--text-main);">${n.t}</div></div>
-                <i class="fas fa-trash" style="color:var(--danger); padding:5px; cursor:pointer;" onclick="notas.splice(${i},1); localStorage.setItem('hub_notas_livres', JSON.stringify(notas)); renderNotas()"></i></div>
+                <div class="nota-card"><div><small style="font-weight:800; color:var(--btn-active)">${n.d}</small><div style="margin-top:6px; font-size:0.9rem; color:var(--text-main); line-height: 1.4;">${n.t}</div></div>
+                <i class="fas fa-trash" style="color:var(--text-muted); padding:5px; cursor:pointer; transition: 0.2s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-muted)'" onclick="notas.splice(${i},1); localStorage.setItem(NOTAS_KEY, JSON.stringify(notas)); renderNotas()"></i></div>
             `).join('');
         }
 
         // --- BASE ---
         const baseSpecs = {
-            "GL": {m: "Ref+Col"}, "LD": {m: "Cru+Mar"}, "ZD": {m: "Des+Cab"}, "ZE": {m: "Des+Mar"}, "LE": {m: "Cru+Vel"},
-            "VD": {m: "Des+Mar"}, "VE": {m: "Des+Pas"}, "MD": {m: "Arm+Fin"}, "ME": {m: "Arm+Pas"}, "AD": {m: "Fin+Cab"}, "AE": {m: "Vel+Dri"}
+            "GL": {m: "Reflexo + Colocação"}, "LD": {m: "Cruzamento + Marc."}, "ZD": {m: "Desarme + Cabeceio"}, "ZE": {m: "Desarme + Marcação"}, "LE": {m: "Cruzamento + Vel."},
+            "VD": {m: "Desarme + Marcação"}, "VE": {m: "Desarme + Passe"}, "MD": {m: "Armação + Finalização"}, "ME": {m: "Armação + Passe"}, "AD": {m: "Finalização + Cabeceio"}, "AE": {m: "Velocidade + Drible"}
         };
         
         function renderBase() {
-            let baseCount = JSON.parse(localStorage.getItem('hub_base_count') || '{}');
             let html = '';
             posicoes.forEach(pos => {
                 let count = baseCount[pos] || 0;
+                // Adicionado padding-left na descrição para dar distância da sigla da posição
                 html += `<tr>
                     <td><span class="pos-badge">${pos}</span></td>
-                    <td><div style="color:var(--text-muted); font-size:0.65rem;">${baseSpecs[pos].m}</div></td>
+                    <td style="padding-left: 15px;"><div style="color:var(--text-muted); font-size:0.8rem; font-weight:600;">${baseSpecs[pos].m}</div></td>
                     <td><div class="base-counter">
-                        ${[1,2,3].map(n => `<i class="fas fa-user base-icon ${n <= count ? 'active' : ''}" style="padding:4px;" onclick="setBase('${pos}', ${n})"></i>`).join('')}
-                        <i class="fas fa-times-circle" style="margin-left:2px; font-size:0.8rem; padding:4px; color:var(--text-muted);" onclick="setBase('${pos}', 0)"></i>
+                        ${[1,2,3].map(n => `<i class="fas fa-user base-icon ${n <= count ? 'active' : ''}" style="padding:6px; transition: 0.2s;" onclick="setBase('${pos}', ${n})"></i>`).join('')}
+                        <i class="fas fa-times-circle" style="margin-left:10px; font-size:1.1rem; padding:6px; color:var(--text-muted); transition: 0.2s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-muted)'" onclick="setBase('${pos}', 0)"></i>
                     </div></td>
                 </tr>`;
             });
             document.getElementById('lista_base').innerHTML = html;
         }
-        function setBase(pos, val) { 
-            let baseCount = JSON.parse(localStorage.getItem('hub_base_count') || '{}');
-            baseCount[pos] = val; 
-            localStorage.setItem('hub_base_count', JSON.stringify(baseCount)); 
-            renderBase(); 
-        }
+        function setBase(pos, val) { baseCount[pos] = val; localStorage.setItem(BASE_KEY, JSON.stringify(baseCount)); renderBase(); }
 
         // --- BACKUP ---
         function exportarBackupElenco() {
             const backupData = {
-                elenco: localStorage.getItem('hub_elenco_master'), mercado: localStorage.getItem('hub_mercado'),
-                notas: localStorage.getItem('hub_notas_livres'), outros: localStorage.getItem('hub_outros'), base: localStorage.getItem('hub_base_count')
+                save: currentSave, elenco: localStorage.getItem(ELENCO_KEY), mercado: localStorage.getItem(MERCADO_KEY),
+                notas: localStorage.getItem(NOTAS_KEY), outros: localStorage.getItem(OUTROS_KEY), base: localStorage.getItem(BASE_KEY)
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
             const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "brasfoot_elenco_backup.json"); dlAnchorElem.click();
+            dlAnchorElem.setAttribute("download", `brasfoot_elenco_${currentSave}.json`); dlAnchorElem.click();
         }
 
         function importarBackupElenco(event) {
@@ -578,19 +552,18 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data.elenco) localStorage.setItem('hub_elenco_master', data.elenco);
-                    if (data.mercado) localStorage.setItem('hub_mercado', data.mercado);
-                    if (data.notas) localStorage.setItem('hub_notas_livres', data.notas);
-                    if (data.outros) localStorage.setItem('hub_outros', data.outros);
-                    if (data.base) localStorage.setItem('hub_base_count', data.base);
-                    alert("Backup importado com sucesso! A página será recarregada."); location.reload();
+                    if (data.elenco) localStorage.setItem(ELENCO_KEY, data.elenco);
+                    if (data.mercado) localStorage.setItem(MERCADO_KEY, data.mercado);
+                    if (data.notas) localStorage.setItem(NOTAS_KEY, data.notas);
+                    if (data.outros) localStorage.setItem(OUTROS_KEY, data.outros);
+                    if (data.base) localStorage.setItem(BASE_KEY, data.base);
+                    alert(`Backup importado com sucesso para o save "${currentSave}"!`); location.reload();
                 } catch (err) { alert("Erro ao importar: Arquivo inválido."); }
             };
             reader.readAsText(file);
         }
 
-        window.onload = () => { applyInitialStates(); init(); };
-        window.addEventListener('resize', () => { const headerTitle = document.querySelector('.header-title-mobile'); if(headerTitle) headerTitle.style.marginLeft = window.innerWidth <= 768 ? '45px' : '0'; });
+        window.onload = () => { applyInitialStates(); initSaveSystem(); };
     </script>
 </body>
 </html>
