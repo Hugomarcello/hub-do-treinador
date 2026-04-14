@@ -1,85 +1,73 @@
-// ==========================================
-// SCRIPT GLOBAL - HUB DO TREINADOR
-// Aplica-se a todas as páginas do projeto
-// ==========================================
+/* =====================================================================
+   HUB DO TREINADOR - SCRIPT GLOBAL (CORE UI)
+   Controla a navegação, responsividade e tema de todas as páginas.
+   ===================================================================== */
 
-/**
- * Verifica no localStorage se o utilizador prefere o modo escuro 
- * ou se o menu lateral estava aberto/fechado na última sessão.
- */
-function applyInitialStates() {
-    // Aplicação do Tema Dark/Light
-    if(localStorage.getItem('hub_theme') === 'dark') {
-        document.body.classList.add('dark-theme');
-        const themeIcon = document.getElementById('theme_icon');
-        if(themeIcon) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-    }
-
-    // Aplicação do Estado da Sidebar (Desktop)
-    if(window.innerWidth > 768 && localStorage.getItem('hub_sidebar_state') === 'collapsed') {
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main_content');
-        if(sidebar) sidebar.classList.add('collapsed');
-        if(mainContent) mainContent.classList.add('expanded');
-    }
+// --- 1. MENU MOBILE E TABLET (HAMBÚRGUER) ---
+function toggleMenu() {
+    document.body.classList.toggle('mobile-open');
 }
 
-/**
- * Alterna entre Modo Claro (Verde Esmeralda) e Modo Escuro
- */
-function toggleTheme() {
-    const body = document.body;
-    const icon = document.getElementById('theme_icon');
-    
-    body.classList.toggle('dark-theme');
-    
-    if (body.classList.contains('dark-theme')) {
-        localStorage.setItem('hub_theme', 'dark');
-        if(icon) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        }
-    } else {
-        localStorage.setItem('hub_theme', 'light');
-        if(icon) {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        }
-    }
-}
-
-/**
- * Abre/Fecha o Menu Lateral no Telemóvel (Mobile)
- */
-function toggleMenu() { 
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.querySelector('.sidebar-overlay');
-    
-    if(sidebar) sidebar.classList.toggle('open'); 
-    if(overlay) overlay.classList.toggle('open'); 
-}
-
-/**
- * Abre/Encolhe o Menu Lateral no Computador (Desktop)
- */
-function toggleDesktopSidebar() { 
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('main_content');
-    
-    if(sidebar) {
-        sidebar.classList.toggle('collapsed'); 
-        // Guarda a preferência para a próxima vez que abrir a página
-        localStorage.setItem('hub_sidebar_state', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
-    }
-    if(mainContent) {
-        mainContent.classList.toggle('expanded'); 
-    }
-}
-
-// Quando o HTML carregar, aplica as cores e menus imediatamente
+// Garante que o menu mobile fecha ao clicar no fundo escurecido (overlay)
 document.addEventListener('DOMContentLoaded', () => {
-    applyInitialStates();
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            document.body.classList.remove('mobile-open');
+        });
+    }
+});
+
+// --- 2. MENU DESKTOP (ENCOLHER/RECOLHER BARRA LATERAL) ---
+function toggleDesktopSidebar() {
+    // Apenas permite recolher a barra se o ecrã for suficientemente grande (> 1024px)
+    if (window.innerWidth > 1024) {
+        document.body.classList.toggle('sidebar-collapsed');
+        
+        // Guarda a preferência do utilizador no navegador
+        const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+        localStorage.setItem('hub_sidebar_state', isCollapsed);
+    }
+}
+
+// --- 3. MODO ESCURO E CLARO (TEMA) ---
+function toggleTheme() {
+    document.body.classList.toggle('dark-theme');
+    
+    const isDark = document.body.classList.contains('dark-theme');
+    localStorage.setItem('hub_dark_mode', isDark);
+    
+    // Altera o ícone da lua/sol no cabeçalho (se existir na página)
+    const icon = document.getElementById('theme_icon');
+    if (icon) {
+        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    }
+}
+
+// --- 4. APLICAR ESTADOS INICIAIS AO CARREGAR A PÁGINA ---
+function applyInitialStates() {
+    // 1. Restaura o Tema (Escuro ou Claro)
+    if (localStorage.getItem('hub_dark_mode') === 'true') {
+        document.body.classList.add('dark-theme');
+        const icon = document.getElementById('theme_icon');
+        if (icon) icon.className = 'fas fa-sun';
+    }
+    
+    // 2. Restaura a Barra Lateral Recolhida (Apenas em ecrãs grandes)
+    // Se o ecrã for pequeno, o CSS já trata de esconder a barra automaticamente.
+    if (localStorage.getItem('hub_sidebar_state') === 'true' && window.innerWidth > 1024) {
+        document.body.classList.add('sidebar-collapsed');
+    }
+}
+
+// Executa a aplicação de estados assim que o documento (DOM) estiver pronto.
+// Isto evita que o utilizador veja a página a "piscar" ao mudar de cor.
+document.addEventListener('DOMContentLoaded', applyInitialStates);
+
+// --- 5. AJUSTE DINÂMICO DE ECRÃ ---
+// Se o utilizador rodar o telemóvel ou redimensionar a janela do browser, limpa as classes mobile
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024) {
+        document.body.classList.remove('mobile-open');
+    }
 });

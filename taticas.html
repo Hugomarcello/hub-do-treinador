@@ -4,425 +4,426 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Táticas e Jogos - Hub do Treinador</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* ==========================================
-           1. SISTEMA DE SAVES E BARRA TOPO
-           ========================================== */
-        :root {
-            --emerald-light: rgba(16, 185, 129, 0.1);
-            --emerald-main: #10b981;
-            --emerald-dark: #047857;
-            --btn-active: var(--emerald-main);
-        }
+        /* DIVISORES E ESTRUTURA */
+        .section-divider { display: flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: 900; color: var(--text-main); margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid var(--border-light); letter-spacing: -0.5px; }
+        .section-divider:first-of-type { margin-top: 10px; }
+        .section-divider i { color: var(--emerald-main); font-size: 1.4rem; }
 
-        .header-top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; }
-        .save-manager { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-light); margin: 0; }
-        .save-select { background: transparent; border: none; color: var(--text-main); font-weight: 800; font-size: 0.9rem; outline: none; cursor: pointer; max-width: 120px; text-overflow: ellipsis;}
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; }
+        @media (min-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr 1fr; } }
+        @media (min-width: 1200px) { .dashboard-grid { grid-template-columns: 1.2fr 1fr; } }
 
-        /* ==========================================
-           2. BOTÕES DE SELEÇÃO RÁPIDA (AÇÃO X REAÇÃO)
-           ========================================== */
-        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .btn-select { 
-            flex: 1; min-width: 85px; padding: 10px; border-radius: 8px; 
-            border: 1px solid var(--border-light); background: var(--bg-body); 
-            color: var(--text-muted); font-weight: 700; font-size: 0.85rem; 
-            cursor: pointer; transition: 0.2s; text-align: center; 
-        }
-        .btn-select:hover { border-color: var(--btn-active); color: var(--text-main); }
-        .btn-select.active { background: var(--btn-active); color: #fff; border-color: var(--btn-active); box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25); }
+        .panel-box { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
 
-        .form-label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; margin-top: 15px;}
-        .form-label:first-child { margin-top: 0; }
+        /* BOTÕES E CONTROLES */
+        .grid-forms { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 6px; }
+        .grid-cenarios { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px; }
 
-        /* Grid de formações responsivo */
-        .grid-forms { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
-
-        /* Painéis Ação x Reação */
-        .action-reaction-grid { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; }
-        @media (min-width: 1024px) { .action-reaction-grid { grid-template-columns: 1fr 1fr; } }
-
-        .panel-box { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; }
-        .panel-box.reaction { border-left: 4px solid var(--emerald-main); background: var(--card-bg); }
-
-        /* DESTAQUES VISUAIS (GUI DE BOLSO) */
-        .badge {
-            display: inline-block; padding: 6px 14px; border-radius: 20px;
-            background: var(--emerald-light); color: var(--emerald-dark);
-            font-weight: 900; font-size: 1rem; margin: 4px 4px 8px 0;
-            border: 1px solid rgba(16, 185, 129, 0.3); text-align: center;
-        }
-        .badge-attr {
-            background: rgba(100, 116, 139, 0.1); color: var(--text-main);
-            border: 1px solid rgba(100, 116, 139, 0.2);
-        }
-
-        .reaction-item { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-light);}
-        .reaction-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0;}
-        .reaction-title { font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-
-        /* Análise do Auxiliar (Fundo Claro Elegante) */
-        .analysis-box {
-            background: rgba(0, 0, 0, 0.02); /* Cinza clarinho/suave */
-            color: var(--text-main);
-            border-left: 4px solid var(--emerald-main);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            text-align: left;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            border: 1px solid var(--border-light);
-        }
-        .analysis-box-title {
-            color: var(--emerald-main); font-weight: 900; font-size: 0.85rem;
-            text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
-        }
-        .analysis-box-text { font-size: 0.95rem; line-height: 1.5; font-weight: 600; color: var(--text-muted);}
-
-        /* ==========================================
-           3. O CAMPINHO TÁTICO (PRANCHETAS SEMPRE VISÍVEIS)
-           ========================================== */
-        .pitch-container { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; margin-top: 15px; }
+        .header-top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 10px; }
         
-        .pitch-box { 
-            flex: 1; min-width: 140px; background: var(--bg-body); 
-            border: 1px solid var(--border-light); border-radius: 12px; 
-            padding: 15px; display: flex; flex-direction: column; align-items: center; 
-        }
-        
-        .pitch-title { font-size: 0.85rem; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; text-align: center; color: var(--text-muted);}
+        /* SISTEMA DE SAVES (TOPO DA PÁGINA) */
+        .save-manager { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 0 14px; border-radius: 8px; border: 1px solid var(--border-light); margin: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .save-select { background: transparent; border: none; color: var(--text-main); font-weight: 800; font-size: 0.9rem; outline: none; cursor: pointer; max-width: 140px; }
+        .btn-novo-save { background: transparent; border: none; color: var(--emerald-main); cursor: pointer; font-size: 1.1rem; transition: 0.2s; padding: 0 4px; display:flex; align-items:center;}
+        .btn-novo-save:hover { transform: scale(1.15); }
 
-        .mini-pitch-wrapper { width: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center; }
-        .mini-pitch { 
-            width: 100%; max-width: 180px; aspect-ratio: 2 / 3; 
-            background: linear-gradient(180deg, #34d399 0%, #10b981 100%); 
-            border: 2px solid #fff; position: relative; border-radius: 5px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden;
-        }
-        
-        .mini-pitch::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.6); transform: translateY(-50%); }
-        .mini-pitch::after { content: ''; position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.6); border-radius: 50%; transform: translate(-50%, -50%); }
-        .area-top { position: absolute; top: 0; left: 50%; width: 50%; height: 15%; border: 2px solid rgba(255,255,255,0.6); border-top: none; transform: translateX(-50%); }
-        .area-bot { position: absolute; bottom: 0; left: 50%; width: 50%; height: 15%; border: 2px solid rgba(255,255,255,0.6); border-bottom: none; transform: translateX(-50%); }
+        .btn-cenario { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 15px 10px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-body); color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .btn-cenario i { font-size: 1.5rem; margin-bottom: 4px; }
+        .btn-cenario:hover, .btn-cenario.active { border-color: var(--emerald-main); color: var(--emerald-main); background: rgba(16, 185, 129, 0.05); transform: translateY(-2px); }
 
-        .tactical-dot { 
-            position: absolute; width: 12px; height: 12px; border-radius: 50%; 
-            transform: translate(-50%, 50%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
+        /* PAINEL DE AÇÃO IMEDIATA */
+        .action-panel { display: flex; flex-direction: column; gap: 10px; background: var(--bg-body); border-radius: 12px; padding: 15px; border: 2px solid var(--border-light); margin-top: 15px; }
+        .action-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 8px; margin-bottom: 4px;}
+        .action-row:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0;}
+        .action-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .action-badge { font-size: 0.95rem; font-weight: 900; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: -0.5px; text-align: right;}
+        .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--emerald-dark); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-red { background: rgba(239, 68, 68, 0.15); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-orange { background: rgba(245, 158, 11, 0.15); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-blue { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-dark { background: rgba(0, 0, 0, 0.1); color: var(--text-main); border: 1px solid rgba(0,0,0,0.2); }
+
+        body.dark-theme .badge-green { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        body.dark-theme .badge-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        body.dark-theme .badge-orange { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+        body.dark-theme .badge-blue { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+        body.dark-theme .badge-dark { background: rgba(255,255,255, 0.1); color: #fff; }
+
+        /* EFEITO GRAMADO */
+        .gramado-box { background: var(--card-bg); border: 1px dashed var(--border-light); border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 0.8rem; }
+        .gramado-linha { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 700; color: var(--text-main); }
+        .gramado-linha:last-child { margin-bottom: 0; }
+
+        /* PRANCHETAS */
+        .pitch-container-single { display: flex; justify-content: center; margin-bottom: 15px; }
+        .pitch-container-double { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; flex-wrap: wrap;}
+        .pitch-col { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 140px; max-width: 200px; }
+
+        .pitch-title { font-size: 0.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; text-align: center; color: var(--text-muted); cursor: pointer; user-select: none; }
+        .pitch-title.ours { color: var(--emerald-main); }
+
+        .mini-pitch { width: 100%; max-width: 160px; aspect-ratio: 2 / 3; background: linear-gradient(180deg, #34d399 0%, #10b981 100%); border: 2px solid #fff; position: relative; border-radius: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); overflow: hidden; cursor: pointer; transition: 0.2s;}
+        .mini-pitch:hover { transform: scale(1.02); }
+        body.dark-theme .mini-pitch { background: linear-gradient(180deg, #065f46 0%, #064e3b 100%); }
+        .mini-pitch::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.4); transform: translateY(-50%); }
+        .mini-pitch::after { content: ''; position: absolute; top: 50%; left: 50%; width: 30px; height: 30px; border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; transform: translate(-50%, -50%); }
+        .area-top, .area-bot { position: absolute; left: 50%; width: 40%; height: 12%; border: 2px solid rgba(255,255,255,0.4); transform: translateX(-50%); }
+        .area-top { top: 0; border-top: none; } .area-bot { bottom: 0; border-bottom: none; }
+
+        .tactical-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, 50%); box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: 0.4s ease;}
         .dot-adv { background: #ef4444; border: 2px solid #fff; }
-        .dot-nos { background: #fff; border: 2px solid var(--emerald-dark); }
+        .dot-nos { background: #fff; border: 2px solid #047857; }
+        .pitch-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none;}
 
-        /* ==========================================
-           4. RASTREADOR DE PARTIDAS (HABIT TRACKER)
-           ========================================== */
-        .tracker-creator { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tracker-input { flex-grow: 1; min-width: 200px; padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-body); color: var(--text-main); font-weight: 700; outline: none; }
-        .tracker-input-num { width: 100px; padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-body); color: var(--text-main); font-weight: 900; text-align: center; outline: none; }
+        /* RASTREADOR DE PARTIDAS */
+        .tracker-history { display: flex; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+        .tracker-group { display: flex; gap: 6px; padding: 6px; border-radius: 8px; transition: background 0.2s; }
+        .tracker-group.even { background: transparent; }
+        .tracker-group.odd { background: rgba(0, 0, 0, 0.05); border: 1px dashed var(--border-light); }
+        body.dark-theme .tracker-group.odd { background: rgba(255, 255, 255, 0.03); }
 
-        .comp-card { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 15px; transition: 0.3s;}
-        .comp-card.archived { opacity: 0.6; filter: grayscale(80%); } 
-        .comp-card.archived:hover { opacity: 0.9; filter: grayscale(0%); }
-
-        .comp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px dashed var(--border-light); padding-bottom: 15px; flex-wrap: wrap; gap: 15px;}
-        .comp-info { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; flex: 1; }
-        .comp-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .match-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 900; color: white; cursor: pointer; user-select: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s transform; }
+        .match-badge:hover { transform: scale(1.1); }
+        .mb-0 { background: var(--bg-body); color: var(--text-muted); border: 1px solid var(--border-light); box-shadow: none; font-size: 0.75rem;} 
+        .mb-1 { background: var(--emerald-main); } 
+        .mb-2 { background: var(--warning); } 
+        .mb-3 { background: var(--danger); } 
         
-        .editable-text { cursor: text; border-bottom: 1px dashed var(--text-muted); padding-bottom: 1px; transition: 0.2s; outline: none; }
-        .editable-text:hover, .editable-text:focus { color: var(--emerald-main); border-color: var(--emerald-main); }
-        
-        .editable-box {
-            display: inline-block; padding: 4px 10px; border: 2px solid var(--border-light); border-radius: 6px;
-            background: var(--bg-body); min-width: 40px; text-align: center; color: var(--emerald-main);
-            font-weight: 900; outline: none; transition: 0.2s; cursor: text;
-        }
-        .editable-box:hover, .editable-box:focus { border-color: var(--emerald-main); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
+        .tracker-stats { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 900; color: var(--text-main); margin-bottom: 12px; flex-wrap: wrap; gap: 10px;}
+        .colocacao-input { border: 1px solid var(--border-light); background: var(--bg-body); color: var(--text-main); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; width: 140px; outline: none; transition: 0.2s;}
+        .colocacao-input:focus { border-color: var(--emerald-main); }
 
-        .comp-title { font-size: 1.2rem; font-weight: 900; color: var(--text-main); text-transform: uppercase; }
-        .comp-stats { font-size: 0.9rem; font-weight: 800; color: var(--text-muted); background: var(--bg-body); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-light); margin-right: 5px;}
+        .editable-title { display: inline-block; padding: 2px 6px; border-radius: 4px; border: 1px solid transparent; outline: none; transition: 0.2s; cursor: text; }
+        .editable-title:focus, .editable-title:hover { border-color: var(--emerald-main); background: var(--bg-body); }
         
-        .btn-card-action { background: var(--bg-body); border: 1px solid var(--border-light); border-radius: 6px; padding: 8px 12px; color: var(--text-muted); cursor: pointer; font-size: 1rem; transition: 0.2s; }
-        .btn-card-action:hover { color: var(--emerald-main); border-color: var(--emerald-main); background: var(--card-bg); }
-        .btn-card-action.danger:hover { color: var(--danger); border-color: var(--danger); }
+        .editable-number { width: 50px; padding: 2px 4px; border-radius: 4px; border: 1px solid transparent; outline: none; background: transparent; color: var(--text-main); font-weight: 900; font-family: 'Inter', sans-serif; text-align: center; transition: 0.2s; cursor: text; }
+        .editable-number:focus, .editable-number:hover { border-color: var(--emerald-main); background: var(--bg-body); }
 
-        .box-container { display: flex; flex-wrap: wrap; gap: 8px; }
-        .match-box { 
-            width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; 
-            font-size: 0.95rem; font-weight: 900; cursor: pointer; transition: 0.2s; user-select: none;
-            background: var(--bg-body); border: 1px solid var(--border-light); color: var(--text-muted);
-        }
-        
-        .match-box:hover { transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .match-box.state-1 { background: var(--emerald-main); border-color: var(--emerald-dark); color: white; } /* V */
-        .match-box.state-2 { background: #f59e0b; border-color: #d97706; color: white; } /* E */
-        .match-box.state-3 { background: #ef4444; border-color: #b91c1c; color: white; } /* D */
+        .btn-acao-comp { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 5px; font-size: 1.1rem; transition: 0.2s; margin-left: 5px; }
+        .btn-acao-comp:hover { transform: scale(1.1); }
+        .btn-acao-comp.lixeira:hover { color: var(--danger); }
+        .btn-acao-comp.arquivo:hover { color: var(--emerald-main); }
+        .btn-acao-comp.fases:hover { color: var(--info); }
 
-        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type="number"] { -moz-appearance: textfield; }
+        /* PAINEIS DESLIZANTES OCULTOS (Z-INDEX ALTO) */
+        .side-panel { position: fixed; top: 0; right: -500px; width: 420px; max-width: 100vw; height: 100vh; background: var(--card-bg); box-shadow: -4px 0 20px rgba(0,0,0,0.3); z-index: 10000; padding: 20px; overflow-y: auto; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 4px solid var(--emerald-main); }
+        .side-panel.open { right: 0; }
+        .side-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .side-overlay.open { opacity: 1; pointer-events: auto; }
         
-        .hidden { display: none !important; }
+        .dev-select, .dev-input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border-light); font-family: 'Inter', sans-serif; font-size: 0.8rem; margin-top: 5px; margin-bottom: 5px; background: var(--bg-body); color: var(--text-main);}
+
+        /* TUTORIAL CONTENT (SEGREDOS TÁTICOS) */
+        .tuto-section { margin-bottom: 15px; padding: 15px; border-radius: 8px; background: var(--bg-body); border: 1px dashed var(--border-light); position: relative;}
+        .tuto-section h4 { color: var(--info); font-size: 0.95rem; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .tuto-section p, .tuto-section li { font-size: 0.85rem; color: var(--text-main); line-height: 1.5; margin-bottom: 6px; }
+        .tuto-section ul { padding-left: 20px; margin-bottom: 0;}
+        .tuto-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;}
+        .btn-tuto-action { background: transparent; border: none; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
+        .btn-tuto-action:hover { color: var(--danger); }
     </style>
 </head>
 <body>
 
-    <div class="sidebar-overlay" onclick="toggleMenu()"></div>
-    <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
-
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <i class="fas fa-terminal"></i> <span>Treinador Pro</span>
-            <button class="desktop-toggle" onclick="toggleDesktopSidebar()"><i class="fas fa-chevron-left"></i></button>
-        </div>
-        <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
-        <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>Diretoria & Clube</span></a>
-        <a href="elenco.html" class="nav-link"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
-        <a href="taticas.html" class="nav-link active"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
-    </aside>
+    <div id="app_menu_container"></div>
 
     <main class="main-content" id="main_content">
         
         <div class="header-top-bar">
-            <div class="header-title-mobile" style="margin-left: 45px;">
-                <h1 style="color: var(--text-main); font-size: 1.7rem; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1;">Táticas e Jogos</h1>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Guia de Bolso Interativo.</p>
+            <div class="header-title-mobile" style="margin-left: 45px;" ondblclick="abrirDevMode()" title="Dois cliques para Motor IA">
+                <h1 style="color: var(--text-main); font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px;">Inteligência de Partida</h1>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">Planejamento Pré-Jogo e Reação ao Vivo</p>
             </div>
             
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <div class="save-manager">
-                    <i class="fas fa-floppy-disk" style="color: var(--text-main);"></i>
-                    <select id="save_selector" class="save-select" onchange="mudarSave(this.value)"></select>
-                    <button class="btn-action" style="padding: 4px 8px; font-size: 0.7rem; margin:0;" onclick="criarNovoSave()" title="Novo Save"><i class="fas fa-plus"></i></button>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                
+                <div class="save-manager" style="height: 40px;">
+                    <i class="fas fa-floppy-disk" style="color: var(--text-muted);"></i>
+                    <select id="global_save_select" class="save-select" onchange="mudarSaveGlobal(this.value)"></select>
+                    <button class="btn-novo-save" onclick="criarNovoSaveGlobal()" title="Criar Novo Save"><i class="fas fa-plus-circle"></i></button>
                 </div>
-                <button class="btn-action" onclick="toggleTheme()" title="Alternar Tema"><i class="fas fa-moon" id="theme_icon"></i></button>
-                <button class="btn-action danger" onclick="limparTaticas()" title="Zerar a prancheta"><i class="fas fa-eraser"></i> <span class="hide-mobile">Limpar</span></button>
-                <button class="btn-action" onclick="exportarTaticas()"><i class="fas fa-download"></i></button>
-                <label class="btn-action" style="margin:0;"><i class="fas fa-upload"></i>
-                    <input type="file" style="display:none;" accept=".json" onchange="importarTaticas(event)">
-                </label>
+                
+                <button class="btn-select" style="min-width:auto; height: 40px; display: flex; align-items: center; gap: 6px; color:var(--info); border-color:var(--info);" onclick="abrirTutorial()" title="Manual do Jogo (Segredos)"><i class="fas fa-book-open"></i> Segredos Táticos</button>
+                <button class="btn-select" style="min-width:auto; height: 40px; display: flex; align-items: center; justify-content: center;" onclick="toggleTheme()" title="Alternar Tema"><i class="fas fa-moon" id="theme_icon"></i></button>
+                <button class="btn-select" style="min-width:auto; height: 40px; display: flex; align-items: center; justify-content: center; color:var(--danger);" onclick="limparTaticas()" title="Limpar Tudo"><i class="fas fa-eraser"></i></button>
             </div>
         </div>
 
-        <div class="card" style="border-top: 4px solid var(--emerald-main); margin-bottom: 30px;">
-            <div class="card-header">
-                <h3 style="color: var(--text-main);"><i class="fas fa-clipboard-list" style="color: var(--emerald-main);"></i> Relatório Pré-Jogo</h3>
-            </div>
-            
-            <div class="action-reaction-grid">
-                <div class="panel-box">
+        <h2 class="section-divider"><i class="fas fa-clipboard-check"></i> 1. Relatório Pré-Jogo</h2>
+        
+        <div class="dashboard-grid">
+            <div class="panel-box">
+                <h3 style="color: var(--text-main); font-size:1rem; font-weight:800; margin-bottom:15px;"><i class="fas fa-map-signs" style="color:var(--text-muted);"></i> O que vamos enfrentar?</h3>
+
+                <div>
                     <span class="form-label">Força do Adversário</span>
-                    <div class="btn-group" id="pre_grp_forca">
-                        <button class="btn-select" onclick="setOpcaoPre('forca', 'fraco', this)">Mais Fraco</button>
-                        <button class="btn-select" onclick="setOpcaoPre('forca', 'equilibrado', this)">Equilibrado</button>
-                        <button class="btn-select" onclick="setOpcaoPre('forca', 'forte', this)">Mais Forte</button>
-                    </div>
-
-                    <span class="form-label">Qualidade do Gramado</span>
-                    <div class="btn-group" id="pre_grp_gramado">
-                        <button class="btn-select" onclick="setOpcaoPre('gramado', 'bom', this)">Excelente / Muito Bom</button>
-                        <button class="btn-select" onclick="setOpcaoPre('gramado', 'ruim', this)">Ruim / Péssimo</button>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="grp_pre_forca">
+                        <button class="btn-select" onclick="setPreJogo('forca', 'fraco', this)">Mais Fraco</button>
+                        <button class="btn-select" onclick="setPreJogo('forca', 'equilibrado', this)">Equilibrado</button>
+                        <button class="btn-select" onclick="setPreJogo('forca', 'forte', this)">Mais Forte</button>
                     </div>
                 </div>
 
-                <div class="panel-box reaction">
-                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <div style="flex: 1; min-width: 200px;">
-                            <div class="reaction-item">
-                                <div class="reaction-title">Plano de Jogo Sugerido</div>
-                                <div id="pre_res_badges">
-                                    <span style="color: var(--text-muted); font-size: 0.9rem;">Selecione a força e o gramado...</span>
-                                </div>
-                            </div>
-                            <div class="reaction-item" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
-                                <div class="reaction-title">Características Prioritárias (Gramado)</div>
-                                <div id="pre_desc_gramado"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="mini-pitch-wrapper" style="flex: 0 0 auto;">
-                            <span class="pitch-title" id="pre_lbl_nos">Sua Formação</span>
-                            <div class="mini-pitch">
-                                <div class="area-top"></div><div class="area-bot"></div>
-                                <div id="pre_pitch_nos"></div>
-                            </div>
+                <div class="grid-2" style="gap:10px; margin-top: 15px;">
+                    <div>
+                        <span class="form-label">Mando de Campo</span>
+                        <div style="display: flex; gap: 6px;" id="grp_pre_casa">
+                            <button class="btn-select" onclick="setPreJogo('casa', 'casa', this)">Em Casa</button>
+                            <button class="btn-select" onclick="setPreJogo('casa', 'fora', this)">Fora</button>
                         </div>
                     </div>
+                    <div>
+                        <span class="form-label">Condição do Gramado</span>
+                        <div style="display: flex; gap: 6px;" id="grp_pre_gramado">
+                            <button class="btn-select" onclick="setPreJogo('gramado', 'bom', this)">Bom</button>
+                            <button class="btn-select" onclick="setPreJogo('gramado', 'ruim', this)">Ruim</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="info_gramado" style="display:none;"></div>
+            </div>
+
+            <div class="panel-box" style="border-top: 4px solid var(--emerald-main);">
+                <div class="pitch-container-single">
+                    <div class="pitch-col">
+                        <div class="pitch-title ours" id="lbl_pre_nos">Nossa Formação Inicial</div>
+                        <div class="mini-pitch" ondblclick="abrirDevMode()" title="Dois cliques para Motor IA">
+                            <div class="area-top"></div><div class="area-bot"></div>
+                            <div id="pitch_pre" class="pitch-layer"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-panel" id="panel_pre_acao">
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; padding: 10px;">Preencha os dados ao lado para gerar o esquema de jogo.</div>
                 </div>
             </div>
         </div>
 
-        <div class="card" style="border-top: 4px solid var(--emerald-main); margin-bottom: 30px;">
-            <div class="card-header">
-                <h3 style="color: var(--text-main);"><i class="fas fa-headset" style="color: var(--emerald-main);"></i> Relatório Durante o Jogo</h3>
+        <h2 class="section-divider"><i class="fas fa-stopwatch"></i> 2. Reação Durante a Partida</h2>
+        
+        <div class="dashboard-grid">
+            <div class="panel-box">
+                <h3 style="color: var(--text-main); font-size:1rem; font-weight:800; margin-bottom:15px;"><i class="fas fa-search" style="color:var(--text-muted);"></i> O que o Adversário está fazendo?</h3>
+
+                <span class="form-label">Tática Inimiga</span>
+                <div class="grid-forms" id="grp_in_formacao">
+                    <button class="btn-select" onclick="setInJogo('formacao', '541', this)">5-4-1</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '532', this)">5-3-2</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '451', this)">4-5-1</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '442', this)">4-4-2</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '442d', this)">4-4-2 Def</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '442o', this)">4-4-2 Ofe</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '433', this)">4-3-3</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '433d', this)">4-3-3 Def</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '4231', this)">4-2-3-1</button>
+                    <button class="btn-select" onclick="setInJogo('formacao', '4231alas', this)">4-2-3-1 Alas</button>
+                </div>
+
+                <div class="grid-2" style="gap:10px; margin-top: 15px;">
+                    <div>
+                        <span class="form-label">Estilo de Jogo deles</span>
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="grp_in_estilo">
+                            <button class="btn-select" onclick="setInJogo('estilo', 'ataque_total', this)">Ataque Total</button>
+                            <button class="btn-select" onclick="setInJogo('estilo', 'equilibrado', this)">Equilibrado</button>
+                            <button class="btn-select" onclick="setInJogo('estilo', 'contra_ataque', this)">Contra-Ataque</button>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="form-label">Estilo de Marcação deles</span>
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="grp_in_marcacao">
+                            <button class="btn-select" onclick="setInJogo('marcacao', 'leve', this)">Leve</button>
+                            <button class="btn-select" onclick="setInJogo('marcacao', 'pesada', this)">Pesada</button>
+                            <button class="btn-select" onclick="setInJogo('marcacao', 'muito_pesada', this)">Muito Pesada</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <span class="form-label">Lado de Ataque deles</span>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="grp_in_ataque">
+                        <button class="btn-select" onclick="setInJogo('ataque', 'meio', this)">Meio</button>
+                        <button class="btn-select" onclick="setInJogo('ataque', 'laterais', this)">Laterais</button>
+                    </div>
+                </div>
             </div>
 
-            <div class="panel-box" style="margin-bottom: 20px;">
-                <span class="form-label" style="font-size: 0.9rem; text-align: center; margin-bottom: 15px;"><i class="fas fa-search"></i> Escalação do Adversário</span>
-                <div class="grid-forms" id="grp_formacao">
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '541', this)">5-4-1</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '532', this)">5-3-2</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '451', this)">4-5-1</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '442', this)">4-4-2</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '442d', this)">4-4-2 Defensivo</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '442o', this)">4-4-2 Ofensivo</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '433', this)">4-3-3</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '433d', this)">4-3-3 Defensivo</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '352', this)">3-5-2</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '343', this)">3-4-3</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '4231', this)">4-2-3-1</button>
-                    <button class="btn-select" onclick="setOpcaoIn('formacao', '4231a', this)">4-2-3-1 com alas</button>
-                </div>
-
-                <div class="pitch-container" id="pitch_area">
-                    <div class="pitch-box">
-                        <div class="pitch-title title-adv" id="lbl_form_adv">Como eles jogam</div>
-                        <div class="mini-pitch-wrapper"><div class="mini-pitch"><div class="area-top"></div><div class="area-bot"></div><div id="pitch_adv"></div></div></div>
+            <div class="panel-box" style="border-top: 4px solid var(--emerald-main);">
+                <div class="pitch-container-double">
+                    <div class="pitch-col">
+                        <div class="pitch-title" id="lbl_in_adv">ESCALAÇÃO DO ADVERSÁRIO</div>
+                        <div class="mini-pitch">
+                            <div class="area-top"></div><div class="area-bot"></div>
+                            <div id="pitch_in_adv" class="pitch-layer"></div>
+                        </div>
                     </div>
-                    <div class="pitch-box">
-                        <div class="pitch-title" style="color: var(--emerald-main);" id="lbl_form_nos">Adaptação Sugerida</div>
-                        <div id="badge_sugerido"></div>
-                        <div class="mini-pitch-wrapper"><div class="mini-pitch"><div class="area-top"></div><div class="area-bot"></div><div id="pitch_nos"></div></div></div>
+                    <div class="pitch-col">
+                        <div class="pitch-title ours" id="lbl_in_nos">RECOMENDAÇÃO TÁTICA</div>
+                        <div class="mini-pitch" ondblclick="abrirDevMode()" title="Dois cliques para Motor IA">
+                            <div class="area-top"></div><div class="area-bot"></div>
+                            <div id="pitch_in_nos" class="pitch-layer"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="analysis-box">
-                    <div class="analysis-box-title"><i class="fas fa-lightbulb"></i> Análise do Auxiliar:</div>
-                    <div class="analysis-box-text" id="analise_rival_txt">Aguardando escalação do adversário para leitura tática e orientações visuais.</div>
-                </div>
-            </div>
-
-            <div class="action-reaction-grid">
-                <div class="panel-box">
-                    <span class="form-label">Estilo de Jogo Adversário</span>
-                    <div class="btn-group" id="grp_estilo">
-                        <button class="btn-select" onclick="setOpcaoIn('estilo', 'ataque', this)">Ataque Total</button>
-                        <button class="btn-select" onclick="setOpcaoIn('estilo', 'equilibrado', this)">Equilibrado</button>
-                        <button class="btn-select" onclick="setOpcaoIn('estilo', 'contra', this)">Contra-Ataque</button>
-                    </div>
-
-                    <span class="form-label">Marcação Adversária</span>
-                    <div class="btn-group" id="grp_marcacao">
-                        <button class="btn-select" onclick="setOpcaoIn('marcacao', 'leve', this)">Leve</button>
-                        <button class="btn-select" onclick="setOpcaoIn('marcacao', 'pesada', this)">Pesada</button>
-                        <button class="btn-select" onclick="setOpcaoIn('marcacao', 'muito_pesada', this)">Muito Pesada</button>
-                    </div>
-
-                    <span class="form-label">Setor que eles dão espaço (Defesa frágil deles)</span>
-                    <div class="btn-group" id="grp_foco">
-                        <button class="btn-select" onclick="setOpcaoIn('foco', 'meio', this)">Pelo Meio</button>
-                        <button class="btn-select" onclick="setOpcaoIn('foco', 'laterais', this)">Pelas Laterais</button>
-                    </div>
-                </div>
-
-                <div class="panel-box reaction">
-                    <div class="reaction-item">
-                        <div class="reaction-title">Seu Estilo de Jogo</div>
-                        <div id="res_estilo_badge"><span style="color: var(--text-muted); font-size:0.9rem;">-</span></div>
-                    </div>
-                    <div class="reaction-item">
-                        <div class="reaction-title">Sua Marcação</div>
-                        <div id="res_marcacao_badge"><span style="color: var(--text-muted); font-size:0.9rem;">-</span></div>
-                    </div>
-                    <div class="reaction-item" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
-                        <div class="reaction-title">Seu Foco de Ataque (Onde Explorar)</div>
-                        <div id="res_foco_badge"><span style="color: var(--text-muted); font-size:0.9rem;">-</span></div>
-                    </div>
+                <div class="action-panel" id="panel_in_acao">
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; padding: 10px;">Selecione os dados do rival para gerar a Correlação Tática (Formação, Estilo, Marcação, Lado).</div>
                 </div>
             </div>
         </div>
 
-        <div class="card" style="border-top: 4px solid var(--emerald-main);">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <h3 style="color: var(--text-main); margin: 0;"><i class="fas fa-calendar-check" style="color: var(--emerald-main);"></i> Rastreador de Partidas</h3>
-                <button class="btn-select" style="max-width: 200px; margin: 0; background: var(--card-bg);" id="btn_toggle_archived" onclick="toggleArquivados()"><i class="fas fa-folder"></i> Ver Arquivados</button>
-            </div>
+        <div class="panel-box">
+            <h3 style="color: var(--text-main); font-size:1rem; font-weight:800; margin-bottom:15px;">Cenários Críticos (Botões de Pânico)</h3>
             
-            <div class="tracker-creator">
-                <input type="text" id="comp_nome" class="tracker-input" placeholder="Nome do Campeonato (Ex: Brasileirão Série A)">
-                <input type="number" id="comp_jogos" class="tracker-input-num" placeholder="Jogos (Ex: 38)">
-                <button class="btn-action primary" style="padding: 0 20px; font-size: 0.9rem;" onclick="criarCompeticao()"><i class="fas fa-plus"></i> Criar</button>
+            <div class="grid-cenarios">
+                <button class="btn-cenario" onclick="mostrarReacao('pressao', this)"><i class="fas fa-compress-arrows-alt" style="color: var(--warning);"></i> Sofrendo Pressão</button>
+                <button class="btn-cenario" onclick="mostrarReacao('desespero', this)"><i class="fas fa-fire" style="color: var(--danger);"></i> Reta Final (Perdendo)</button>
+                <button class="btn-cenario" onclick="mostrarReacao('expulso_adv', this)"><i class="fas fa-user-times" style="color: var(--emerald-main);"></i> Inimigo Expulso</button>
+                <button class="btn-cenario" onclick="mostrarReacao('cansa', this)"><i class="fas fa-battery-quarter" style="color: var(--info);"></i> Time Exausto</button>
             </div>
 
-            <div id="tracker_container">
-                </div>
+            <div class="action-panel" id="box_reacao" style="display: none; border: 2px solid var(--text-main); padding: 15px;">
+                <div style="text-align:center; font-weight:900; text-transform:uppercase; font-size:0.9rem; color:var(--text-main); margin-bottom:10px;" id="titulo_reacao"></div>
+                <div id="texto_reacao" style="font-size:0.9rem; text-align:center; line-height: 1.5; padding: 10px; border-radius: 6px;">-</div>
+            </div>
+        </div>
+
+        <h2 class="section-divider"><i class="fas fa-chart-line"></i> 3. Rastreador de Partidas</h2>
+        
+        <div class="panel-box">
+            <div class="tracker-creator" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:center;">
+                <input type="text" id="comp_nome" class="input-global" style="flex:1; min-width:180px;" placeholder="Nome da Liga (Ex: Brasileirão)">
+                <input type="number" id="comp_jogos" class="input-global" style="width:90px; text-align:center;" placeholder="Jogos">
+                <button class="btn-action primary" style="height: 44px;" onclick="criarCompeticao()"><i class="fas fa-plus"></i> Criar Campeonato</button>
+            </div>
             
-            <div id="tracker_container_archived" class="hidden" style="margin-top: 20px; padding-top: 20px; border-top: 2px dashed var(--border-light);">
-                <h4 style="margin-bottom: 15px; color: var(--text-muted);"><i class="fas fa-archive"></i> Campeonatos Arquivados</h4>
-                </div>
+            <div style="text-align: right; margin-bottom: 20px;">
+                <button class="btn-action" onclick="toggleVerArquivados()" id="btn_toggle_arq" style="font-size: 0.75rem;"><i class="fas fa-box"></i> Ver Arquivados</button>
+            </div>
+
+            <div id="tracker_container"></div>
         </div>
 
     </main>
 
-    <script src="script.js"></script>
+    <div class="side-overlay" id="dev_overlay" onclick="fecharDevMode()"></div>
+    <div class="side-panel" id="dev_panel">
+        <h3 style="color: var(--text-main); margin-bottom: 20px; font-weight: 900; display:flex; justify-content:space-between;">
+            <span><i class="fas fa-cogs"></i> Editor do Motor IA</span>
+            <i class="fas fa-times" style="cursor:pointer; color:var(--text-muted);" onclick="fecharDevMode()"></i>
+        </h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:20px; line-height:1.4;">
+            Altere a Tática Sugerida contra cada Formação Inimiga. As Correlações (Estilo, Marcação, Ataque) são calculadas sozinhas.
+        </p>
+        <div id="dev_regras_container"></div>
+        <button class="btn-action primary" style="width:100%; margin-top:15px; padding:12px; justify-content:center;" onclick="salvarRegrasIADev()">Salvar Alterações</button>
+    </div>
 
+    <div class="side-overlay" id="tuto_overlay" onclick="fecharTutorial()"></div>
+    <div class="side-panel" id="tuto_panel" style="width: 480px;">
+        <h3 style="color: var(--text-main); margin-bottom: 20px; font-weight: 900; display:flex; justify-content:space-between;">
+            <span><i class="fas fa-book-open" style="color: var(--info);"></i> Segredos Táticos</span>
+            <i class="fas fa-times" style="cursor:pointer; color:var(--text-muted);" onclick="fecharTutorial()"></i>
+        </h3>
+        
+        <div id="tuto_lista"></div>
+
+        <div id="form_novo_segredo" style="display:none; background: var(--bg-body); border: 1px solid var(--border-light); padding:15px; border-radius:8px; margin-bottom:15px;">
+            <input type="hidden" id="segredo_id">
+            <input type="text" id="segredo_titulo" placeholder="Título (Ex: Segredo da Marcação)" class="input-global" style="margin-bottom:8px; font-weight:700;">
+            <textarea id="segredo_conteudo" placeholder="Descreva o segredo aqui... (Use enter para pular linha)" class="input-global" style="margin-bottom:8px; font-family: 'Inter', sans-serif; resize:vertical; min-height:80px;"></textarea>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-action primary" style="flex:1; justify-content:center;" onclick="salvarSegredo()">Salvar</button>
+                <button class="btn-action" style="flex:1; justify-content:center;" onclick="fecharFormSegredo()">Cancelar</button>
+            </div>
+        </div>
+
+        <button class="btn-action" style="width:100%; justify-content:center; border: 1px dashed var(--info); color: var(--info);" onclick="abrirFormSegredo()"><i class="fas fa-plus"></i> Adicionar Conhecimento</button>
+    </div>
+
+    <script src="script.js"></script>
     <script>
-        // --- 1. SISTEMA DE SAVES E ESTADOS ---
+        // =======================================================
+        // MENU GLOBAL ORIGINAL E SAVES NO TOPO
+        // =======================================================
         let savesList = JSON.parse(localStorage.getItem('hub_saves_list') || '["Geral"]');
         let currentSave = localStorage.getItem('hub_active_save') || 'Geral';
-        
-        let TRACKER_KEY, TATICA_KEY;
-        let competicoes = [];
-        let estadoTatica = { 
-            pre_forca: '', pre_gramado: '',
-            in_estilo: '', in_marcacao: '', in_foco: '', in_formacao: ''
-        };
-        let mostrarArquivados = false;
 
-        function atualizarChaves() {
-            TRACKER_KEY = `hub_trackers_v8_${currentSave}`;
-            TATICA_KEY = `hub_tatica_state_v8_${currentSave}`;
-        }
-
-        function initSaveSystem() {
-            atualizarChaves();
-            const selector = document.getElementById('save_selector');
-            selector.innerHTML = savesList.map(s => `<option value="${s}" ${s === currentSave ? 'selected' : ''}>${s}</option>`).join('');
-            carregarTaticasDoSave();
-        }
-
-        function mudarSave(saveName) {
-            currentSave = saveName;
-            localStorage.setItem('hub_active_save', currentSave);
-            atualizarChaves();
-            carregarTaticasDoSave();
-        }
-
-        function criarNovoSave() {
-            let novoNome = prompt("Digite o nome do novo Save (Ex: Galo 2026):");
-            if(novoNome && novoNome.trim() !== '') {
-                novoNome = novoNome.trim();
-                if(!savesList.includes(novoNome)) {
-                    savesList.push(novoNome);
-                    localStorage.setItem('hub_saves_list', JSON.stringify(savesList));
-                    initSaveSystem();
-                    mudarSave(novoNome); 
-                    document.getElementById('save_selector').value = novoNome;
-                } else { alert("Já existe um save com este nome!"); }
-            }
-        }
-
-        function carregarTaticasDoSave() {
-            competicoes = JSON.parse(localStorage.getItem(TRACKER_KEY) || '[]');
-            estadoTatica = JSON.parse(localStorage.getItem(TATICA_KEY) || '{"pre_forca":"","pre_gramado":"","in_estilo":"","in_marcacao":"","in_foco":"","in_formacao":""}');
+        function renderizarMenuGlobal() {
+            const menuHTML = `
+                <div class="brand">
+                    <i class="fas fa-terminal"></i> <span>Treinador Pro</span>
+                    <button class="desktop-toggle" onclick="toggleDesktopSidebar()"><i class="fas fa-chevron-left"></i></button>
+                </div>
+                <a href="index.html" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+                <a href="diretrizes.html" class="nav-link"><i class="fas fa-dna"></i> <span>Diretoria & Clube</span></a>
+                <a href="elenco.html" class="nav-link"><i class="fas fa-users-gear"></i> <span>Gestão do Elenco</span></a>
+                <a href="taticas.html" class="nav-link active"><i class="fas fa-chess"></i> <span>Táticas e Jogos</span></a>
+            `;
             
-            restaurarBotoesGerais();
-            renderTrackers();
-        }
+            let sidebarEl = document.getElementById('sidebar');
+            if(!sidebarEl) {
+                sidebarEl = document.createElement('aside');
+                sidebarEl.className = 'sidebar';
+                sidebarEl.id = 'sidebar';
+                document.getElementById('app_menu_container').appendChild(sidebarEl);
+            }
+            sidebarEl.innerHTML = menuHTML;
+            
+            if(!document.querySelector('.sidebar-overlay')){
+                const overlay = document.createElement('div');
+                overlay.className = 'sidebar-overlay';
+                overlay.onclick = typeof toggleMenu === 'function' ? toggleMenu : null;
+                document.getElementById('app_menu_container').prepend(overlay);
+            }
 
-        function limparTaticas() {
-            if(confirm("Deseja limpar as seleções da prancheta? (Seus campeonatos não serão afetados).")) {
-                estadoTatica = { pre_forca: '', pre_gramado: '', in_estilo: '', in_marcacao: '', in_foco: '', in_formacao: '' };
-                localStorage.setItem(TATICA_KEY, JSON.stringify(estadoTatica));
-                restaurarBotoesGerais();
+            if(localStorage.getItem('sidebar_collapsed') === 'true') {
+                sidebarEl.classList.add('collapsed');
+                let mainContent = document.getElementById('main_content');
+                if(mainContent) mainContent.classList.add('expanded');
             }
         }
 
-// --- 2. MAPA DE COORDENADAS PARA AS PRANCHETAS (Fidelidade Brasfoot) ---
-        // (x, y) onde y=90 é goleiro e y=15 é o ataque.
+        // Popula o select do topo da tela e define os gatilhos
+        function carregarSelectSaves() {
+            const selector = document.getElementById('global_save_select');
+            if(selector) {
+                selector.innerHTML = savesList.map(s => `<option value="${s}" ${s === currentSave ? 'selected' : ''}>${s}</option>`).join('');
+            }
+        }
+
+        function mudarSaveGlobal(nomeSave) {
+            localStorage.setItem('hub_active_save', nomeSave); location.reload();
+        }
+
+        function criarNovoSaveGlobal() {
+            let n = prompt("Nome do novo Save:");
+            if(n && n.trim() !== '' && !savesList.includes(n)) { savesList.push(n); localStorage.setItem('hub_saves_list', JSON.stringify(savesList)); mudarSaveGlobal(n); }
+        }
+
+        // =======================================================
+        // VARIÁVEIS DO SISTEMA TÁTICO E SEGREDOS
+        // =======================================================
+        let TRACKER_KEY, PRE_KEY, IN_KEY, REGRAS_KEY, SEGREDOS_KEY;
+        let competicoes = [];
+        let statePre = { forca: '', casa: '', gramado: '' };
+        let stateIn = { formacao: '', estilo: '', marcacao: '', ataque: '' };
+        let mostrarArquivados = false;
+        let listaSegredos = [];
+        
         const layouts = {
+            "default":[ {x:50,y:90}, {x:15,y:75}, {x:38,y:75}, {x:62,y:75}, {x:85,y:75}, {x:15,y:45}, {x:38,y:45}, {x:62,y:45}, {x:85,y:45}, {x:35,y:15}, {x:65,y:15} ], 
             "541":  [ {x:50,y:90}, {x:10,y:75}, {x:30,y:75}, {x:50,y:75}, {x:70,y:75}, {x:90,y:75}, {x:15,y:45}, {x:38,y:45}, {x:62,y:45}, {x:85,y:45}, {x:50,y:15} ],
             "532":  [ {x:50,y:90}, {x:10,y:75}, {x:30,y:75}, {x:50,y:75}, {x:70,y:75}, {x:90,y:75}, {x:25,y:45}, {x:50,y:45}, {x:75,y:45}, {x:35,y:15}, {x:65,y:15} ],
             "451":  [ {x:50,y:90}, {x:15,y:75}, {x:38,y:75}, {x:62,y:75}, {x:85,y:75}, {x:10,y:45}, {x:30,y:45}, {x:50,y:45}, {x:70,y:45}, {x:90,y:45}, {x:50,y:15} ],
@@ -434,321 +435,392 @@
             "352":  [ {x:50,y:90}, {x:25,y:75}, {x:50,y:75}, {x:75,y:75}, {x:10,y:45}, {x:30,y:45}, {x:50,y:45}, {x:70,y:45}, {x:90,y:45}, {x:35,y:15}, {x:65,y:15} ],
             "343":  [ {x:50,y:90}, {x:25,y:75}, {x:50,y:75}, {x:75,y:75}, {x:15,y:45}, {x:38,y:45}, {x:62,y:45}, {x:85,y:45}, {x:25,y:15}, {x:50,y:15}, {x:75,y:15} ],
             "4231": [ {x:50,y:90}, {x:15,y:75}, {x:38,y:75}, {x:62,y:75}, {x:85,y:75}, {x:35,y:55}, {x:65,y:55}, {x:25,y:35}, {x:50,y:35}, {x:75,y:35}, {x:50,y:15} ],
-            "4231a":[ {x:50,y:90}, {x:15,y:75}, {x:38,y:75}, {x:62,y:75}, {x:85,y:75}, {x:35,y:55}, {x:65,y:55}, {x:10,y:35}, {x:50,y:35}, {x:90,y:35}, {x:50,y:15} ]
+            "4231alas": [ {x:50,y:90}, {x:15,y:75}, {x:38,y:75}, {x:62,y:75}, {x:85,y:75}, {x:35,y:55}, {x:65,y:55}, {x:15,y:35}, {x:50,y:35}, {x:85,y:35}, {x:50,y:15} ]
         };
 
+        const defaultRegras = {
+            "541":  { ideal: "343" }, "532":  { ideal: "352" }, "451":  { ideal: "352" },
+            "442":  { ideal: "352" }, "442d": { ideal: "433" }, "442o": { ideal: "352" },
+            "433":  { ideal: "532" }, "433d": { ideal: "442" }, "352":  { ideal: "433" },
+            "343":  { ideal: "541" }, "4231": { ideal: "442" }, "4231alas": { ideal: "442d" }
+        };
+        
+        const defaultSegredos = [
+            { id: 1, titulo: "Força e Energia", conteudo: "A força do time titular pesa 90% no cálculo. Abaixo de 70% de energia o jogador erra passes. Abaixo de 50% é lesão na certa. Sempre substitua!" },
+            { id: 2, titulo: "Uso da Marcação", conteudo: "LEVE: Poupa energia, ideal contra fracos.\nPESADA: Equilibra o jogo.\nMUITO PESADA: Destrói o adversário, mas cansa seu time absurdamente. Use só no fim." },
+            { id: 3, titulo: "Regras de Ouro", conteudo: "Rival pelo MEIO? Ataque pelas LATERAIS.\nRival pelas LATERAIS? Ataque pelo MEIO.\nRival retrancado? ATAQUE TOTAL." }
+        ];
+
+        function atualizarChaves() {
+            TRACKER_KEY = `hub_trackers_v18_${currentSave}`; PRE_KEY = `hub_pre_state_v18_${currentSave}`;
+            IN_KEY = `hub_in_state_v18_${currentSave}`; REGRAS_KEY = `hub_regras_ia_v10`; SEGREDOS_KEY = `hub_segredos_v2`; 
+        }
+
+        function initApp() {
+            renderizarMenuGlobal();
+            carregarSelectSaves();
+            atualizarChaves();
+            regrasIA = JSON.parse(localStorage.getItem(REGRAS_KEY)) || JSON.parse(JSON.stringify(defaultRegras));
+            listaSegredos = JSON.parse(localStorage.getItem(SEGREDOS_KEY)) || JSON.parse(JSON.stringify(defaultSegredos));
+            carregarTaticasDoSave(); gerarCamposDevMode(); renderSegredos();
+        }
+
+        function carregarTaticasDoSave() {
+            competicoes = JSON.parse(localStorage.getItem(TRACKER_KEY) || '[]');
+            statePre = JSON.parse(localStorage.getItem(PRE_KEY) || '{"forca":"","casa":"","gramado":""}');
+            stateIn = JSON.parse(localStorage.getItem(IN_KEY) || '{"formacao":"","estilo":"","marcacao":"","ataque":""}');
+            
+            document.querySelectorAll('.btn-select').forEach(b => b.classList.remove('active'));
+            Object.keys(statePre).forEach(k => { if(statePre[k]){ let b = document.querySelector(`#grp_pre_${k} .btn-select[onclick*="'${statePre[k]}'"]`); if(b) b.classList.add('active'); }});
+            Object.keys(stateIn).forEach(k => { if(stateIn[k]){ let b = document.querySelector(`#grp_in_${k} .btn-select[onclick*="'${stateIn[k]}'"]`); if(b) b.classList.add('active'); }});
+            
+            desenharPrancheta('pitch_pre', 'default', 'nos'); desenharPrancheta('pitch_in_adv', 'default', 'adv'); desenharPrancheta('pitch_in_nos', 'default', 'nos');
+            processarPreJogo(); processarInJogo(); renderTrackers();
+        }
+
+        function limparTaticas() {
+            statePre = { forca: '', casa: '', gramado: '' }; stateIn = { formacao: '', estilo: '', marcacao: '', ataque: '' };
+            localStorage.setItem(PRE_KEY, JSON.stringify(statePre)); localStorage.setItem(IN_KEY, JSON.stringify(stateIn));
+            carregarTaticasDoSave(); document.getElementById('box_reacao').style.display = 'none'; document.querySelectorAll('.btn-cenario').forEach(b => b.classList.remove('active'));
+        }
+
         function desenharPrancheta(containerId, formacaoKey, tipo) {
-            const root = document.getElementById(containerId);
-            root.innerHTML = '';
-            let coords = layouts[formacaoKey];
-            if(!coords) return;
-            
-            let classe = tipo === 'adv' ? 'dot-adv' : 'dot-nos';
-            coords.forEach(pt => {
-                root.innerHTML += `<div class="tactical-dot ${classe}" style="left: ${pt.x}%; top: ${pt.y}%;"></div>`;
-            });
+            const root = document.getElementById(containerId); root.innerHTML = '';
+            let layout = layouts[formacaoKey] || layouts['default'];
+            layout.forEach(pt => { root.innerHTML += `<div class="tactical-dot ${tipo==='adv'?'dot-adv':'dot-nos'}" style="left:${pt.x}%; top:${pt.y}%;"></div>`; });
         }
 
-        // --- 3. LÓGICAS E PROCESSAMENTOS ---
-        function setOpcaoPre(grupo, valor, btnElement) {
-            document.querySelectorAll(`#pre_grp_${grupo} .btn-select`).forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
-            estadoTatica[`pre_${grupo}`] = valor;
-            localStorage.setItem(TATICA_KEY, JSON.stringify(estadoTatica));
+        // =======================================================
+        // SEÇÃO 1: PRÉ-JOGO (INTELIGÊNCIA MOSTRA INCREMENTAL)
+        // =======================================================
+        function setPreJogo(grupo, valor, btn) {
+            document.querySelectorAll(`#grp_pre_${grupo} .btn-select`).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); statePre[grupo] = valor; localStorage.setItem(PRE_KEY, JSON.stringify(statePre));
             processarPreJogo();
-        }
-
-        function setOpcaoIn(grupo, valor, btnElement) {
-            document.querySelectorAll(`#grp_${grupo} .btn-select`).forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
-            estadoTatica[`in_${grupo}`] = valor;
-            localStorage.setItem(TATICA_KEY, JSON.stringify(estadoTatica));
-            processarInGame();
-        }
-
-        function restaurarBotoesGerais() {
-            document.querySelectorAll('.btn-select:not(#btn_toggle_archived)').forEach(b => b.classList.remove('active'));
-            
-            if(estadoTatica.pre_forca) { let b = document.querySelector(`#pre_grp_forca .btn-select[onclick*="'${estadoTatica.pre_forca}'"]`); if(b) b.classList.add('active'); }
-            if(estadoTatica.pre_gramado) { let b = document.querySelector(`#pre_grp_gramado .btn-select[onclick*="'${estadoTatica.pre_gramado}'"]`); if(b) b.classList.add('active'); }
-            
-            if(estadoTatica.in_estilo) { let b = document.querySelector(`#grp_estilo .btn-select[onclick*="'${estadoTatica.in_estilo}'"]`); if(b) b.classList.add('active'); }
-            if(estadoTatica.in_marcacao) { let b = document.querySelector(`#grp_marcacao .btn-select[onclick*="'${estadoTatica.in_marcacao}'"]`); if(b) b.classList.add('active'); }
-            if(estadoTatica.in_foco) { let b = document.querySelector(`#grp_foco .btn-select[onclick*="'${estadoTatica.in_foco}'"]`); if(b) b.classList.add('active'); }
-            if(estadoTatica.in_formacao) { let b = document.querySelector(`#grp_formacao .btn-select[onclick*="'${estadoTatica.in_formacao}'"]`); if(b) b.classList.add('active'); }
-            
-            processarPreJogo();
-            processarInGame();
         }
 
         function processarPreJogo() {
-            const e = estadoTatica;
-            let resHtml = "<span style='color: var(--text-muted); font-size: 0.9rem;'>Selecione a força para ver o guia...</span>";
-            let gramadoHtml = "";
-            
-            document.getElementById('pre_pitch_nos').innerHTML = ''; 
-            document.getElementById('pre_lbl_nos').innerText = "Aguardando...";
+            const p = statePre; const panel = document.getElementById('panel_pre_acao'); const infoGramado = document.getElementById('info_gramado');
 
-            if (e.pre_forca === 'fraco') {
-                resHtml = `<span class="badge">4-3-3</span> <span class="badge">Ataque Total</span> <span class="badge">Leve</span>`;
-                desenharPrancheta('pre_pitch_nos', '433', 'nos');
-                document.getElementById('pre_lbl_nos').innerText = "4-3-3";
-            } else if (e.pre_forca === 'equilibrado') {
-                resHtml = `<span class="badge">4-4-2 Ofensivo</span> <span class="badge">Equilibrado</span> <span class="badge">Pesada</span>`;
-                desenharPrancheta('pre_pitch_nos', '442o', 'nos');
-                document.getElementById('pre_lbl_nos').innerText = "4-4-2 (Ofensivo)";
-            } else if (e.pre_forca === 'forte') {
-                resHtml = `<span class="badge">4-5-1</span> <span class="badge">Contra-Ataque</span> <span class="badge">Muito Pesada</span>`;
-                desenharPrancheta('pre_pitch_nos', '451', 'nos');
-                document.getElementById('pre_lbl_nos').innerText = "4-5-1";
-            }
+            if(p.gramado) {
+                infoGramado.style.display = 'block';
+                if(p.gramado === 'ruim') {
+                    infoGramado.innerHTML = `<div class="gramado-box"><div class="gramado-linha"><span style="color:var(--emerald-main)">✅ Favorece:</span> Força, Cabeceio, Bolas Longas.</div><div class="gramado-linha"><span style="color:var(--danger)">❌ Prejudica:</span> Passes Curtos e Técnicos.</div></div>`;
+                } else {
+                    infoGramado.innerHTML = `<div class="gramado-box"><div class="gramado-linha"><span style="color:var(--emerald-main)">✅ Favorece:</span> Passe Curto e Velocidade.</div><div class="gramado-linha"><span style="color:var(--danger)">❌ Prejudica:</span> Estilo Chuveirinho/Força Bruta.</div></div>`;
+                }
+            } else { infoGramado.style.display = 'none'; }
 
-            if (e.pre_gramado === 'bom') {
-                gramadoHtml = `<span class="badge badge-attr">Velocidade</span> <span class="badge badge-attr">Drible</span> <span class="badge badge-attr">Passe</span> <div style="margin-top:5px; font-size:0.85rem; color:var(--text-muted);">Jogo rápido, priorize técnica.</div>`;
-            } else if (e.pre_gramado === 'ruim') {
-                gramadoHtml = `<span class="badge badge-attr">Força</span> <span class="badge badge-attr">Cabeceio</span> <span class="badge badge-attr">Desarme</span> <span class="badge badge-attr">Resistência</span> <div style="margin-top:5px; font-size:0.85rem; color:var(--danger);">Cansaço elevado! Evite marcação muito pesada.</div>`;
-            }
+            if(p.forca || p.casa || p.gramado) {
+                let formSugerida = '442';
+                let bEstilo = 'EQUILIBRADO'; let clsEstilo = 'badge-green';
+                let bMarc = 'PESADA'; let clsMarc = 'badge-green';
+                let bFoco = 'MISTO'; let clsFoco = 'badge-green';
 
-            document.getElementById('pre_res_badges').innerHTML = resHtml;
-            document.getElementById('pre_desc_gramado').innerHTML = gramadoHtml;
-        }
-
-        function processarInGame() {
-            const e = estadoTatica;
-            
-            // Botões Rápidos (GUI DE BOLSO)
-            let bE = "-", bM = "-", bF = "-";
-            if(e.in_estilo === 'ataque') bE = "<span class='badge'>Contra-Ataque</span>";
-            else if(e.in_estilo === 'equilibrado') bE = "<span class='badge'>Equilibrado</span>";
-            else if(e.in_estilo === 'contra') bE = "<span class='badge'>Ataque Total</span>";
-            
-            if(e.in_marcacao === 'leve') bM = "<span class='badge'>Muito Pesada</span>";
-            else if(e.in_marcacao === 'pesada') bM = "<span class='badge'>Pesada</span>";
-            else if(e.in_marcacao === 'muito_pesada') bM = "<span class='badge'>Leve</span>";
-
-            if(e.in_foco === 'meio') { 
-                bF = "<span class='badge'>Pelas Laterais</span>"; 
-            } else if(e.in_foco === 'laterais') { 
-                bF = "<span class='badge'>Pelo Meio</span>"; 
-            }
-
-            document.getElementById('res_estilo_badge').innerHTML = bE;
-            document.getElementById('res_marcacao_badge').innerHTML = bM;
-            document.getElementById('res_foco_badge').innerHTML = bF;
-
-            // Formação e Campinhos 
-            const txtAnalise = document.getElementById('analise_rival_txt');
-            document.getElementById('pitch_adv').innerHTML = '';
-            document.getElementById('pitch_nos').innerHTML = '';
-            document.getElementById('badge_sugerido').innerHTML = '';
-            
-            if(e.in_formacao) {
-                desenharPrancheta('pitch_adv', e.in_formacao, 'adv');
-                let formIdeal = "", txtAnaliseContent = "", formNome = "";
-
-                if(e.in_formacao === '541') { formIdeal = "343"; formNome = "3-4-3 ou 4-3-3"; document.getElementById('lbl_form_adv').innerText = "5-4-1"; txtAnaliseContent = "Retranca máxima. Um zagueiro deles sobrará sem marcação. Jogue o time todo pra frente."; }
-                else if(e.in_formacao === '532') { formIdeal = "352"; formNome = "3-5-2"; document.getElementById('lbl_form_adv').innerText = "5-3-2"; txtAnaliseContent = "Eles têm muita defesa e pouco meio. Tire um zagueiro seu e domine a criação do jogo no meio."; }
-                else if(e.in_formacao === '451') { formIdeal = "352"; formNome = "3-5-2"; document.getElementById('lbl_form_adv').innerText = "4-5-1"; txtAnaliseContent = "Iguale a guerra no meio-campo (5x5) e ataque com 2 jogadores."; }
-                else if(e.in_formacao === '442') { formIdeal = "433"; formNome = "4-3-3 ou 3-5-2"; document.getElementById('lbl_form_adv').innerText = "4-4-2 Clássico"; txtAnaliseContent = "Jogo padrão. Amasse com 3 atacantes ou ganhe a posse com 5 meias."; }
-                else if(e.in_formacao === '442d') { formIdeal = "433"; formNome = "4-3-3"; document.getElementById('lbl_form_adv').innerText = "4-4-2 Defensivo"; txtAnaliseContent = "Eles recuaram os volantes. Force a linha de 4 deles com 3 atacantes rápidos."; }
-                else if(e.in_formacao === '442o') { formIdeal = "352"; formNome = "3-5-2 ou 4-5-1"; document.getElementById('lbl_form_adv').innerText = "4-4-2 Ofensivo"; txtAnaliseContent = "Eles jogam abertos. Domine o meio com 5 jogadores para cortar a criação."; }
-                else if(e.in_formacao === '433') { formIdeal = "442o"; formNome = "4-4-2 Ofensivo"; document.getElementById('lbl_form_adv').innerText = "4-3-3"; txtAnaliseContent = "Eles têm 3 atacantes. Use linha de 4 firme atrás e ganhe a bola no meio."; }
-                else if(e.in_formacao === '433d') { formIdeal = "442"; formNome = "4-4-2 Clássico"; document.getElementById('lbl_form_adv').innerText = "4-3-3 Defensivo"; txtAnaliseContent = "Os 3 atacantes estão isolados por volantes. Jogue padronizado com 4 meias criativos."; }
-                else if(e.in_formacao === '352') { formIdeal = "451"; formNome = "4-5-1 ou 4-3-3"; document.getElementById('lbl_form_adv').innerText = "3-5-2"; txtAnaliseContent = "Forte no meio. Espelhe com 5 meias ou force os alas deles a recuar usando 3 atacantes."; }
-                else if(e.in_formacao === '343') { formIdeal = "442o"; formNome = "4-4-2 Ofensivo"; document.getElementById('lbl_form_adv').innerText = "3-4-3"; txtAnaliseContent = "Defesa de 3 sofre contra pontas. Ataque com linha de 4 e force nas alas."; }
-                else if(e.in_formacao === '4231') { formIdeal = "442"; formNome = "4-4-2 ou 3-5-2"; document.getElementById('lbl_form_adv').innerText = "4-2-3-1"; txtAnaliseContent = "Meio congestionado. Domine a posse e explore as laterais defensivas deles."; }
-                else if(e.in_formacao === '4231a') { formIdeal = "352"; formNome = "3-5-2"; document.getElementById('lbl_form_adv').innerText = "4-2-3-1 com alas"; txtAnaliseContent = "Alas muito ofensivos. Feche a zaga com 3 defensores e ataque o buraco que eles deixam."; }
+                if(p.forca === 'forte') { formSugerida = '541'; bEstilo = 'CONTRA-ATAQUE'; clsEstilo = 'badge-green'; }
+                else if(p.forca === 'fraco') { formSugerida = '433'; bEstilo = 'ATAQUE TOTAL'; clsEstilo = 'badge-green'; }
                 
-                desenharPrancheta('pitch_nos', formIdeal, 'nos');
-                document.getElementById('badge_sugerido').innerHTML = `<div style="text-align: center; margin-bottom: 10px;"><span class="badge" style="font-size: 1.1rem; padding: 6px 20px;">${formNome}</span></div>`;
-                txtAnalise.innerText = txtAnaliseContent;
+                if(p.forca === 'fraco' || (p.forca === 'equilibrado' && p.casa === 'casa')) { bMarc = 'LEVE'; clsMarc = 'badge-green'; }
+                else { bMarc = 'PESADA'; clsMarc = 'badge-green'; }
+
+                if(p.gramado === 'ruim') { bFoco = 'LATERAIS'; clsFoco = 'badge-green'; }
+                else if(p.gramado === 'bom') { bFoco = 'MEIO'; clsFoco = 'badge-green'; }
+
+                desenharPrancheta('pitch_pre', p.forca ? formSugerida : 'default', 'nos');
+                
+                let html = `
+                    <div style="background: var(--emerald-main); color: #fff; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
+                        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; opacity: 0.9;">Formação Inicial</div>
+                        <div style="font-size: 1.8rem; font-weight: 900; letter-spacing: 1px;">${p.forca ? formSugerida : '?'}</div>
+                    </div>
+                `;
+                
+                if(p.forca) html += `<div class="action-row"><span class="action-label">Estilo de Jogo</span><span class="action-badge ${clsEstilo}">${bEstilo}</span></div>`;
+                if(p.forca || p.casa) html += `<div class="action-row"><span class="action-label">Estilo de Marcação</span><span class="action-badge ${clsMarc}">${bMarc}</span></div>`;
+                if(p.gramado) html += `<div class="action-row"><span class="action-label">Lado do Ataque</span><span class="action-badge ${clsFoco}">${bFoco}</span></div>`;
+                
+                panel.innerHTML = html;
             } else {
-                document.getElementById('lbl_form_adv').innerText = "Como eles jogam";
-                txtAnalise.innerText = "Aguardando escalação do adversário para leitura tática e orientações visuais.";
+                desenharPrancheta('pitch_pre', 'default', 'nos');
+                panel.innerHTML = `
+                    <div style="background: var(--bg-body); border: 2px dashed var(--border-light); padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 4px;">Formação Padrão</div>
+                        <div style="font-size: 1.8rem; font-weight: 900; color: var(--text-muted); letter-spacing: 2px;">4-4-2</div>
+                    </div>
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; padding: 5px; margin-top:5px;">Preencha os dados (Força, Mando e Gramado).</div>
+                `;
             }
         }
 
-        // --- 4. RASTREADOR DE PARTIDAS (HABIT TRACKER EDITÁVEL) ---
-        function criarCompeticao() {
-            const nome = document.getElementById('comp_nome').value.trim();
-            const qtd = parseInt(document.getElementById('comp_jogos').value);
-
-            if (!nome || isNaN(qtd) || qtd <= 0 || qtd > 100) { alert("Insira um nome e quantidade válidos."); return; }
-
-            competicoes.unshift({ id: Date.now(), nome: nome, totalJogos: qtd, resultados: new Array(qtd).fill(0), arquivado: false });
-            salvarTrackers();
-            document.getElementById('comp_nome').value = ''; document.getElementById('comp_jogos').value = '';
+        // =======================================================
+        // SEÇÃO 2: CORRELAÇÃO DE REAÇÃO (INTELIGÊNCIA RESTAURADA)
+        // =======================================================
+        function setInJogo(grupo, valor, btn) {
+            document.querySelectorAll(`#grp_in_${grupo} .btn-select`).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); stateIn[grupo] = valor; localStorage.setItem(IN_KEY, JSON.stringify(stateIn));
+            processarInJogo();
         }
 
-        function ciclarCaixa(compId, boxIndex) {
-            const comp = competicoes.find(c => c.id === compId);
-            if (!comp || comp.arquivado) return; 
-            comp.resultados[boxIndex] = (comp.resultados[boxIndex] + 1) % 4; // 0=Vazio, 1=V, 2=E, 3=D
-            salvarTrackers();
-        }
+        function processarInJogo() {
+            const i = stateIn;
+            const panel = document.getElementById('panel_in_acao');
+            let html = '';
 
-        function editarNomeComp(compId, novoNome) {
-            let comp = competicoes.find(c => c.id === compId);
-            if(comp && novoNome.trim() !== '') {
-                comp.nome = novoNome.trim();
-                salvarTrackers();
-            } else {
-                renderTrackers(); // Reverte se vazio
-            }
-        }
-
-        function editarQtdComp(compId, novaQtdStr) {
-            let comp = competicoes.find(c => c.id === compId);
-            let novaQtd = parseInt(novaQtdStr);
-            if(comp && !isNaN(novaQtd) && novaQtd > 0 && novaQtd <= 100) {
-                comp.totalJogos = novaQtd;
-                if(novaQtd > comp.resultados.length) {
-                    let diff = novaQtd - comp.resultados.length;
-                    comp.resultados.push(...new Array(diff).fill(0));
-                } else if (novaQtd < comp.resultados.length) {
-                    comp.resultados = comp.resultados.slice(0, novaQtd);
+            // 1. Formação
+            if(i.formacao) {
+                desenharPrancheta('pitch_in_adv', i.formacao, 'adv');
+                let regra = regrasIA[i.formacao];
+                if(regra) {
+                    desenharPrancheta('pitch_in_nos', regra.ideal, 'nos');
+                    html += `<div class="action-row"><span class="action-label">1. Formação Sugerida</span><span class="action-badge badge-green">${regra.ideal}</span></div>`;
                 }
-                salvarTrackers();
             } else {
-                renderTrackers(); // Reverte
+                desenharPrancheta('pitch_in_adv', 'default', 'adv');
+                desenharPrancheta('pitch_in_nos', 'default', 'nos');
             }
+
+            // 2. Estilo de Jogo (Correção do Contra-Ataque)
+            if(i.estilo) {
+                let recEstilo = "-"; let clsEstilo = 'badge-green';
+                if (i.estilo === 'ataque_total') { recEstilo = "CONTRA-ATAQUE"; clsEstilo = 'badge-green'; }
+                else if (i.estilo === 'contra_ataque') { recEstilo = "ATAQUE TOTAL"; clsEstilo = 'badge-green'; }
+                else if (i.estilo === 'equilibrado') { recEstilo = "EQUILIBRADO"; clsEstilo = 'badge-green'; }
+                html += `<div class="action-row"><span class="action-label">2. Estilo de Jogo</span><span class="action-badge ${clsEstilo}">${recEstilo}</span></div>`;
+            }
+
+            // 3. Marcação
+            if(i.marcacao) {
+                let recMarc = "-"; let clsMarc = 'badge-green';
+                if (i.marcacao === 'pesada' || i.marcacao === 'muito_pesada') { recMarc = "LEVE"; clsMarc = 'badge-green'; }
+                else if (i.marcacao === 'leve') { recMarc = "PESADA"; clsMarc = 'badge-green'; }
+                html += `<div class="action-row"><span class="action-label">3. Estilo de Marcação</span><span class="action-badge ${clsMarc}">${recMarc}</span></div>`;
+            }
+
+            // 4. Lado do Ataque (RESTAURADO: Lógica baseada na FORMAÇÃO INIMIGA)
+            if(i.formacao) {
+                let recFoco = "-"; let clsFoco = 'badge-green';
+                if (i.formacao === '352' || i.formacao === '343') { recFoco = "LATERAIS"; clsFoco = 'badge-green'; } 
+                else if (i.formacao.startsWith('5') || i.formacao === '442d' || i.formacao === '4231alas') { recFoco = "MEIO"; clsFoco = 'badge-green'; } 
+                else { recFoco = "laterais"; clsFoco = 'badge-green'; }
+                html += `<div class="action-row"><span class="action-label">4. Lado do Ataque</span><span class="action-badge ${clsFoco}">${recFoco}</span></div>`;
+            }
+
+            panel.innerHTML = html || `<div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; padding: 10px;">Preencha a tática do adversário para gerar a Recomendação exata.</div>`;
         }
 
-        function zerarCompeticao(compId) {
-            if(confirm("Deseja ZERAR todos os resultados deste campeonato?")) {
-                let comp = competicoes.find(c => c.id === compId);
-                if(comp) {
-                    comp.resultados.fill(0);
-                    salvarTrackers();
-                }
-            }
+        const respostasCenarios = {
+            "pressao": { title: "Vencendo sob Pressão", color: "var(--warning)", txt: "Ação: Recuar o time • Foco no Contra-Ataque<br><br><span style='color:var(--emerald-main)'>🔥 TÁTICA APELONA: 5-4-1 Defensivo</span><br><span style='font-weight:600; font-size:0.8rem;'>Trancar a área e bolas longas para o único atacante.</span>" },
+            "desespero": { title: "Modo Abafa (Perdendo)", color: "var(--danger)", txt: "Ação: Ataque Total • Marcação Muito Pesada<br><br><span style='color:var(--danger)'>🔥 TÁTICA APELONA: 3-4-3 Ofensivo</span><br><span style='font-weight:600; font-size:0.8rem;'>Sufocar a saída deles. Risco de cartão, mas mortal no fim.</span>" },
+            "expulso_adv": { title: "Inimigo Expulso", color: "var(--emerald-main)", txt: "Ação: Tocar a Bola • Abrir o Campo<br><br><span style='color:var(--emerald-main)'>🔥 TÁTICA APELONA: 4-3-3 (Laterais)</span><br><span style='font-weight:600; font-size:0.8rem;'>Atacar pelas pontas para forçar o buraco da defesa.</span>" },
+            "cansa": { title: "Gestão de Fôlego", color: "var(--info)", txt: "Ação: Mudar p/ Marcação Leve IMEDIATAMENTE<br><br><span style='color:var(--info)'>🔥 TÁTICA APELONA: 4-5-1 (Posse)</span><br><span style='font-weight:600; font-size:0.8rem;'>Encher o meio, passes curtos e apenas cercar o adversário.</span>" }
+        };
+
+        function mostrarReacao(cenario, btn) {
+            document.querySelectorAll('.btn-cenario').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            const box = document.getElementById('box_reacao'); const titulo = document.getElementById('titulo_reacao'); const texto = document.getElementById('texto_reacao');
+            let dados = respostasCenarios[cenario];
+            box.style.display = 'block'; box.style.borderColor = dados.color; titulo.style.color = dados.color;
+            titulo.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${dados.title}`;
+            texto.innerHTML = dados.txt; texto.style.background = `rgba(${dados.color.replace('var(--', '').replace(')','')} 0.1)`; 
         }
 
-        function arquivarCompeticao(compId) {
-            const comp = competicoes.find(c => c.id === compId);
-            if(comp) {
-                comp.arquivado = !comp.arquivado;
-                salvarTrackers();
-            }
-        }
-
-        function deletarCompeticao(compId) {
-            if(confirm("Deseja excluir permanentemente este campeonato?")) {
-                competicoes = competicoes.filter(c => c.id !== compId);
-                salvarTrackers();
-            }
-        }
-
-        function toggleArquivados() {
+        // =======================================================
+        // SEÇÃO 3: RASTREADOR COM EDIÇÃO DE FASES OCULTA
+        // =======================================================
+        function toggleVerArquivados() {
             mostrarArquivados = !mostrarArquivados;
-            const btn = document.getElementById('btn_toggle_archived');
-            const area = document.getElementById('tracker_container_archived');
-            if(mostrarArquivados) {
-                btn.classList.add('active');
-                area.classList.remove('hidden');
-            } else {
-                btn.classList.remove('active');
-                area.classList.add('hidden');
-            }
-        }
-
-        function salvarTrackers() {
-            localStorage.setItem(TRACKER_KEY, JSON.stringify(competicoes));
+            const btn = document.getElementById('btn_toggle_arq');
+            if(mostrarArquivados) { btn.innerHTML = '<i class="fas fa-eye-slash"></i> Esconder Arquivados'; btn.classList.add('primary'); } 
+            else { btn.innerHTML = '<i class="fas fa-box"></i> Ver Arquivados'; btn.classList.remove('primary'); }
             renderTrackers();
         }
 
+        function criarCompeticao() {
+            let nome = document.getElementById('comp_nome').value; let qtd = parseInt(document.getElementById('comp_jogos').value);
+            if(nome && qtd > 0) {
+                competicoes.push({ id: Date.now(), nome, total: qtd, res: new Array(qtd).fill(0), colocacao: "", arquivado: false, fases: [] });
+                salvarTracker(); document.getElementById('comp_nome').value=''; document.getElementById('comp_jogos').value='';
+            }
+        }
+
+        function editarFasesPrompt(id) {
+            let c = competicoes.find(x => x.id === id);
+            if(c) {
+                let atual = (c.fases && c.fases.length > 0) ? c.fases.join(',') : "";
+                let res = prompt("Divida as Fases separando por vírgula (Ex: 6,2,2,2):\nDeixe em branco para remover a divisão.", atual);
+                if (res !== null) {
+                    c.fases = res ? res.split(',').map(Number).filter(n => !isNaN(n)) : [];
+                    salvarTracker();
+                }
+            }
+        }
+
+        function ciclarCaixa(id, idx) { let c = competicoes.find(x => x.id === id); if(c) { c.res[idx] = (c.res[idx] + 1) % 4; salvarTracker(); } }
+        function atualizarColocacao(id, val) { let c = competicoes.find(x => x.id === id); if(c) { c.colocacao = val; localStorage.setItem(TRACKER_KEY, JSON.stringify(competicoes)); } }
+        function editarCompNome(id, val) { let c = competicoes.find(x => x.id === id); if(c && val.trim() !== '') { c.nome = val; localStorage.setItem(TRACKER_KEY, JSON.stringify(competicoes)); } }
+        function editarCompTotal(id, val) {
+            let c = competicoes.find(x => x.id === id); val = parseInt(val);
+            if(c && val > 0) {
+                c.total = val;
+                if (val > c.res.length) { for(let i=0; i<(val - c.res.length); i++) c.res.push(0); } else if (val < c.res.length) { c.res = c.res.slice(0, val); }
+                salvarTracker();
+            }
+        }
+        function arquivarComp(id) { let c = competicoes.find(x => x.id === id); if(c) { c.arquivado = !c.arquivado; salvarTracker(); } }
+        function excluirComp(id) { if(confirm("Excluir esta liga permanentemente?")) { competicoes = competicoes.filter(x => x.id !== id); salvarTracker(); } }
+        function salvarTracker() { localStorage.setItem(TRACKER_KEY, JSON.stringify(competicoes)); renderTrackers(); }
+        
         function renderTrackers() {
-            const contAtivos = document.getElementById('tracker_container');
-            const contArquivados = document.getElementById('tracker_container_archived');
+            let html = '';
+            let compsParaExibir = competicoes.filter(c => mostrarArquivados ? c.arquivado : !c.arquivado);
             
-            let htmlAtivos = '', htmlArquivados = '';
-
-            competicoes.forEach(comp => {
-                let pts = 0; let jogados = 0;
-                comp.resultados.forEach(res => {
-                    if (res === 1) { pts += 3; jogados++; } 
-                    if (res === 2) { pts += 1; jogados++; } 
-                    if (res === 3) { jogados++; }           
-                });
-
-                let maxPts = jogados * 3;
-                let aprv = maxPts > 0 ? Math.round((pts / maxPts) * 100) : 0;
-                let corAprv = aprv >= 60 ? 'var(--emerald-main)' : (aprv >= 40 ? '#f59e0b' : '#ef4444');
-                if(jogados === 0) corAprv = 'var(--text-muted)';
+            compsParaExibir.slice().reverse().forEach(c => {
+                let v=0, e=0, d=0;
+                c.res.forEach(r => { if(r===1)v++; if(r===2)e++; if(r===3)d++; });
                 
-                let btnArchIcon = comp.arquivado ? 'fa-folder-open' : 'fa-folder';
-                let btnArchTitle = comp.arquivado ? 'Desarquivar' : 'Arquivar (Ocultar)';
-                let contentEditAtt = comp.arquivado ? '' : 'contenteditable="true"';
-
-                let cardHtml = `
-                <div class="comp-card ${comp.arquivado ? 'archived' : ''}">
-                    <div class="comp-header">
-                        <div class="comp-info">
-                            <div class="comp-title">
-                                <span class="editable-text" ${contentEditAtt} onblur="editarNomeComp(${comp.id}, this.innerText)" title="Clique para editar">${comp.nome}</span>
-                            </div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                                Jogos: ${jogados} / 
-                                <span class="editable-box" ${contentEditAtt} onblur="editarQtdComp(${comp.id}, this.innerText)" title="Editar Total">${comp.totalJogos}</span>
-                            </div>
+                html += `
+                <div class="card" style="padding:20px; margin-bottom:15px; border-left: 4px solid var(--emerald-main); opacity: ${c.arquivado ? '0.6' : '1'};">
+                    <div class="tracker-stats">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-trophy" style="color:var(--warning); font-size: 1.1rem;"></i>
+                            <span class="editable-title" contenteditable="true" onblur="editarCompNome(${c.id}, this.innerText)" title="Editar nome" style="font-size:1.1rem;">${c.nome}</span>
+                            <span style="color:var(--text-muted); font-size:0.8rem; font-weight:700;">( <input type="number" value="${c.total}" class="editable-number" onchange="editarCompTotal(${c.id}, this.value)" title="Total"> jogos )</span>
+                            <button class="btn-acao-comp fases" onclick="editarFasesPrompt(${c.id})" title="Configurar Fases (Grupos, Mata-Mata)"><i class="fas fa-layer-group"></i></button>
+                            <button class="btn-acao-comp arquivo" onclick="arquivarComp(${c.id})" title="${c.arquivado ? 'Desarquivar' : 'Arquivar'}"><i class="fas ${c.arquivado ? 'fa-box-open' : 'fa-box'}"></i></button>
+                            <button class="btn-acao-comp lixeira" onclick="excluirComp(${c.id})" title="Excluir"><i class="fas fa-trash"></i></button>
                         </div>
-                        
-                        <div class="comp-actions">
-                            <div class="comp-stats" style="margin-right: 10px;"><span style="color: ${corAprv}; font-weight: 900; font-size: 1.1rem;">${aprv}%</span> APR</div>
-                            <button class="btn-card-action" onclick="arquivarCompeticao(${comp.id})" title="${btnArchTitle}"><i class="fas ${btnArchIcon}"></i></button>
-                            <button class="btn-card-action" onclick="zerarCompeticao(${comp.id})" title="Zerar Resultados"><i class="fas fa-undo"></i></button>
-                            <button class="btn-card-action danger" onclick="deletarCompeticao(${comp.id})" title="Excluir"><i class="fas fa-trash-alt"></i></button>
+                        <div style="display:flex; gap:15px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+                            <span>V: <strong>${v}</strong> | E: <strong>${e}</strong> | D: <strong>${d}</strong></span>
+                            <input type="text" class="colocacao-input" placeholder="Ex: Campeão" value="${c.colocacao||""}" onchange="atualizarColocacao(${c.id}, this.value)" title="Colocação Final">
                         </div>
                     </div>
+                    <div class="tracker-history">`;
+                
+                let matchIndex = 0; let fasesBlocos = (c.fases && c.fases.length > 0) ? c.fases : [c.total];
+                
+                fasesBlocos.forEach((faseSize, fIdx) => {
+                    if(matchIndex >= c.total) return;
+                    let groupClass = (fIdx % 2 === 0) ? 'even' : 'odd';
+                    html += `<div class="tracker-group ${groupClass}">`;
                     
-                    <div class="box-container">
-                `;
+                    let limit = Math.min(matchIndex + faseSize, c.total);
+                    for(; matchIndex < limit; matchIndex++) {
+                        let st = c.res[matchIndex], cl='mb-0', lt='-';
+                        if(st===1){cl='mb-1';lt='V';}else if(st===2){cl='mb-2';lt='E';}else if(st===3){cl='mb-3';lt='D';}
+                        html += `<div class="match-badge ${cl}" title="Rodada ${matchIndex+1}" onclick="ciclarCaixa(${c.id}, ${matchIndex})">${st !== 0 ? lt : matchIndex+1}</div>`;
+                    }
+                    html += `</div>`;
+                });
 
-                for (let i = 0; i < comp.totalJogos; i++) {
-                    let estado = comp.resultados[i];
-                    let classe = '', letra = (i + 1).toString(); 
-                    if (estado === 1) { classe = 'state-1'; letra = 'V'; }
-                    else if (estado === 2) { classe = 'state-2'; letra = 'E'; }
-                    else if (estado === 3) { classe = 'state-3'; letra = 'D'; }
-                    
-                    let onClick = comp.arquivado ? '' : `onclick="ciclarCaixa(${comp.id}, ${i})"`;
-                    let cursorSt = comp.arquivado ? 'cursor: default;' : '';
-
-                    cardHtml += `<div class="match-box ${classe}" style="${cursorSt}" ${onClick} title="Rodada ${i+1}">${letra}</div>`;
+                if(matchIndex < c.total) {
+                    html += `<div class="tracker-group odd">`;
+                    for(; matchIndex < c.total; matchIndex++) {
+                        let st = c.res[matchIndex], cl='mb-0', lt='-';
+                        if(st===1){cl='mb-1';lt='V';}else if(st===2){cl='mb-2';lt='E';}else if(st===3){cl='mb-3';lt='D';}
+                        html += `<div class="match-badge ${cl}" title="Rodada ${matchIndex+1}" onclick="ciclarCaixa(${c.id}, ${matchIndex})">${st !== 0 ? lt : matchIndex+1}</div>`;
+                    }
+                    html += `</div>`;
                 }
-                cardHtml += `</div></div>`;
-
-                if(comp.arquivado) { htmlArquivados += cardHtml; }
-                else { htmlAtivos += cardHtml; }
+                html += `</div></div>`;
             });
-
-            contAtivos.innerHTML = htmlAtivos || '<div style="text-align:center; padding: 20px; color: var(--text-muted); font-weight: 600;">Nenhum campeonato ativo no momento.</div>';
-            contArquivados.innerHTML = htmlArquivados || '<div style="color: var(--text-muted); font-size:0.9rem;">Nenhum arquivo.</div>';
+            document.getElementById('tracker_container').innerHTML = html || `<div style="font-size:0.85rem; color:var(--text-muted); font-weight:700;">${mostrarArquivados ? 'Nenhum campeonato arquivado.' : 'Nenhum campeonato ativo no momento.'}</div>`;
         }
 
-        // --- EXPORT / IMPORT ---
-        function exportarTaticas() {
-            const dataToExport = { trackers: competicoes, tatica: estadoTatica };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport));
-            const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", `brasfoot_taticas_${currentSave}.json`); dlAnchorElem.click();
+        // =======================================================
+        // PAINEIS MODAIS (DEV MODE & TUTORIAL DINÂMICO)
+        // =======================================================
+        function abrirDevMode() { document.getElementById('dev_overlay').classList.add('open'); document.getElementById('dev_panel').classList.add('open'); }
+        function fecharDevMode() { document.getElementById('dev_overlay').classList.remove('open'); document.getElementById('dev_panel').classList.remove('open'); }
+        
+        function abrirTutorial() { document.getElementById('tuto_overlay').classList.add('open'); document.getElementById('tuto_panel').classList.add('open'); }
+        function fecharTutorial() { document.getElementById('tuto_overlay').classList.remove('open'); document.getElementById('tuto_panel').classList.remove('open'); fecharFormSegredo(); }
+
+        function gerarCamposDevMode() {
+            let html = '';
+            Object.keys(defaultRegras).forEach(adv => {
+                let r = regrasIA[adv] || defaultRegras[adv];
+                html += `
+                <div class="dev-item" style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed var(--border-light);">
+                    <span style="font-weight:900; color:var(--emerald-main);">Contra ${adv.toUpperCase()}</span>
+                    <select class="dev-select" id="dev_ideal_${adv}">
+                        ${Object.keys(layouts).filter(k=>k!=='default').map(k => `<option value="${k}" ${r.ideal===k?'selected':''}>Formação Sugerida: ${k.toUpperCase()}</option>`).join('')}
+                    </select>
+                </div>`;
+            });
+            document.getElementById('dev_regras_container').innerHTML = html;
         }
 
-        function importarTaticas(event) {
-            const file = event.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if(data.trackers) localStorage.setItem(TRACKER_KEY, JSON.stringify(data.trackers));
-                    if(data.tatica) localStorage.setItem(TATICA_KEY, JSON.stringify(data.tatica));
-                    alert(`Importado com sucesso!`); carregarTaticasDoSave();
-                } catch (err) { alert("Erro ao importar."); }
-            };
-            reader.readAsText(file);
+        function salvarRegrasIADev() {
+            Object.keys(defaultRegras).forEach(adv => {
+                regrasIA[adv] = { ideal: document.getElementById(`dev_ideal_${adv}`).value };
+            });
+            localStorage.setItem(REGRAS_KEY, JSON.stringify(regrasIA));
+            fecharDevMode(); processarInJogo(); alert("Motor Tático atualizado com sucesso!");
         }
 
-        window.onload = () => { applyInitialStates(); initSaveSystem(); };
+        // --- SISTEMA DE SEGREDOS TÁTICOS ---
+        function renderSegredos() {
+            let html = '';
+            listaSegredos.forEach(seg => {
+                html += `
+                <div class="tuto-section">
+                    <h4><i class="fas fa-lightbulb"></i> ${seg.titulo}</h4>
+                    <div style="font-size: 0.85rem; color: var(--text-main); white-space: pre-wrap; line-height: 1.5;">${seg.conteudo}</div>
+                    <div class="tuto-actions">
+                        <button class="btn-tuto-action" onclick="abrirEdicaoSegredo(${seg.id})" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button class="btn-tuto-action" onclick="excluirSegredo(${seg.id})" title="Excluir"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('tuto_lista').innerHTML = html;
+        }
+
+        function abrirFormSegredo() {
+            document.getElementById('form_novo_segredo').style.display = 'block';
+            document.getElementById('segredo_id').value = '';
+            document.getElementById('segredo_titulo').value = '';
+            document.getElementById('segredo_conteudo').value = '';
+        }
+
+        function abrirEdicaoSegredo(id) {
+            let seg = listaSegredos.find(s => s.id === id);
+            if(seg) {
+                document.getElementById('form_novo_segredo').style.display = 'block';
+                document.getElementById('segredo_id').value = seg.id;
+                document.getElementById('segredo_titulo').value = seg.titulo;
+                document.getElementById('segredo_conteudo').value = seg.conteudo;
+            }
+        }
+
+        function fecharFormSegredo() { document.getElementById('form_novo_segredo').style.display = 'none'; }
+
+        function salvarSegredo() {
+            let id = document.getElementById('segredo_id').value;
+            let tit = document.getElementById('segredo_titulo').value;
+            let cont = document.getElementById('segredo_conteudo').value;
+
+            if(!tit || !cont) { alert("Preencha título e conteúdo!"); return; }
+
+            if(id) {
+                let s = listaSegredos.find(x => x.id == id);
+                if(s) { s.titulo = tit; s.conteudo = cont; }
+            } else {
+                listaSegredos.push({ id: Date.now(), titulo: tit, conteudo: cont });
+            }
+
+            localStorage.setItem(SEGREDOS_KEY, JSON.stringify(listaSegredos));
+            fecharFormSegredo(); renderSegredos();
+        }
+
+        function excluirSegredo(id) {
+            if(confirm("Excluir este conhecimento?")) {
+                listaSegredos = listaSegredos.filter(s => s.id !== id);
+                localStorage.setItem(SEGREDOS_KEY, JSON.stringify(listaSegredos));
+                renderSegredos();
+            }
+        }
+
+        window.onload = initApp;
     </script>
 </body>
 </html>
