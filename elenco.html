@@ -30,7 +30,7 @@
         /* SISTEMA DE SAVES & BOTOES SUPERIORES */
         .save-manager { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 0 14px; border-radius: 10px; border: 1px solid var(--border-light); margin: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); height: 42px;}
         .save-select { background: transparent; border: none; color: var(--text-main); font-weight: 800; font-size: 0.9rem; outline: none; cursor: pointer; max-width: 140px; }
-        .btn-action-top { height: 42px; display: flex; align-items: center; justify-content: center; min-width: auto; gap: 6px; padding: 0 15px; border-radius: 10px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-muted); font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.02);}
+        .btn-action-top { height: 42px; display: flex; align-items: center; justify-content: center; min-width: auto; gap: 6px; padding: 0 15px; border-radius: 10px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-muted); font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.02); touch-action: manipulation;}
         .btn-action-top:hover { border-color: var(--emerald-main); color: var(--emerald-main); transform: translateY(-2px); }
         .btn-action-top.danger:hover { border-color: var(--danger); color: var(--danger); }
         .btn-action-top.info:hover { border-color: var(--info); color: var(--info); }
@@ -68,11 +68,11 @@
         .horizontal-scroller { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; scroll-snap-type: x mandatory; }
         .rival-card { flex: 0 0 380px; background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; scroll-snap-align: start; box-shadow: 0 4px 12px rgba(0,0,0,0.02);}
         .rival-card .clean-table th { background: transparent; }
-        .table-responsive { overflow-x: auto; width: 100%; }
+        .table-responsive { overflow-x: auto; width: 100%; position: relative;}
 
         /* PRANCHETAS & RESERVAS */
         .pitches-wrapper { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
-        .pitch-col { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 320px; max-width: 400px; }
+        .pitch-col { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 280px; width: 100%; max-width: 400px; }
         .pitch-title { font-size: 1rem; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; text-align: center; color: var(--text-muted); }
         
         .mini-pitch { width: 100%; aspect-ratio: 2 / 3; background: linear-gradient(180deg, #34d399 0%, #10b981 100%); border: 3px solid #fff; position: relative; border-radius: 12px; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2); overflow: hidden; margin-bottom: 15px;}
@@ -82,17 +82,17 @@
         .area-top, .area-bot { position: absolute; left: 50%; width: 40%; height: 12%; border: 2px solid rgba(255,255,255,0.4); transform: translateX(-50%); }
         .area-top { top: 0; border-top: none; } .area-bot { bottom: 0; border-bottom: none; }
 
-        /* JOGADORES NA PRANCHETA */
-        .pitch-player { position: absolute; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.85); color: #fff; padding: 4px 6px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; align-items: center; min-width: 65px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); backdrop-filter: blur(4px); cursor: pointer; transition: 0.2s;}
+        /* JOGADORES NA PRANCHETA (Touch action p/ celular não dar zoom no duplo clique) */
+        .pitch-player { position: absolute; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.85); color: #fff; padding: 4px 6px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; align-items: center; min-width: 65px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); backdrop-filter: blur(4px); cursor: pointer; transition: 0.2s; touch-action: manipulation; user-select: none; -webkit-user-select: none;}
         .pitch-player:hover { transform: translate(-50%, -50%) scale(1.1); z-index: 10;}
         .pitch-player .p-pos { font-size: 0.65rem; font-weight: 900; color: #a7f3d0; margin-bottom: 2px; letter-spacing: 0.5px;}
         .pitch-player .p-val { font-size: 0.75rem; font-weight: 700; white-space: nowrap; max-width: 70px; overflow: hidden; text-overflow: ellipsis;}
         .pitch-player .p-carac { font-size: 0.6rem; color: #ffffff; margin-top: 2px; font-weight: 800; letter-spacing: 0.5px;}
         .pitch-player .p-forca { font-size: 0.95rem; font-weight: 900; color: #fff; margin-top: 2px; }
 
-        /* CAIXA DE RESERVAS DA PRANCHETA */
+        /* CAIXA DE RESERVAS DA PRANCHETA (Touch action p/ celular) */
         .reserves-box { display: flex; gap: 6px; width: 100%; overflow-x: auto; padding: 10px 5px; background: var(--bg-body); border: 1px solid var(--border-light); border-radius: 12px; }
-        .reserve-slot { flex: 0 0 65px; background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 6px 4px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s;}
+        .reserve-slot { flex: 0 0 65px; background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 6px 4px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; touch-action: manipulation; user-select: none; -webkit-user-select: none;}
         .reserve-slot.editable { cursor: pointer; }
         .reserve-slot.editable:hover { transform: translateY(-2px); border-color: var(--emerald-main); box-shadow: 0 4px 8px rgba(16, 185, 129, 0.1);}
         
@@ -104,13 +104,14 @@
 
         /* BOTOES E AÇÕES GERAIS */
         .base-icons { display: flex; gap: 6px; align-items: center; color: var(--text-muted); font-size: 1.2rem; cursor: pointer;}
-        .base-icons i { transition: 0.2s; }
+        .base-icons i { transition: 0.2s; touch-action: manipulation;}
         .base-icons i.active { color: var(--emerald-main); filter: drop-shadow(0 2px 4px rgba(16,185,129,0.3));}
         .base-icons i:hover { transform: scale(1.2); }
 
-        .btn-add-row { background: transparent; border: 1px dashed var(--emerald-main); color: var(--emerald-main); padding: 10px 15px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;}
+        .btn-add-row { background: transparent; border: 1px dashed var(--emerald-main); color: var(--emerald-main); padding: 10px 15px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; touch-action: manipulation;}
         .btn-add-row:hover { background: rgba(16, 185, 129, 0.1); transform: translateY(-2px); }
-        .btn-del-row { background: transparent; border: none; color: var(--danger); cursor: pointer; padding: 6px; transition: 0.2s; border-radius: 4px;}
+        
+        .btn-del-row { background: transparent; border: none; color: var(--danger); cursor: pointer; padding: 8px; transition: 0.2s; border-radius: 4px; touch-action: manipulation;}
         .btn-del-row:hover { transform: scale(1.2); background: rgba(239, 68, 68, 0.1); }
 
         .target-force-container { display: flex; align-items: center; gap: 10px; margin-left: auto; background: var(--bg-body); padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border-light);}
@@ -123,6 +124,47 @@
         .modal-grid-pitches { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;}
         .exp-select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid var(--border-light); background: var(--bg-body); color: var(--text-main); font-weight: 700; outline: none;}
         .exp-select:focus { border-color: var(--emerald-main); }
+
+        /* =======================================================
+           CORREÇÕES DE RESPONSIVIDADE E USABILIDADE MOBILE
+           ======================================================= */
+        .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
+        
+        @media (max-width: 1024px) {
+            .mobile-menu-btn { display: inline-block; }
+            .header-title-mobile { display: flex; align-items: center; margin-left: 0 !important; width: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            /* 1. Header reorganizado para não encavalar os botões */
+            .header-top-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .header-top-bar > div:last-child { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; justify-content: stretch; }
+            .header-top-bar > div:last-child > div.save-manager { grid-column: span 2; width: 100%; justify-content: center; }
+            .header-top-bar > div:last-child > div:nth-child(2) { grid-column: span 2; display: flex; width: 100%; }
+            .header-top-bar > div:last-child > div:nth-child(2) > button { flex: 1; }
+            .btn-action-top { flex: 1; padding: 0 10px; font-size: 0.8rem; }
+            
+            /* 2. Forçar fonte mínima para evitar Zoom do iPhone */
+            .tbl-input, .target-force-input, .save-select, .exp-select { font-size: 16px !important; }
+            
+            /* 3. Evitar estouro da análise de rivais */
+            .rival-card { flex: 0 0 85vw; max-width: 380px; }
+            
+            /* 4. Título das tabelas (Titulares/Reservas) centralizados no mobile */
+            .panel-box > div:first-child { flex-direction: column; align-items: flex-start !important; gap: 15px; }
+            .panel-box > div:first-child > div { width: 100%; justify-content: space-between; }
+            
+            /* 5. Ajudante visual de rolagem horizontal */
+            .table-responsive::after {
+                content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 15px;
+                background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.08)); pointer-events: none;
+            }
+            body.dark-theme .table-responsive::after { background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.4)); }
+            
+            /* 6. Ajuste modal laboratório */
+            .modal-content { padding: 12px; }
+            .pitch-col { min-width: 250px; }
+        }
     </style>
 </head>
 <body>
@@ -133,8 +175,11 @@
         
         <div class="header-top-bar">
             <div class="header-title-mobile" style="margin-left: 45px;">
-                <h1 style="color: var(--text-main); font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px;">Gestão do Elenco</h1>
-                <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">Mercado, Rivais, Plantel e Base</p>
+                <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h1 style="color: var(--text-main); font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px; margin: 0;">Gestão do Elenco</h1>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500; margin: 0;">Mercado, Rivais, Plantel e Base</p>
+                </div>
             </div>
             
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
@@ -210,7 +255,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <h3 style="color: var(--info); font-size:1.1rem; font-weight:900; margin:0;"><i class="fas fa-star" style="margin-right:8px;"></i> Modelo Tático (DNA Ideal)</h3>
                 </div>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-10px; margin-bottom:15px;">Edite as posições e características para definir o seu Alvo. Isso vai avaliar a cor do seu time atual.</p>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-10px; margin-bottom:15px;">Edite as posições e características para definir o seu Alvo.</p>
                 <div class="table-responsive">
                     <table class="clean-table" id="tbl_ideal">
                         <thead><tr><th style="width:50px;">Posição</th><th>DNA Titular Esperado</th><th>DNA Reserva Esperado</th></tr></thead>
@@ -226,7 +271,7 @@
                         <div class="stat-badge" id="media_titulares">Média: --</div>
                         <div class="target-force-container">
                             <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Força Alvo:</span>
-                            <input type="number" id="alvo_titulares" class="target-force-input" value="0" onchange="updateAlvo('titulares', this.value)">
+                            <input type="number" id="alvo_titulares" class="target-force-input" value="0" inputmode="numeric" pattern="[0-9]*" onchange="updateAlvo('titulares', this.value)">
                         </div>
                     </div>
                 </div>
@@ -247,7 +292,7 @@
                         <div class="stat-badge" id="media_reservas">Média: --</div>
                         <div class="target-force-container">
                             <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Força Alvo:</span>
-                            <input type="number" id="alvo_reservas" class="target-force-input" value="0" onchange="updateAlvo('reservas', this.value)">
+                            <input type="number" id="alvo_reservas" class="target-force-input" value="0" inputmode="numeric" pattern="[0-9]*" onchange="updateAlvo('reservas', this.value)">
                         </div>
                     </div>
                 </div>
@@ -264,10 +309,10 @@
                     <h3 style="color: var(--text-main); font-size:1.1rem; font-weight:900; margin:0;"><i class="fas fa-seedling" style="color:#10b981; margin-right:8px;"></i> Categoria de Base</h3>
                     <button class="btn-del-row" style="color: var(--text-muted); border: 1px dashed var(--border-light);" onclick="limparBaseIcons()"><i class="fas fa-eraser"></i> Limpar Contagem</button>
                 </div>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-10px; margin-bottom:15px;">Acompanhe o número de promessas por posição.</p>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-10px; margin-bottom:15px;">Defina o perfil que você busca na base e acompanhe as promessas.</p>
                 <div class="table-responsive">
                     <table class="clean-table" id="tbl_base">
-                        <thead><tr><th style="width:50px;">Pos</th><th style="text-align:center;">Promessas Prontas</th></tr></thead>
+                        <thead><tr><th style="width:50px;">Pos</th><th>DNA da Base (Perfil)</th><th style="text-align:center;">Promessas Prontas</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -324,13 +369,29 @@
             sidebarEl.innerHTML = menuHTML;
             if(!document.querySelector('.sidebar-overlay')){
                 const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay';
-                overlay.onclick = typeof toggleMenu === 'function' ? toggleMenu : null;
+                
+                // Fallback robusto para fechar o menu no mobile caso o toggleMenu externo falhe
+                overlay.onclick = function() {
+                    if (typeof toggleMenu === 'function') toggleMenu();
+                    else {
+                        document.getElementById('sidebar').classList.remove('active');
+                        this.classList.remove('active');
+                    }
+                };
                 document.getElementById('app_menu_container').prepend(overlay);
             }
             if(localStorage.getItem('sidebar_collapsed') === 'true') {
                 sidebarEl.classList.add('collapsed'); let mainContent = document.getElementById('main_content');
                 if(mainContent) mainContent.classList.add('expanded');
             }
+        }
+        
+        // Função local caso a script.js não carregue
+        function toggleMenu() {
+            let sidebar = document.getElementById('sidebar');
+            let overlay = document.querySelector('.sidebar-overlay');
+            if(sidebar) sidebar.classList.toggle('active');
+            if(overlay) overlay.classList.toggle('active');
         }
 
         function carregarSelectSaves() {
@@ -368,7 +429,9 @@
         // =======================================================
         // DADOS E REGRAS DE NEGÓCIO (SCOUT E TÁTICA)
         // =======================================================
-        let ELENCO_KEY = `hub_elenco_data_v9_${currentSave}`;
+        let ELENCO_KEY = `hub_elenco_data_v11_${currentSave}`;
+        let OLD_ELENCO_KEY = `hub_elenco_data_v10_${currentSave}`;
+
         const posicoesFixas = ['GL', 'LD', 'ZD', 'ZE', 'LE', 'VD', 'VE', 'MD', 'ME', 'AD', 'AE'];
         
         const coordsPitch = {
@@ -394,12 +457,11 @@
         
         let elencoData = {
             alvoTitulares: 50, alvoReservas: 40,
-            mercado: [], rivais: [],
-            outros: [],
+            mercado: [], rivais: [], outros: [],
             time_ideal: posicoesFixas.map(p => ({ pos: p, carac_titular: caracIdeaisInfo[p], carac_reserva: '' })),
             titulares: posicoesFixas.map(p => ({ pos: p, nome: '', carac: '', forca: '' })),
             reservas: posicoesFixas.map(p => ({ pos: p, nome: '', carac: '', forca: '' })),
-            base: posicoesFixas.map(p => ({ pos: p, qtd: 0 })),
+            base: posicoesFixas.map(p => ({ pos: p, carac: '', qtd: 0 })),
             experimentos: [
                 { titulo: 'Plano A (Ex: Ataque)', formacao: '433', jogadores: JSON.parse(JSON.stringify(formacoesLab['433'])) },
                 { titulo: 'Plano B (Ex: Retranca)', formacao: '541', jogadores: JSON.parse(JSON.stringify(formacoesLab['541'])) },
@@ -415,7 +477,6 @@
             return count > 0 ? (sum / count).toFixed(1) : 0.0;
         }
 
-        // Motor de Avaliação do Scout (Procura a posição digitada no Time Ideal)
         function getCaracColorClass(idealStr, realStr) {
             if(!realStr || realStr.trim() === '') return ''; 
             let idArr = (idealStr || '').toUpperCase().split(/[\/\-]/).map(s=>s.trim()).filter(Boolean);
@@ -429,23 +490,48 @@
             return 'color-red'; 
         }
 
+        // =======================================================
+        // MOTOR DE PRESERVAÇÃO DE FOCO (RESOLVE O PROBLEMA DO TAB)
+        // =======================================================
+        let renderTimer;
+        function scheduleRender(renderTask) {
+            clearTimeout(renderTimer);
+            renderTimer = setTimeout(() => {
+                let activeId = document.activeElement ? document.activeElement.id : null;
+                let start = 0, end = 0;
+                if (activeId && document.activeElement.tagName === 'INPUT') {
+                    try { start = document.activeElement.selectionStart; end = document.activeElement.selectionEnd; } catch(e) {}
+                }
+
+                renderTask();
+
+                if (activeId) {
+                    let el = document.getElementById(activeId);
+                    if (el) { el.focus(); try { el.setSelectionRange(start, end); } catch(e) {} }
+                }
+            }, 10);
+        }
+
         function initElenco() {
             renderizarMenuGlobal(); carregarSelectSaves();
-            let saved = localStorage.getItem(ELENCO_KEY);
+            let saved = localStorage.getItem(ELENCO_KEY) || localStorage.getItem(OLD_ELENCO_KEY);
             if(saved) {
                 let p = JSON.parse(saved);
                 elencoData.alvoTitulares = p.alvoTitulares || 50; elencoData.alvoReservas = p.alvoReservas || 40;
                 elencoData.mercado = p.mercado || []; elencoData.rivais = p.rivais || []; elencoData.outros = p.outros || [];
                 
                 if(p.time_ideal) elencoData.time_ideal = p.time_ideal;
-                else if (p.base_titulares) {
-                    elencoData.time_ideal = p.base_titulares.map((b, i) => ({ pos: b.pos, carac_titular: b.carac, carac_reserva: p.base_reservas && p.base_reservas[i] ? p.base_reservas[i].carac : '' }));
-                    elencoData.base = p.base_titulares.map(b => ({ pos: b.pos, qtd: b.qtd || 0 }));
-                }
+                else if (p.base_titulares) elencoData.time_ideal = p.base_titulares.map((b, i) => ({ pos: b.pos, carac_titular: b.carac, carac_reserva: p.base_reservas && p.base_reservas[i] ? p.base_reservas[i].carac : '' }));
 
                 if(p.titulares) elencoData.titulares = p.titulares;
                 if(p.reservas) elencoData.reservas = p.reservas;
-                if(p.base && !p.base_titulares) elencoData.base = p.base;
+                
+                if(p.base) {
+                    elencoData.base = p.base.map(b => ({ pos: b.pos, carac: b.carac || '', qtd: b.qtd || 0 }));
+                } else if (p.base_titulares) {
+                    elencoData.base = p.base_titulares.map(b => ({ pos: b.pos, carac: '', qtd: b.qtd || 0 }));
+                }
+
                 if(p.experimentos) elencoData.experimentos = p.experimentos;
             }
             document.getElementById('alvo_titulares').value = elencoData.alvoTitulares;
@@ -465,24 +551,25 @@
                 elencoData.time_ideal = posicoesFixas.map(p => ({ pos: p, carac_titular: caracIdeaisInfo[p], carac_reserva: '' }));
                 elencoData.titulares = posicoesFixas.map(p => ({ pos: p, nome: '', carac: '', forca: '' }));
                 elencoData.reservas = posicoesFixas.map(p => ({ pos: p, nome: '', carac: '', forca: '' }));
-                elencoData.base = posicoesFixas.map(p => ({ pos: p, qtd: 0 }));
+                elencoData.base = posicoesFixas.map(p => ({ pos: p, carac: '', qtd: 0 }));
                 salvarElenco(); renderAll();
             }
         }
 
         // =======================================================
-        // MERCADO E RIVAIS
+        // RENDERS E UPDATES - AGORA COM IDs ÚNICOS E INPUTMODES NUMERICOS
         // =======================================================
+        
         function renderMercado() {
             let total = 0;
             let html = elencoData.mercado.map((jog, index) => {
                 let val = parseFloat(jog.valor) || 0; let valReal = val * 1.5; total += valReal;
                 return `
                 <tr>
-                    <td><input type="text" class="tbl-input pos-badge" value="${jog.pos}" onchange="updateMercado(${index}, 'pos', this.value)"></td>
-                    <td><input type="text" class="tbl-input" value="${jog.nome}" onchange="updateMercado(${index}, 'nome', this.value)"></td>
-                    <td><input type="number" class="tbl-input forca" value="${jog.forca}" onchange="updateMercado(${index}, 'forca', this.value)"></td>
-                    <td><input type="number" step="0.1" class="tbl-input money" value="${jog.valor}" onchange="updateMercado(${index}, 'valor', this.value)"></td>
+                    <td><input type="text" id="merc_pos_${index}" class="tbl-input pos-badge" value="${jog.pos}" onchange="updateMercado(${index}, 'pos', this.value)"></td>
+                    <td><input type="text" id="merc_nome_${index}" class="tbl-input" value="${jog.nome}" onchange="updateMercado(${index}, 'nome', this.value)"></td>
+                    <td><input type="number" id="merc_forca_${index}" class="tbl-input forca" inputmode="numeric" pattern="[0-9]*" value="${jog.forca}" onchange="updateMercado(${index}, 'forca', this.value)"></td>
+                    <td><input type="number" step="0.1" id="merc_val_${index}" class="tbl-input money" inputmode="decimal" value="${jog.valor}" onchange="updateMercado(${index}, 'valor', this.value)"></td>
                     <td style="text-align:right; font-weight:900; color:var(--danger);">${valReal > 0 ? formatM(valReal) : ''}</td>
                     <td style="text-align:center;"><button class="btn-del-row" onclick="delMercado(${index})"><i class="fas fa-times"></i></button></td>
                 </tr>`;
@@ -491,9 +578,9 @@
             document.querySelector('#tbl_mercado tbody').innerHTML = html;
             document.getElementById('total_mercado').innerText = total > 0 ? formatM(total) : 'R$ 0.00 M';
         }
-        function addLinhaMercado() { elencoData.mercado.push({ pos: '', nome: '', forca: '', valor: '' }); salvarElenco(); renderMercado(); }
-        function updateMercado(index, field, value) { elencoData.mercado[index][field] = value; salvarElenco(); renderMercado(); }
-        function delMercado(index) { elencoData.mercado.splice(index, 1); salvarElenco(); renderMercado(); }
+        function addLinhaMercado() { elencoData.mercado.push({ pos: '', nome: '', forca: '', valor: '' }); salvarElenco(); scheduleRender(() => renderMercado()); }
+        function updateMercado(index, field, value) { elencoData.mercado[index][field] = value; salvarElenco(); scheduleRender(() => renderMercado()); }
+        function delMercado(index) { elencoData.mercado.splice(index, 1); salvarElenco(); scheduleRender(() => renderMercado()); }
 
         function renderRivais() {
             const container = document.getElementById('container_rivais');
@@ -505,17 +592,17 @@
 
                 let rows = rival.jogadores.map((jog, jIndex) => `
                     <tr>
-                        <td style="width:40px;"><input type="text" class="tbl-input pos-badge" style="padding:2px; font-size:0.65rem; width:35px;" value="${jog.pos}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'pos', this.value)"></td>
-                        <td><input type="text" class="tbl-input" value="${jog.nome}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'nome', this.value)"></td>
-                        <td style="width:80px;"><input type="text" class="tbl-input carac" style="font-size:0.6rem;" value="${jog.carac || ''}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'carac', this.value)"></td>
-                        <td style="width:50px;"><input type="number" class="tbl-input forca" value="${jog.forca}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'forca', this.value)"></td>
+                        <td style="width:40px;"><input type="text" id="riv_${rIndex}_pos_${jIndex}" class="tbl-input pos-badge" style="padding:2px; font-size:0.65rem; width:35px;" value="${jog.pos}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'pos', this.value)"></td>
+                        <td><input type="text" id="riv_${rIndex}_nome_${jIndex}" class="tbl-input" value="${jog.nome}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'nome', this.value)"></td>
+                        <td style="width:80px;"><input type="text" id="riv_${rIndex}_carac_${jIndex}" class="tbl-input carac" style="font-size:0.6rem;" value="${jog.carac || ''}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'carac', this.value)"></td>
+                        <td style="width:50px;"><input type="number" id="riv_${rIndex}_forca_${jIndex}" class="tbl-input forca" inputmode="numeric" pattern="[0-9]*" value="${jog.forca}" onchange="updateRivalJog(${rIndex}, ${jIndex}, 'forca', this.value)"></td>
                     </tr>
                 `).join('');
 
                 return `
                 <div class="rival-card">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <input type="text" class="tbl-input" style="font-size:1rem; font-weight:900; color:var(--text-main); border-bottom:2px solid var(--border-light); padding:4px;" value="${rival.nome}" onchange="updateRival(${rIndex}, 'nome', this.value)">
+                        <input type="text" id="riv_tit_${rIndex}" class="tbl-input" style="font-size:1rem; font-weight:900; color:var(--text-main); border-bottom:2px solid var(--border-light); padding:4px;" value="${rival.nome}" onchange="updateRival(${rIndex}, 'nome', this.value)">
                         <button class="btn-del-row" onclick="delRival(${rIndex})"><i class="fas fa-trash"></i></button>
                     </div>
                     <div style="display:flex; gap:10px; margin-bottom:10px;">
@@ -533,34 +620,30 @@
             if(elencoData.rivais.length === 0) html = `<div style="color:var(--text-muted); font-size:0.85rem; padding: 20px;">Nenhuma análise criada.</div>`;
             container.innerHTML = html;
         }
-        function addRival() { elencoData.rivais.push({ id: Date.now(), nome: '', jogadores: posicoesFixas.map(p => ({ pos: p, nome: '', carac: '', forca: '' })) }); salvarElenco(); renderRivais(); }
-        function updateRival(rIndex, field, value) { elencoData.rivais[rIndex][field] = value; salvarElenco(); }
-        function updateRivalJog(rIndex, jIndex, field, value) { elencoData.rivais[rIndex].jogadores[jIndex][field] = value; salvarElenco(); renderRivais(); }
-        function delRival(rIndex) { if(confirm("Excluir análise?")) { elencoData.rivais.splice(rIndex, 1); salvarElenco(); renderRivais(); } }
+        function addRival() { elencoData.rivais.push({ id: Date.now(), nome: '', jogadores: posicoesFixas.map(p => ({ pos: p, nome: '', carac: '', forca: '' })) }); salvarElenco(); scheduleRender(() => renderRivais()); }
+        function updateRival(rIndex, field, value) { elencoData.rivais[rIndex][field] = value; salvarElenco(); scheduleRender(() => renderRivais()); }
+        function updateRivalJog(rIndex, jIndex, field, value) { elencoData.rivais[rIndex].jogadores[jIndex][field] = value; salvarElenco(); scheduleRender(() => renderRivais()); }
+        function delRival(rIndex) { if(confirm("Excluir análise?")) { elencoData.rivais.splice(rIndex, 1); salvarElenco(); scheduleRender(() => renderRivais()); } }
 
-        // =======================================================
-        // GESTÃO: MODELO IDEAL, TITULARES E RESERVAS
-        // =======================================================
         function updateAlvo(tipo, val) {
             if(tipo === 'titulares') elencoData.alvoTitulares = parseInt(val) || 0;
             else elencoData.alvoReservas = parseInt(val) || 0;
-            salvarElenco(); renderTabelasFixas();
+            salvarElenco(); scheduleRender(() => renderTabelasFixas());
         }
 
         function renderTabelasFixas() {
-            // RENDER: MODELO TÁTICO IDEAL
             let htmlIdeal = elencoData.time_ideal.map((cat, index) => `
                 <tr>
-                    <td><input type="text" class="tbl-input pos-badge" value="${cat.pos}" onchange="updateIdeal(${index}, 'pos', this.value)"></td>
-                    <td><input type="text" class="tbl-input carac" value="${cat.carac_titular}" onchange="updateIdeal(${index}, 'carac_titular', this.value)"></td>
-                    <td><input type="text" class="tbl-input carac" value="${cat.carac_reserva}" onchange="updateIdeal(${index}, 'carac_reserva', this.value)"></td>
+                    <td><input type="text" id="id_pos_${index}" class="tbl-input pos-badge" value="${cat.pos}" onchange="updateIdeal(${index}, 'pos', this.value)"></td>
+                    <td><input type="text" id="id_ctit_${index}" class="tbl-input carac" value="${cat.carac_titular}" onchange="updateIdeal(${index}, 'carac_titular', this.value)"></td>
+                    <td><input type="text" id="id_cres_${index}" class="tbl-input carac" value="${cat.carac_reserva}" onchange="updateIdeal(${index}, 'carac_reserva', this.value)"></td>
                 </tr>
             `).join('');
             document.querySelector('#tbl_ideal tbody').innerHTML = htmlIdeal;
 
-            // RENDER: TITULARES E RESERVAS COM SCOUT DINÂMICO
             const renderRows = (arrayData, listName, alvoStr, isTitular) => {
                 let alvo = elencoData[alvoStr];
+                const prefix = listName === 'titulares' ? 'tit' : 'res';
                 return arrayData.map((jog, index) => {
                     let forcaInt = parseInt(jog.forca);
                     let forcaClass = (!isNaN(forcaInt) && forcaInt >= alvo) ? 'color-green' : (jog.forca ? 'color-red' : '');
@@ -571,16 +654,14 @@
                     if(matchIdeal) {
                         let caracAlvo = isTitular ? matchIdeal.carac_titular : matchIdeal.carac_reserva;
                         caracClass = getCaracColorClass(caracAlvo, jog.carac);
-                    } else {
-                        caracClass = jog.carac ? 'color-red' : '';
-                    }
+                    } else { caracClass = jog.carac ? 'color-red' : ''; }
 
                     return `
                     <tr>
-                        <td><input type="text" class="tbl-input pos-badge" value="${jog.pos}" onchange="updateFixo('${listName}', ${index}, 'pos', this.value)"></td>
-                        <td><input type="text" class="tbl-input" value="${jog.nome}" onchange="updateFixo('${listName}', ${index}, 'nome', this.value)"></td>
-                        <td><input type="text" class="tbl-input carac ${caracClass}" value="${jog.carac || ''}" onchange="updateFixo('${listName}', ${index}, 'carac', this.value)"></td>
-                        <td><input type="number" class="tbl-input forca ${forcaClass}" value="${jog.forca}" onchange="updateFixo('${listName}', ${index}, 'forca', this.value)"></td>
+                        <td><input type="text" id="${prefix}_pos_${index}" class="tbl-input pos-badge" value="${jog.pos}" onchange="updateFixo('${listName}', ${index}, 'pos', this.value)"></td>
+                        <td><input type="text" id="${prefix}_nome_${index}" class="tbl-input" value="${jog.nome}" onchange="updateFixo('${listName}', ${index}, 'nome', this.value)"></td>
+                        <td><input type="text" id="${prefix}_carac_${index}" class="tbl-input carac ${caracClass}" value="${jog.carac || ''}" onchange="updateFixo('${listName}', ${index}, 'carac', this.value)"></td>
+                        <td><input type="number" id="${prefix}_forca_${index}" class="tbl-input forca ${forcaClass}" inputmode="numeric" pattern="[0-9]*" value="${jog.forca}" onchange="updateFixo('${listName}', ${index}, 'forca', this.value)"></td>
                     </tr>`;
                 }).join('');
             };
@@ -592,19 +673,21 @@
             document.getElementById('media_reservas').innerText = `Média: ${calcularMedia(elencoData.reservas) || '--'}`;
         }
 
-        function updateIdeal(index, field, value) { elencoData.time_ideal[index][field] = value; salvarElenco(); renderTabelasFixas(); renderPitches(); }
+        function updateIdeal(index, field, value) { elencoData.time_ideal[index][field] = value; salvarElenco(); scheduleRender(() => { renderTabelasFixas(); renderPitches(); }); }
         function updateFixo(listName, index, field, value) {
-            elencoData[listName][index][field] = value; salvarElenco(); renderTabelasFixas(); renderPitches();
-            if(listName === 'titulares') renderRivais();
+            elencoData[listName][index][field] = value; salvarElenco(); 
+            scheduleRender(() => {
+                renderTabelasFixas(); 
+                renderPitches();
+                if(listName === 'titulares') renderRivais();
+            });
         }
 
-        // =======================================================
-        // BASE (AGORA SÓ COM PROMESSAS)
-        // =======================================================
         function renderTabelaBase() {
             let html = elencoData.base.map((cat, index) => `
                 <tr>
-                    <td><input type="text" class="tbl-input pos-badge" value="${cat.pos}" onchange="updateBase(${index}, 'pos', this.value)"></td>
+                    <td><input type="text" id="bas_pos_${index}" class="tbl-input pos-badge" value="${cat.pos}" onchange="updateBase(${index}, 'pos', this.value)"></td>
+                    <td><input type="text" id="bas_carac_${index}" class="tbl-input carac" value="${cat.carac || ''}" placeholder="Ex: Vel / Pas" onchange="updateBase(${index}, 'carac', this.value)"></td>
                     <td>
                         <div class="base-icons" style="justify-content:center;">
                             <i class="${cat.qtd >= 1 ? 'fas active' : 'far'} fa-user" onclick="toggleBaseIcon(${index}, 1)"></i>
@@ -616,17 +699,14 @@
             document.querySelector('#tbl_base tbody').innerHTML = html;
         }
 
-        function updateBase(index, field, value) { elencoData.base[index][field] = value; salvarElenco(); renderTabelaBase(); }
+        function updateBase(index, field, value) { elencoData.base[index][field] = value; salvarElenco(); scheduleRender(() => renderTabelaBase()); }
         function toggleBaseIcon(index, clickedValue) {
             let currentQtd = elencoData.base[index].qtd;
             if (clickedValue === 1 && currentQtd === 1) elencoData.base[index].qtd = 0; else elencoData.base[index].qtd = clickedValue;
-            salvarElenco(); renderTabelaBase();
+            salvarElenco(); renderTabelaBase(); 
         }
         function limparBaseIcons() { if(confirm("Deseja zerar a contagem de promessas da Base?")) { elencoData.base.forEach(b => b.qtd = 0); salvarElenco(); renderTabelaBase(); } }
 
-        // =======================================================
-        // PRANCHETAS (TIME IDEAL & MEU TIME)
-        // =======================================================
         function getInitials(carac) { return (!carac) ? '' : carac.split(/[\/\-]/).map(s => s.trim().substring(0,3).toUpperCase()).join('/'); }
 
         function editIdealCarac(index, isReserva = false) {
@@ -674,29 +754,23 @@
             });
         }
 
-        // =======================================================
-        // OUTROS JOGADORES
-        // =======================================================
         function renderTabelaOutros() {
             let html = elencoData.outros.map((jog, index) => `
                 <tr>
-                    <td><input type="text" class="tbl-input pos-badge" value="${jog.pos}" onchange="updateOutros(${index}, 'pos', this.value)"></td>
-                    <td><input type="text" class="tbl-input" value="${jog.nome}" onchange="updateOutros(${index}, 'nome', this.value)"></td>
-                    <td><input type="number" class="tbl-input forca" value="${jog.forca}" onchange="updateOutros(${index}, 'forca', this.value)"></td>
-                    <td><input type="text" class="tbl-input carac" value="${jog.acao || ''}" onchange="updateOutros(${index}, 'acao', this.value)"></td>
-                    <td><input type="text" class="tbl-input" value="${jog.detalhes}" onchange="updateOutros(${index}, 'detalhes', this.value)"></td>
+                    <td><input type="text" id="out_pos_${index}" class="tbl-input pos-badge" value="${jog.pos}" onchange="updateOutros(${index}, 'pos', this.value)"></td>
+                    <td><input type="text" id="out_nome_${index}" class="tbl-input" value="${jog.nome}" onchange="updateOutros(${index}, 'nome', this.value)"></td>
+                    <td><input type="number" id="out_forca_${index}" class="tbl-input forca" inputmode="numeric" pattern="[0-9]*" value="${jog.forca}" onchange="updateOutros(${index}, 'forca', this.value)"></td>
+                    <td><input type="text" id="out_acao_${index}" class="tbl-input carac" value="${jog.acao || ''}" onchange="updateOutros(${index}, 'acao', this.value)"></td>
+                    <td><input type="text" id="out_detalhes_${index}" class="tbl-input" value="${jog.detalhes}" onchange="updateOutros(${index}, 'detalhes', this.value)"></td>
                     <td style="text-align:center;"><button class="btn-del-row" onclick="delLinhaOutros(${index})"><i class="fas fa-times"></i></button></td>
                 </tr>`).join('');
             if(elencoData.outros.length === 0) html = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); font-size:0.8rem; padding:15px;">Vazio.</td></tr>`;
             document.querySelector('#tbl_outros tbody').innerHTML = html;
         }
-        function addLinhaOutros() { elencoData.outros.push({ pos: '', nome: '', forca: '', acao: '', detalhes: '' }); salvarElenco(); renderTabelaOutros(); }
-        function updateOutros(index, field, value) { elencoData.outros[index][field] = value; salvarElenco(); }
-        function delLinhaOutros(index) { elencoData.outros.splice(index, 1); salvarElenco(); renderTabelaOutros(); }
+        function addLinhaOutros() { elencoData.outros.push({ pos: '', nome: '', forca: '', acao: '', detalhes: '' }); salvarElenco(); scheduleRender(() => renderTabelaOutros()); }
+        function updateOutros(index, field, value) { elencoData.outros[index][field] = value; salvarElenco(); scheduleRender(() => renderTabelaOutros()); }
+        function delLinhaOutros(index) { elencoData.outros.splice(index, 1); salvarElenco(); scheduleRender(() => renderTabelaOutros()); }
 
-        // =======================================================
-        // MODAL LABORATÓRIO TÁTICO
-        // =======================================================
         function abrirModalEscalações() { renderizarPitchesExp(); document.getElementById('modal_escalacoes').style.display = 'flex'; }
         function fecharModalEscalações() { document.getElementById('modal_escalacoes').style.display = 'none'; }
 
@@ -704,7 +778,7 @@
             if(formacoesLab[val]) {
                 elencoData.experimentos[eIdx].formacao = val;
                 elencoData.experimentos[eIdx].jogadores = JSON.parse(JSON.stringify(formacoesLab[val]));
-                salvarElenco(); renderizarPitchesExp();
+                salvarElenco(); scheduleRender(() => renderizarPitchesExp());
             }
         }
 
@@ -722,7 +796,7 @@
 
                 return `
                 <div class="pitch-col" style="min-width: 260px;">
-                    <input type="text" class="tbl-input" style="font-size:1rem; font-weight:900; text-align:center; color:var(--text-main); margin-bottom:10px; border-bottom:2px solid var(--border-light);" value="${exp.titulo}" onchange="updateExpTitulo(${eIdx}, this.value)">
+                    <input type="text" id="exp_tit_${eIdx}" class="tbl-input" style="font-size:1rem; font-weight:900; text-align:center; color:var(--text-main); margin-bottom:10px; border-bottom:2px solid var(--border-light);" value="${exp.titulo}" onchange="updateExpTitulo(${eIdx}, this.value)">
                     <select class="exp-select" onchange="mudarFormacaoExp(${eIdx}, this.value)">
                         <option value="442" ${exp.formacao==='442'?'selected':''}>4-4-2 Clássico</option>
                         <option value="433" ${exp.formacao==='433'?'selected':''}>4-3-3 Ofensivo</option>
@@ -736,11 +810,11 @@
             container.innerHTML = html;
         }
 
-        function updateExpTitulo(eIdx, val) { elencoData.experimentos[eIdx].titulo = val; salvarElenco(); }
+        function updateExpTitulo(eIdx, val) { elencoData.experimentos[eIdx].titulo = val; salvarElenco(); scheduleRender(() => renderizarPitchesExp()); }
         function editarExpJog(eIdx, jIdx) {
             let jog = elencoData.experimentos[eIdx].jogadores[jIdx];
             let nCarac = prompt(`Editar DNA para ${jog.pos} (Ex: Vel / Cru):`, jog.carac || ''); 
-            if(nCarac !== null) { elencoData.experimentos[eIdx].jogadores[jIdx].carac = nCarac; salvarElenco(); renderizarPitchesExp(); }
+            if(nCarac !== null) { elencoData.experimentos[eIdx].jogadores[jIdx].carac = nCarac; salvarElenco(); scheduleRender(() => renderizarPitchesExp()); }
         }
 
         window.onload = initElenco;
