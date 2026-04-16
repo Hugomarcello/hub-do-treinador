@@ -14,7 +14,7 @@
 
     <style>
         /* MODERN DASHBOARD STYLES */
-        body { background-color: var(--bg-body); }
+        body { background-color: var(--bg-body); overflow-x: hidden; }
         .section-divider { display: flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: 900; color: var(--text-main); margin: 30px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid var(--border-light); letter-spacing: -0.5px; }
         .section-divider i { color: var(--emerald-main); font-size: 1.4rem; }
 
@@ -25,7 +25,7 @@
         .panel-box:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
         .panel-box.highlight { border-top: 5px solid var(--emerald-main); }
 
-        .header-top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .header-top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; width: 100%;}
 
         /* SISTEMA DE SAVES & BOTOES SUPERIORES */
         .save-manager { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 0 14px; border-radius: 10px; border: 1px solid var(--border-light); margin: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); height: 42px;}
@@ -126,42 +126,63 @@
         .exp-select:focus { border-color: var(--emerald-main); }
 
         /* =======================================================
-           CORREÇÕES DE RESPONSIVIDADE E USABILIDADE MOBILE
+           CORREÇÕES DEFINITIVAS DE RESPONSIVIDADE E MENU OVERLAY
            ======================================================= */
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
         
         @media (max-width: 1024px) {
             .mobile-menu-btn { display: inline-block; }
             .header-title-mobile { display: flex; align-items: center; margin-left: 0 !important; width: 100%; }
-        }
+            
+            /* FORÇAR A BARRA LATERAL A VIRAR GAVETA (OVERLAY) */
+            #sidebar {
+                position: fixed !important; 
+                z-index: 9999 !important; 
+                left: 0; 
+                top: 0; 
+                height: 100vh; 
+                width: 260px !important;
+                transform: translateX(-100%); 
+                transition: transform 0.3s ease; 
+                background: #ffffff; /* Ajusta fundo escuro depois se precisar */
+                box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            }
+            body.dark-theme #sidebar { background: #1e293b; }
+            #sidebar.active { transform: translateX(0); }
+            
+            /* IMPEDIR QUE O MENU EMPURRE O CONTEÚDO */
+            .main-content { margin-left: 0 !important; width: 100vw !important; overflow-x: hidden; padding: 15px !important; }
+            
+            /* CRIAR FUNDO ESCURO ATRÁS DO MENU ABERTO */
+            .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9998 !important; }
+            .sidebar-overlay.active { display: block; }
 
-        @media (max-width: 768px) {
-            /* 1. Header reorganizado para não encavalar os botões */
+            /* Header reorganizado para não encavalar os botões */
             .header-top-bar { flex-direction: column; align-items: stretch; gap: 10px; }
             .header-top-bar > div:last-child { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; justify-content: stretch; }
             .header-top-bar > div:last-child > div.save-manager { grid-column: span 2; width: 100%; justify-content: center; }
-            .header-top-bar > div:last-child > div:nth-child(2) { grid-column: span 2; display: flex; width: 100%; }
+            .header-top-bar > div:last-child > div:nth-child(2) { grid-column: span 2; display: flex; width: 100%; gap: 5px;}
             .header-top-bar > div:last-child > div:nth-child(2) > button { flex: 1; }
             .btn-action-top { flex: 1; padding: 0 10px; font-size: 0.8rem; }
             
-            /* 2. Forçar fonte mínima para evitar Zoom do iPhone */
+            /* Forçar fonte mínima para evitar Zoom do iPhone */
             .tbl-input, .target-force-input, .save-select, .exp-select { font-size: 16px !important; }
             
-            /* 3. Evitar estouro da análise de rivais */
+            /* Evitar estouro da análise de rivais */
             .rival-card { flex: 0 0 85vw; max-width: 380px; }
             
-            /* 4. Título das tabelas (Titulares/Reservas) centralizados no mobile */
+            /* Título das tabelas (Titulares/Reservas) centralizados no mobile */
             .panel-box > div:first-child { flex-direction: column; align-items: flex-start !important; gap: 15px; }
             .panel-box > div:first-child > div { width: 100%; justify-content: space-between; }
             
-            /* 5. Ajudante visual de rolagem horizontal */
+            /* Ajudante visual de rolagem horizontal */
             .table-responsive::after {
                 content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 15px;
                 background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.08)); pointer-events: none;
             }
             body.dark-theme .table-responsive::after { background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.4)); }
             
-            /* 6. Ajuste modal laboratório */
+            /* Ajuste modal laboratório */
             .modal-content { padding: 12px; }
             .pitch-col { min-width: 250px; }
         }
@@ -370,7 +391,7 @@
             if(!document.querySelector('.sidebar-overlay')){
                 const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay';
                 
-                // Fallback robusto para fechar o menu no mobile caso o toggleMenu externo falhe
+                // Clicar fora do menu no celular fecha ele
                 overlay.onclick = function() {
                     if (typeof toggleMenu === 'function') toggleMenu();
                     else {
@@ -386,7 +407,7 @@
             }
         }
         
-        // Função local caso a script.js não carregue
+        // Função do Botão Sanduíche para abrir e fechar
         function toggleMenu() {
             let sidebar = document.getElementById('sidebar');
             let overlay = document.querySelector('.sidebar-overlay');
