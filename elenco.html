@@ -36,10 +36,10 @@
         .btn-action-top.info:hover { border-color: var(--info); color: var(--info); }
 
         /* TABELAS MODERNAS */
-        .clean-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 0.85rem; }
+        .clean-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 10px; font-size: 0.85rem; }
         .clean-table th { background: rgba(0,0,0,0.02); color: var(--text-muted); font-weight: 800; text-transform: uppercase; padding: 12px 10px; text-align: left; border-bottom: 2px solid var(--border-light); font-size: 0.7rem; letter-spacing: 0.5px; white-space: nowrap;}
         body.dark-theme .clean-table th { background: rgba(255,255,255,0.02); }
-        .clean-table td { padding: 8px 10px; border-bottom: 1px dashed var(--border-light); color: var(--text-main); vertical-align: middle; }
+        .clean-table td { padding: 8px 10px; border-bottom: 1px dashed var(--border-light); color: var(--text-main); vertical-align: middle; background: var(--card-bg); }
         .clean-table tr:last-child td { border-bottom: none; }
         .clean-table tr:hover td { background: rgba(16, 185, 129, 0.03); }
 
@@ -70,6 +70,20 @@
         .rival-card .clean-table th { background: transparent; }
         .table-responsive { overflow-x: auto; width: 100%; position: relative;}
 
+        /* A MÁGICA DO MOBILE: COLUNA FIXA (STICKY) */
+        @media (max-width: 768px) {
+            .clean-table th:first-child, 
+            .clean-table td:first-child {
+                position: sticky;
+                left: 0;
+                z-index: 10;
+                border-right: 2px solid var(--border-light);
+            }
+            /* O fundo precisa ser sólido para não vazar texto por trás ao rolar */
+            .clean-table th:first-child { background: var(--bg-body); }
+            .clean-table td:first-child { background: var(--card-bg); }
+        }
+
         /* PRANCHETAS & RESERVAS */
         .pitches-wrapper { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
         .pitch-col { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 280px; width: 100%; max-width: 400px; }
@@ -82,7 +96,7 @@
         .area-top, .area-bot { position: absolute; left: 50%; width: 40%; height: 12%; border: 2px solid rgba(255,255,255,0.4); transform: translateX(-50%); }
         .area-top { top: 0; border-top: none; } .area-bot { bottom: 0; border-bottom: none; }
 
-        /* JOGADORES NA PRANCHETA (Touch action p/ celular não dar zoom no duplo clique) */
+        /* JOGADORES NA PRANCHETA */
         .pitch-player { position: absolute; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.85); color: #fff; padding: 4px 6px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; align-items: center; min-width: 65px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); backdrop-filter: blur(4px); cursor: pointer; transition: 0.2s; touch-action: manipulation; user-select: none; -webkit-user-select: none;}
         .pitch-player:hover { transform: translate(-50%, -50%) scale(1.1); z-index: 10;}
         .pitch-player .p-pos { font-size: 0.65rem; font-weight: 900; color: #a7f3d0; margin-bottom: 2px; letter-spacing: 0.5px;}
@@ -90,7 +104,7 @@
         .pitch-player .p-carac { font-size: 0.6rem; color: #ffffff; margin-top: 2px; font-weight: 800; letter-spacing: 0.5px;}
         .pitch-player .p-forca { font-size: 0.95rem; font-weight: 900; color: #fff; margin-top: 2px; }
 
-        /* CAIXA DE RESERVAS DA PRANCHETA (Touch action p/ celular) */
+        /* CAIXA DE RESERVAS DA PRANCHETA */
         .reserves-box { display: flex; gap: 6px; width: 100%; overflow-x: auto; padding: 10px 5px; background: var(--bg-body); border: 1px solid var(--border-light); border-radius: 12px; }
         .reserve-slot { flex: 0 0 65px; background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 6px 4px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; touch-action: manipulation; user-select: none; -webkit-user-select: none;}
         .reserve-slot.editable { cursor: pointer; }
@@ -144,7 +158,7 @@
                 width: 260px !important;
                 transform: translateX(-100%); 
                 transition: transform 0.3s ease; 
-                background: #ffffff; /* Ajusta fundo escuro depois se precisar */
+                background: #ffffff; 
                 box-shadow: 4px 0 20px rgba(0,0,0,0.1);
             }
             body.dark-theme #sidebar { background: #1e293b; }
@@ -190,6 +204,7 @@
 </head>
 <body>
 
+    <div class="sidebar-overlay" id="sidebar_overlay" onclick="toggleMenu()"></div>
     <div id="app_menu_container"></div>
 
     <main class="main-content" id="main_content">
@@ -388,29 +403,12 @@
                 document.getElementById('app_menu_container').appendChild(sidebarEl);
             }
             sidebarEl.innerHTML = menuHTML;
-            if(!document.querySelector('.sidebar-overlay')){
-                const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay';
-                
-                // Clicar fora do menu no celular fecha ele
-                overlay.onclick = function() {
-                    if (typeof toggleMenu === 'function') toggleMenu();
-                    else {
-                        document.getElementById('sidebar').classList.remove('active');
-                        this.classList.remove('active');
-                    }
-                };
-                document.getElementById('app_menu_container').prepend(overlay);
-            }
-            if(localStorage.getItem('sidebar_collapsed') === 'true') {
-                sidebarEl.classList.add('collapsed'); let mainContent = document.getElementById('main_content');
-                if(mainContent) mainContent.classList.add('expanded');
-            }
         }
-        
-        // Função do Botão Sanduíche para abrir e fechar
+
+        // Função para abrir e fechar a gaveta no mobile
         function toggleMenu() {
             let sidebar = document.getElementById('sidebar');
-            let overlay = document.querySelector('.sidebar-overlay');
+            let overlay = document.getElementById('sidebar_overlay');
             if(sidebar) sidebar.classList.toggle('active');
             if(overlay) overlay.classList.toggle('active');
         }
@@ -578,7 +576,7 @@
         }
 
         // =======================================================
-        // RENDERS E UPDATES - AGORA COM IDs ÚNICOS E INPUTMODES NUMERICOS
+        // RENDERS E UPDATES - COM INPUTMODES NUMERICOS PARA CELULAR
         // =======================================================
         
         function renderMercado() {
